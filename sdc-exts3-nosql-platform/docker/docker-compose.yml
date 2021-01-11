@@ -1,0 +1,186 @@
+# =======================================================================
+# Platform Name            sdc-exts3-nosql-platform
+# Platform Stack:          trivadis/platys-modern-data-platform
+# Platform Stack Version:  1.10.0
+# =======================================================================
+version: '3.5'
+networks:
+  default:
+    name: sdc-exts3-nosql-platform
+services:
+  #  ================================== StreamSets DataCollector ========================================== #
+  streamsets-1:
+    image: trivadis/streamsets-kafka-hadoop-aws:3.20.0
+    container_name: streamsets-1
+    hostname: streamsets-1
+    labels:
+      com.platys.webui.title: StreamSets Data Collector UI
+      com.platys.webui.url: http://${PUBLIC_IP}:18630
+      com.platys.restapi.title: StreamSets Data Collector REST API
+      com.platys.restapi.url: http://${PUBLIC_IP}:18630/collector/restapi
+    ports:
+      - 18630:18630
+    environment:
+      SDC_OFFSET_DIRECTORY: /data/custom-offset-el
+      SDC_JAVA_OPTS: -Xmx2g -Xms2g
+      SDC_JAVA8_OPTS: -XX:+UseG1GC
+      SDC_CONF_MONITOR_MEMORY: 'true'
+      SDC_CONF_PIPELINE_MAX_RUNNERS_COUNT: 50
+    volumes:
+      - ./data-transfer:/data-transfer
+#      - ./streamsets-extras/streamsets-libs-extras/streamsets-datacollector-jdbc-lib/postgresql-42.2.6.jar:/opt/streamsets-datacollector-3.20.0/streamsets-libs-extras/streamsets-datacollector-jdbc-lib/lib/postgresql-42.2.6.jar:Z
+#      - ./streamsets-extras/libs-common-lib:/opt/streamsets-datacollector-3.20.0/libs-common-lib:Z
+      - ./plugins/streamsets/user-libs:/opt/streamsets-datacollector-user-libs:Z
+    ulimits:
+      nofile:
+        soft: 32768
+        hard: 32768
+    user: '1000'
+    restart: unless-stopped
+  #  ================================== MongoDB ========================================== #
+  mongo-1:
+    image: mongo:4.4.2
+    container_name: mongo-1
+    hostname: mongo-1
+    ports:
+      - 27017:27017
+    environment:
+      - MONGO_INITDB_DATABASE=sample
+      - MONGO_INITDB_USERNAME=admin
+      - MONGO_INITDB_PASSWORD=admin
+    volumes:
+      - ./data-transfer:/data-transfer
+      # seeding scripts
+      - ./conf/mongo-entrypoint:/docker-entrypoint-initdb.d
+    restart: unless-stopped
+  mongo-express:
+    image: mongo-express:latest
+    container_name: mongo-express
+    hostname: mongo-express
+    labels:
+      com.platys.webui.title: Cassandra Web UI
+      com.platys.webui.url: http://${PUBLIC_IP}:28123
+    ports:
+      - 28123:8081
+    environment:
+      - ME_CONFIG_MONGODB_SERVER=mongo-1
+    volumes:
+      - ./data-transfer:/data-transfer
+    restart: unless-stopped
+  admin-mongo:
+    image: adicom/admin-mongo:latest
+    container_name: admin-mongo
+    hostname: admin-mongo
+    labels:
+      com.platys.webui.title: Admin Mongo UI
+      com.platys.webui.url: http://${PUBLIC_IP}:28124
+    ports:
+      - 28124:1234
+    volumes:
+      - ./data-transfer:/data-transfer
+    restart: unless-stopped
+  #  ================================== Elasticsearch ========================================== #
+  elasticsearch-1:
+    image: elasticsearch:6.7.0
+    hostname: elasticsearch-1
+    container_name: elasticsearch-1
+    labels:
+      com.platys.restapi.title: Elasticsearch REST API
+      com.platys.restapi.url: http://${PUBLIC_IP}:9200
+      com.platys.manual.step.msgs: sudo sysctl -w vm.max_map_count=262144
+    ports:
+      - 9200:9200
+      - 9300:9300
+    environment:
+      XPACK_SECURITY_enabled: 'false'
+      xpack.monitoring.enabled: 'false'
+      http.cors.enabled: 'true'
+      http.cors.allow-origin: http://dejavu:1358,http://dataplatform:28125,http://analyticsplatform:28125,http://${PUBLIC_IP}:28125,http://${DOCKER_HOST_IP}:28125,http://127.0.0.1:1358
+      http.cors.allow-headers: X-Requested-With,X-Auth-Token,Content-Type,Content-Length,Authorization
+      http.cors.allow-credentials: 'true'
+    volumes:
+      - ./data-transfer:/data-transfer
+    restart: unless-stopped
+  dejavu:
+    image: appbaseio/dejavu:latest
+    container_name: dejavu
+    hostname: dejuvu
+    labels:
+      com.platys.webui.title: Elasticsearch Dejavu UI
+      com.platys.webui.url: http://${PUBLIC_IP}:28125
+    ports:
+      - 28125:1358
+    volumes:
+      - ./data-transfer:/data-transfer
+    restart: unless-stopped
+  cerebro:
+    image: lmenezes/cerebro:latest
+    container_name: cerebro
+    hostname: cerebro
+    labels:
+      com.platys.webui.title: Elasticsearch Cerbero UI
+      com.platys.webui.url: http://${PUBLIC_IP}:28126
+    ports:
+      - 28126:9000
+    volumes:
+      - ./data-transfer:/data-transfer
+    restart: unless-stopped
+  elastichq:
+    image: elastichq/elasticsearch-hq:latest
+    container_name: elastichq
+    hostname: elatichq
+    labels:
+      com.platys.webui.title: ElasticHQ UI
+      com.platys.webui.url: http://${PUBLIC_IP}:28127
+    ports:
+      - 28127:5000
+    volumes:
+      - ./data-transfer:/data-transfer
+    restart: unless-stopped
+  #  ================================== cAdvisor ========================================== #
+  wetty:
+    image: svenihoney/wetty:latest
+    container_name: wetty
+    hostname: wetty
+    labels:
+      com.platys.webui.title: WeTTY UI
+      com.platys.webui.url: http://${PUBLIC_IP}:3001
+    ports:
+      - 3001:3000
+    environment:
+      - REMOTE_SSH_SERVER=${DOCKER_HOST_IP}
+      - REMOTE_SSH_PORT=22
+      - REMOTE_SSH_USER=
+      - WETTY_PORT=3000
+    volumes:
+      - ./data-transfer:/data-transfer
+    restart: unless-stopped
+  #  ================================== markdown-viewer ========================================== #
+  markdown-viewer:
+    image: minimum/markdown-web:latest
+    container_name: markdown-viewer
+    hostname: markdown-viewer
+    labels:
+      com.platys.webui.title: Markdown Viewer UI
+      com.platys.webui.url: http://${PUBLIC_IP}:80
+    ports:
+      - 80:80
+    volumes:
+      - ./documentation:/home/python/markdown
+      - ./data-transfer:/data-transfer
+    restart: unless-stopped
+  markdown-renderer:
+    image: trivadis/jinja2-renderer:latest
+    container_name: markdown-renderer
+    hostname: markdown-renderer
+    environment:
+      USE_PUBLIC_IP: 'True'
+      PUBLIC_IP: ${PUBLIC_IP}
+      DOCKER_HOST_IP: ${DOCKER_HOST_IP}
+      DATAPLATFORM_HOME: ${DATAPLATFORM_HOME}
+    volumes:
+      - ./documentation/templates:/templates
+      - ./documentation/templates:/scripts
+      - .:/variables
+      - ./documentation:/output
+      - ./data-transfer:/data-transfer
