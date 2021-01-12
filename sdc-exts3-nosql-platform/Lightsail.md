@@ -20,9 +20,9 @@ Scroll down to **Launch script** and add the following script.
 Optionally change the password from the default value of `ubuntu` to a more secure one. 
 
 ```
-export GITHUB_PROJECT=various-platys-platforms/sdc-exts3-nosql-platform
+export GITHUB_PROJECT=various-platys-platforms
 export GITHUB_OWNER=gschmutz
-export DATAPLATFORM_HOME=docker
+export DATAPLATFORM_HOME=sdc-exts3-nosql-platform/docker
 export DOCKER_COMPOSE_VERSION=1.25.3
 export PLATYS_VERSION=2.4.0
 export NETWORK_NAME=eth0
