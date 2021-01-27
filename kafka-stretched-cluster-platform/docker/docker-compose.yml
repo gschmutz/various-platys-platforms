@@ -22,6 +22,39 @@ services:
       ZOOKEEPER_TICK_TIME: 2000
       ZOOKEEPER_INIT_LIMIT: 5
       ZOOKEEPER_SYNC_LIMIT: 2
+      ZOOKEEPER_SERVERS: zookeeper-1:22888:23888;zookeeper-2:32888:33888;zookeeper-3:42888:43888
+    volumes:
+      - ./data-transfer:/data-transfer
+    restart: unless-stopped
+  zookeeper-2:
+    image: confluentinc/cp-zookeeper:6.0.1
+    container_name: zookeeper-2
+    hostname: zookeeper-2
+    ports:
+      - 2182:2182
+    environment:
+      ZOOKEEPER_SERVER_ID: 2
+      ZOOKEEPER_CLIENT_PORT: 2182
+      ZOOKEEPER_TICK_TIME: 2000
+      ZOOKEEPER_INIT_LIMIT: 5
+      ZOOKEEPER_SYNC_LIMIT: 2
+      ZOOKEEPER_SERVERS: zookeeper-1:22888:23888;zookeeper-2:32888:33888;zookeeper-3:42888:43888
+    volumes:
+      - ./data-transfer:/data-transfer
+    restart: unless-stopped
+  zookeeper-3:
+    image: confluentinc/cp-zookeeper:6.0.1
+    container_name: zookeeper-3
+    hostname: zookeeper-3
+    ports:
+      - 2183:2183
+    environment:
+      ZOOKEEPER_SERVER_ID: 3
+      ZOOKEEPER_CLIENT_PORT: 2183
+      ZOOKEEPER_TICK_TIME: 2000
+      ZOOKEEPER_INIT_LIMIT: 5
+      ZOOKEEPER_SYNC_LIMIT: 2
+      ZOOKEEPER_SERVERS: zookeeper-1:22888:23888;zookeeper-2:32888:33888;zookeeper-3:42888:43888
     volumes:
       - ./data-transfer:/data-transfer
     restart: unless-stopped
