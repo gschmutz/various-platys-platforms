@@ -167,6 +167,24 @@ services:
     volumes:
       - ./data-transfer:/data-transfer
     restart: unless-stopped
+  #  ================================== cAdvisor ========================================== #
+  wetty:
+    image: svenihoney/wetty:latest
+    container_name: wetty
+    hostname: wetty
+    labels:
+      com.platys.webui.title: WeTTY UI
+      com.platys.webui.url: http://${PUBLIC_IP}:3001
+    ports:
+      - 3001:3000
+    environment:
+      - REMOTE_SSH_SERVER=${DOCKER_HOST_IP}
+      - REMOTE_SSH_PORT=22
+      - REMOTE_SSH_USER=
+      - WETTY_PORT=3000
+    volumes:
+      - ./data-transfer:/data-transfer
+    restart: unless-stopped
   #  ================================== markdown-viewer ========================================== #
   markdown-viewer:
     image: minimum/markdown-web:latest

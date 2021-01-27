@@ -595,7 +595,7 @@
       #
       # ===== Wetty ========
       #
-      WETTY_enable: false
+      WETTY_enable: true
       #
       # ===== Markdown Viewer ========
       #

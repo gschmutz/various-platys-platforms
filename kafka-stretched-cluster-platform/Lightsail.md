@@ -72,10 +72,12 @@ chown -R ${USERNAME}:${USERNAME} ${GITHUB_PROJECT}
 
 cd /home/${USERNAME}/${GITHUB_PROJECT}/${DATAPLATFORM_HOME}
 
-# create the .env file
-rm $PWD/.env
-printf "PLATYS_AWS_ACCESS_KEY=$AWS_ACCESS_KEY\n" >> $PWD/.env
-printf "PLATYS_AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY\n" >> $PWD/.env
+# Prepare Environment Variables into .bash_profile file
+printf "export PUBLIC_IP=$PUBLIC_IP\n" >> /home/$USERNAME/.bash_profile
+printf "export DOCKER_HOST_IP=$DOCKER_HOST_IP\n" >> /home/$USERNAME/.bash_profile
+printf "export DATAPLATFORM_HOME=$PWD\n" >> /home/$USERNAME/.bash_profile
+printf "\n" >> /home/$USERNAME/.bash_profile
+sudo chown ${USERNAME}:${USERNAME} /home/$USERNAME/.bash_profile
 
 # Startup Environment
 docker-compose up -d
