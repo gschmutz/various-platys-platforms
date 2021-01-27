@@ -22,14 +22,12 @@ Optionally change the password from the default value of `ubuntu` to a more secu
 ```
 export GITHUB_PROJECT=various-platys-platforms
 export GITHUB_OWNER=gschmutz
-export DATAPLATFORM_HOME=kafka-streteched-cluster-platform/docker
+export DATAPLATFORM_HOME=kafka-stretched-cluster-platform/docker
 export DOCKER_COMPOSE_VERSION=1.25.3
 export PLATYS_VERSION=2.4.0
 export NETWORK_NAME=eth0
 export USERNAME=ubuntu
 export PASSWORD=ubuntu
-export AWS_ACCESS_KEY=<replace it by an AWS access key>
-export AWS_SECRET_ACCESS_KEY=<replace it by an AWS secret key>
 
 # Prepare Environment Variables 
 export PUBLIC_IP=$(curl ipinfo.io/ip)
@@ -73,13 +71,6 @@ git clone https://github.com/${GITHUB_OWNER}/${GITHUB_PROJECT}
 chown -R ${USERNAME}:${USERNAME} ${GITHUB_PROJECT}
 
 cd /home/${USERNAME}/${GITHUB_PROJECT}/${DATAPLATFORM_HOME}
-
-# Prepare Environment Variables into .bash_profile file
-printf "export PUBLIC_IP=$PUBLIC_IP\n" >> /home/$USERNAME/.bash_profile
-printf "export DOCKER_HOST_IP=$DOCKER_HOST_IP\n" >> /home/$USERNAME/.bash_profile
-printf "export DATAPLATFORM_HOME=$PWD\n" >> /home/$USERNAME/.bash_profile
-printf "\n" >> /home/$USERNAME/.bash_profile
-sudo chown ${USERNAME}:${USERNAME} /home/$USERNAME/.bash_profile
 
 # create the .env file
 rm $PWD/.env
