@@ -59,10 +59,10 @@ services:
       - ./data-transfer:/data-transfer
     restart: unless-stopped
 #  ================================== Kafka ========================================== #
-  kafka-1:
+  kafka-dc1-1:
     image: confluentinc/cp-kafka:6.0.1
-    container_name: kafka-1
-    hostname: kafka-1
+    container_name: kafka-dc1-1
+    hostname: kafka-dc1-1
     depends_on:
       - zookeeper-1
     ports:
@@ -74,8 +74,8 @@ services:
       KAFKA_BROKER_RACK: dc1
       KAFKA_ZOOKEEPER_CONNECT: zookeeper-1:2181
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: LISTENER_INTERNAL:PLAINTEXT,LISTENER_DOCKERHOST:PLAINTEXT,LISTENER_EXTERNAL:PLAINTEXT
-      KAFKA_LISTENERS: LISTENER_INTERNAL://kafka-1:19092,LISTENER_DOCKERHOST://kafka-1:29092,LISTENER_EXTERNAL://kafka-1:9092
-      KAFKA_ADVERTISED_LISTENERS: LISTENER_INTERNAL://kafka-1:19092,LISTENER_DOCKERHOST://localhost:29092,LISTENER_EXTERNAL://${PUBLIC_IP:-127.0.0.1}:9092
+      KAFKA_LISTENERS: LISTENER_INTERNAL://kafka-dc1-1:19092,LISTENER_DOCKERHOST://kafka-dc1-1:29092,LISTENER_EXTERNAL://kafka-dc1-1:9092
+      KAFKA_ADVERTISED_LISTENERS: LISTENER_INTERNAL://kafka-dc1-1:19092,LISTENER_DOCKERHOST://localhost:29092,LISTENER_EXTERNAL://${PUBLIC_IP:-127.0.0.1}:9092
       KAFKA_INTER_BROKER_LISTENER_NAME: LISTENER_INTERNAL
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 2
       KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
@@ -91,10 +91,10 @@ services:
     volumes:
       - ./data-transfer:/data-transfer
     restart: unless-stopped
-  kafka-2:
+  kafka-dc1-2:
     image: confluentinc/cp-kafka:6.0.1
-    container_name: kafka-2
-    hostname: kafka-2
+    container_name: kafka-dc1-2
+    hostname: kafka-dc1-2
     depends_on:
       - zookeeper-1
     ports:
@@ -106,8 +106,8 @@ services:
       KAFKA_BROKER_RACK: dc1
       KAFKA_ZOOKEEPER_CONNECT: zookeeper-1:2181
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: LISTENER_INTERNAL:PLAINTEXT,LISTENER_DOCKERHOST:PLAINTEXT,LISTENER_EXTERNAL:PLAINTEXT
-      KAFKA_LISTENERS: LISTENER_INTERNAL://kafka-2:19093,LISTENER_DOCKERHOST://kafka-2:29093,LISTENER_EXTERNAL://kafka-2:9093
-      KAFKA_ADVERTISED_LISTENERS: LISTENER_INTERNAL://kafka-2:19093,LISTENER_DOCKERHOST://localhost:29093,LISTENER_EXTERNAL://${PUBLIC_IP:-127.0.0.1}:9093
+      KAFKA_LISTENERS: LISTENER_INTERNAL://kafka-dc1-2:19093,LISTENER_DOCKERHOST://kafka-dc1-2:29093,LISTENER_EXTERNAL://kafka-dc1-2:9093
+      KAFKA_ADVERTISED_LISTENERS: LISTENER_INTERNAL://kafka-dc1-2:19093,LISTENER_DOCKERHOST://localhost:29093,LISTENER_EXTERNAL://${PUBLIC_IP:-127.0.0.1}:9093
       KAFKA_INTER_BROKER_LISTENER_NAME: LISTENER_INTERNAL
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 2
       KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
@@ -119,6 +119,70 @@ services:
       KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 100
       KAFKA_JMX_PORT: 9993
       KAFKA_JMX_OPTS: -Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -Dcom.sun.management.jmxremote.local.only=false -Dcom.sun.management.jmxremote.rmi.port=9993
+      KAFKA_JMX_HOSTNAME: ${PUBLIC_IP:-127.0.0.1}
+    volumes:
+      - ./data-transfer:/data-transfer
+    restart: unless-stopped
+  kafka-dc2-1:
+    image: confluentinc/cp-kafka:6.0.1
+    container_name: kafka-dc2-1
+    hostname: kafka-dc2-1
+    depends_on:
+      - zookeeper-1
+    ports:
+      - 9094:9094
+      - 29094:29094
+      - 9994:9994
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_BROKER_RACK: dc2
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper-1:2181
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: LISTENER_INTERNAL:PLAINTEXT,LISTENER_DOCKERHOST:PLAINTEXT,LISTENER_EXTERNAL:PLAINTEXT
+      KAFKA_LISTENERS: LISTENER_INTERNAL://kafka-dc2-1:19094,LISTENER_DOCKERHOST://kafka-dc2-1:29094,LISTENER_EXTERNAL://kafka-dc2-1:9094
+      KAFKA_ADVERTISED_LISTENERS: LISTENER_INTERNAL://kafka-dc2-1:19094,LISTENER_DOCKERHOST://localhost:29094,LISTENER_EXTERNAL://${PUBLIC_IP:-127.0.0.1}:9094
+      KAFKA_INTER_BROKER_LISTENER_NAME: LISTENER_INTERNAL
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 2
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 2
+      KAFKA_MESSAGE_TIMESTAMP_TYPE: CreateTime
+      KAFKA_MIN_INSYNC_REPLICAS: 1
+      KAFKA_DELETE_TOPIC_ENABLE: 'True'
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: 'False'
+      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 100
+      KAFKA_JMX_PORT: 9994
+      KAFKA_JMX_OPTS: -Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -Dcom.sun.management.jmxremote.local.only=false -Dcom.sun.management.jmxremote.rmi.port=9994
+      KAFKA_JMX_HOSTNAME: ${PUBLIC_IP:-127.0.0.1}
+    volumes:
+      - ./data-transfer:/data-transfer
+    restart: unless-stopped
+  kafka-dc2-2:
+    image: confluentinc/cp-kafka:6.0.1
+    container_name: kafka-dc2-2
+    hostname: kafka-dc2-2
+    depends_on:
+      - zookeeper-1
+    ports:
+      - 9095:9095
+      - 29095:29095
+      - 9995:9995
+    environment:
+      KAFKA_BROKER_ID: 2
+      KAFKA_BROKER_RACK: dc2
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper-1:2181
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: LISTENER_INTERNAL:PLAINTEXT,LISTENER_DOCKERHOST:PLAINTEXT,LISTENER_EXTERNAL:PLAINTEXT
+      KAFKA_LISTENERS: LISTENER_INTERNAL://kafka-dc2-2:19095,LISTENER_DOCKERHOST://kafka-dc2-2:29095,LISTENER_EXTERNAL://kafka-dc2-2:9095
+      KAFKA_ADVERTISED_LISTENERS: LISTENER_INTERNAL://kafka-dc2-2:19095,LISTENER_DOCKERHOST://localhost:29095,LISTENER_EXTERNAL://${PUBLIC_IP:-127.0.0.1}:9095
+      KAFKA_INTER_BROKER_LISTENER_NAME: LISTENER_INTERNAL
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 2
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 2
+      KAFKA_MESSAGE_TIMESTAMP_TYPE: CreateTime
+      KAFKA_MIN_INSYNC_REPLICAS: 1
+      KAFKA_DELETE_TOPIC_ENABLE: 'True'
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: 'False'
+      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 100
+      KAFKA_JMX_PORT: 9995
+      KAFKA_JMX_OPTS: -Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -Dcom.sun.management.jmxremote.local.only=false -Dcom.sun.management.jmxremote.rmi.port=9995
       KAFKA_JMX_HOSTNAME: ${PUBLIC_IP:-127.0.0.1}
     volumes:
       - ./data-transfer:/data-transfer
@@ -161,7 +225,7 @@ services:
           connections:
             docker-kafka-server:
               properties:
-                bootstrap.servers: 'kafka-1:19092,kafka-2:19093'
+                bootstrap.servers: 'kafka-dc2-1:19094,kafka-dc2-2:19095'
     depends_on:
       - kafka-1
     volumes:
