@@ -42,7 +42,7 @@
       #
       # ===== Apache Zookeeper Navigator ========
       #
-      ZOOKEEPER_NAVIGATOR_enable: false
+      ZOOKEEPER_NAVIGATOR_enable: true
       #
       # ===== Apache Kafka ========
       #
