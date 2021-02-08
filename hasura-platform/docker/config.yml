@@ -79,7 +79,7 @@
       #
       # ===== Confluent Schema Registry ========
       #
-      KAFKA_SCHEMA_REGISTRY_enable: false
+      KAFKA_SCHEMA_REGISTRY_enable: true
       KAFKA_SCHEMA_REGISTRY_nodes: 1
       KAFKA_SCHEMA_REGISTRY_use_zookeeper_election: false
       KAFKA_SCHEMA_REGISTRY_replication_factor: 1
