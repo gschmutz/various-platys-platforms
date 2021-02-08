@@ -135,7 +135,7 @@
       #
       # ===== Various Kafka UIs ========
       #
-      KAFKA_SCHEMA_REGISTRY_UI_enable: false
+      KAFKA_SCHEMA_REGISTRY_UI_enable: true
       KAFKA_SCHEMA_REGISTRY_UI_use_public_ip: true
       KAFKA_TOPICS_UI_enable: false
       KAFKA_CONNECT_UI_enable: false
