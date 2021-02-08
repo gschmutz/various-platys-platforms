@@ -146,6 +146,19 @@ services:
     volumes:
       - ./data-transfer:/data-transfer
     restart: unless-stopped
+  #  ================================== Kafkacat  ========================================== #
+  kafkacat:
+    image: edenhill/kafkacat:1.6.0
+    container_name: kafkacat
+    hostname: kafkacat
+    volumes:
+      - ./data-transfer:/data-transfer
+    entrypoint:
+      - /bin/sh
+      - -c
+      - |
+        while [ 1 -eq 1 ];do sleep 60;done
+    restart: unless-stopped
   #  ================================== Schema Registry UI ========================================== #
   schema-registry-ui:
     image: landoop/schema-registry-ui:latest
