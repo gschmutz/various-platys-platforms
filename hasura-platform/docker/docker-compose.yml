@@ -217,7 +217,6 @@ services:
       SDC_OFFSET_DIRECTORY: /data/custom-offset-el
       SDC_INSTALL_STAGES: streamsets-datacollector-apache-kafka_2_0-lib,streamsets-datacollector-apache-kafka_1_1-lib,streamsets-datacollector-hdp_3_1-lib,streamsets-datacollector-aws-lib,streamsets-datacollector-azure-lib,streamsets-datacollector-groovy_2_4-lib,streamsets-datacollector-jdbc-lib
       SDC_INSTALL_ENTERPRISE_STAGES: ''
-      SDC_INSTALL_PIPELINES_FROM: /tmp/pipelines
       SDC_JAVA_OPTS: -Xmx2g -Xms2g
       SDC_JAVA8_OPTS: -XX:+UseG1GC
       SDC_CONF_MONITOR_MEMORY: 'true'
@@ -225,7 +224,6 @@ services:
       SDC_CONF_http_authentication: form
     volumes:
       - ./data-transfer:/data-transfer
-      - ./scripts/streamsets/pipelines:/tmp/pipelines
       - ./conf/streamsets/pre-docker-entrypoint.sh:/pre-docker-entrypoint.sh
       - ./plugins/streamsets/user-libs:/opt/streamsets-datacollector-user-libs:Z
     ulimits:
