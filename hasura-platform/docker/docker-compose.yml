@@ -203,7 +203,7 @@ services:
     restart: unless-stopped
   #  ================================== StreamSets DataCollector ========================================== #
   streamsets-1:
-    image: trivadis/streamsets-kafka-hadoop-aws:3.21.0
+    image: streamsets/datacollector:3.21.0
     container_name: streamsets-1
     hostname: streamsets-1
     labels:
@@ -215,6 +215,9 @@ services:
       - 18630:18630
     environment:
       SDC_OFFSET_DIRECTORY: /data/custom-offset-el
+      SDC_INSTALL_STAGES: streamsets-datacollector-apache-kafka_2_0-lib,streamsets-datacollector-apache-kafka_1_1-lib,streamsets-datacollector-hdp_3_1-lib,streamsets-datacollector-aws-lib,streamsets-datacollector-azure-lib,streamsets-datacollector-groovy_2_4-lib,streamsets-datacollector-jdbc-lib
+      SDC_INSTALL_ENTERPRISE_STAGES: ''
+      SDC_INSTALL_PIPELINES_FROM: /tmp/pipelines
       SDC_JAVA_OPTS: -Xmx2g -Xms2g
       SDC_JAVA8_OPTS: -XX:+UseG1GC
       SDC_CONF_MONITOR_MEMORY: 'true'
@@ -222,14 +225,19 @@ services:
       SDC_CONF_http_authentication: form
     volumes:
       - ./data-transfer:/data-transfer
-#      - ./streamsets-extras/streamsets-libs-extras/streamsets-datacollector-jdbc-lib/postgresql-42.2.6.jar:/opt/streamsets-datacollector-3.21.0/streamsets-libs-extras/streamsets-datacollector-jdbc-lib/lib/postgresql-42.2.6.jar:Z
-#      - ./streamsets-extras/libs-common-lib:/opt/streamsets-datacollector-3.21.0/libs-common-lib:Z
+      - ./scripts/streamsets/pipelines:/tmp/pipelines
+      - ./conf/streamsets/pre-docker-entrypoint.sh:/pre-docker-entrypoint.sh
       - ./plugins/streamsets/user-libs:/opt/streamsets-datacollector-user-libs:Z
     ulimits:
       nofile:
         soft: 32768
         hard: 32768
     user: '1000'
+    command:
+      - dc
+      - -exec
+    entrypoint:
+      - /pre-docker-entrypoint.sh
     restart: unless-stopped
   #  ================================== Dgraph ========================================== #
   dgraph-1:
@@ -277,6 +285,7 @@ services:
       HASURA_GRAPHQL_ENABLE_CONSOLE: 'true' # set to "false" to disable console
       HASURA_GRAPHQL_DEV_MODE: 'true'
       HASURA_GRAPHQL_ENABLED_LOG_TYPES: startup, http-log, webhook-log, websocket-log, query-log
+      HASURA_GRAPHQL_LIVE_QUERIES_MULTIPLEXED_REFETCH_INTERVAL: 1000
       ## uncomment next line to set an admin secret
       # HASURA_GRAPHQL_ADMIN_SECRET: myadminsecretkey
     volumes:
