@@ -215,7 +215,7 @@ services:
       - 18630:18630
     environment:
       SDC_OFFSET_DIRECTORY: /data/custom-offset-el
-      SDC_INSTALL_STAGES: streamsets-datacollector-apache-kafka_2_0-lib,streamsets-datacollector-apache-kafka_1_1-lib,streamsets-datacollector-hdp_3_1-lib,streamsets-datacollector-aws-lib,streamsets-datacollector-azure-lib,streamsets-datacollector-groovy_2_4-lib,streamsets-datacollector-jdbc-lib
+      SDC_INSTALL_STAGES: streamsets-datacollector-apache-kafka_2_6-lib,streamsets-datacollector-aws-lib,streamsets-datacollector-azure-lib,streamsets-datacollector-groovy_2_4-lib,streamsets-datacollector-jdbc-lib
       SDC_INSTALL_ENTERPRISE_STAGES: ''
       SDC_JAVA_OPTS: -Xmx2g -Xms2g
       SDC_JAVA8_OPTS: -XX:+UseG1GC
@@ -268,9 +268,35 @@ services:
       - ./data-transfer:/data-transfer
       - ./init/postgresql:/docker-entrypoint-initdb.d/
     restart: unless-stopped
+  #  ================================== Adminer ========================================== #
+  adminer:
+    image: adminer:latest
+    container_name: adminer
+    hostname: adminer
+    labels:
+      com.platys.webui.title: Adminer UI
+      com.platys.webui.url: http://${PUBLIC_IP}:28131
+    ports:
+      - 28131:8080
+    volumes:
+      - ./data-transfer:/data-transfer
+    restart: unless-stopped
+  #  ================================== Cloudbeaver ========================================== #
+  cloudbeaver:
+    image: trivadis/cloudbeaver:latest
+    container_name: cloudbeaver
+    hostname: cloudbeaver
+    labels:
+      com.platys.webui.title: Cloudbeaver UI
+      com.platys.webui.url: http://${PUBLIC_IP}:8978
+    ports:
+      - 8978:8978
+    volumes:
+      - ./data-transfer:/data-transfer
+    restart: unless-stopped
   #  ================================== Hasura ========================================== #
   hasura:
-    image: hasura/graphql-engine:v1.4.0-alpha.1
+    image: hasura/graphql-engine:v2.0.0-alpha.2
     container_name: hasura
     hostname: hasura
     labels:

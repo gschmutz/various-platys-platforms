@@ -49,6 +49,7 @@
       KAFKA_enable: true
       # one of enterprise, community
       KAFKA_edition: 'community'
+      CONFLUENT_PLATFORM_version: 6.0.1
       KAFKA_volume_map_data: false
       KAFKA_datacenters: 1
       KAFKA_broker_nodes: 3
@@ -500,11 +501,11 @@
       #
       # ===== Adminer DB UI ========
       #
-      ADMINER_enable: false
+      ADMINER_enable: true
       #
       # ===== Cloudbeaver DB UI ========
       #
-      CLOUDBEAVER_enable: false
+      CLOUDBEAVER_enable: true
       #
       # ===== Quix Presto UI ========
       #
