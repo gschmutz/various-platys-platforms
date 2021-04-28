@@ -542,7 +542,7 @@
       #
       # ===== Cloudbeaver DB UI ========
       #
-      CLOUDBEAVER_enable: false
+      CLOUDBEAVER_enable: true
       #
       # ===== SQLPad UI ========
       #
