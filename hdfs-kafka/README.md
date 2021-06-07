@@ -14,6 +14,8 @@ First let's add the environment variables. Make sure to adapt the network interf
 
 ```
 export NETWORK_NAME=ens33
+export PLATYS_VERSION=2.4.0
+export DOCKER_COMPOSE_VERSION=1.29.2
 
 # Prepare Environment Variables 
 export PUBLIC_IP=$(curl ipinfo.io/ip)
