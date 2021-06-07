@@ -1,0 +1,898 @@
+# =======================================================================
+# Platform Name            bigdata-hdfs-platform
+# Platform Stack:          trivadis/platys-modern-data-platform
+# Platform Stack Version:  1.12.0
+# =======================================================================
+version: '3.5'
+networks:
+  default:
+    name: bigdata-hdfs-platform
+# enforce some dependencies
+# enforce some dependencies
+services:
+  #  ================================== Zookeeper ========================================== #
+  zookeeper-1:
+    image: confluentinc/cp-zookeeper:6.1.0
+    container_name: zookeeper-1
+    hostname: zookeeper-1
+    ports:
+      - 2181:2181
+    environment:
+      ZOOKEEPER_SERVER_ID: 1
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+      ZOOKEEPER_INIT_LIMIT: 5
+      ZOOKEEPER_SYNC_LIMIT: 2
+    volumes:
+      - ./data-transfer:/data-transfer
+    restart: unless-stopped
+#  ================================== Kafka ========================================== #
+  kafka-1:
+    image: confluentinc/cp-kafka:6.1.0
+    container_name: kafka-1
+    hostname: kafka-1
+    depends_on:
+      - zookeeper-1
+    ports:
+      - 9092:9092
+      - 19092:19092
+      - 29092:29092
+      - 9992:9992
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_BROKER_RACK: dc1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper-1:2181
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: LISTENER_INTERNAL:PLAINTEXT,LISTENER_DOCKERHOST:PLAINTEXT,LISTENER_EXTERNAL:PLAINTEXT
+      KAFKA_LISTENERS: LISTENER_INTERNAL://kafka-1:19092,LISTENER_DOCKERHOST://kafka-1:29092,LISTENER_EXTERNAL://kafka-1:9092
+      KAFKA_ADVERTISED_LISTENERS: LISTENER_INTERNAL://kafka-1:19092,LISTENER_DOCKERHOST://localhost:29092,LISTENER_EXTERNAL://${PUBLIC_IP:-127.0.0.1}:9092
+      KAFKA_INTER_BROKER_LISTENER_NAME: LISTENER_INTERNAL
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 3
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 3
+      KAFKA_MESSAGE_TIMESTAMP_TYPE: CreateTime
+      KAFKA_MIN_INSYNC_REPLICAS: 1
+      KAFKA_DELETE_TOPIC_ENABLE: 'False'
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: 'False'
+      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 100
+      KAFKA_JMX_PORT: 9992
+      KAFKA_JMX_OPTS: -Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -Dcom.sun.management.jmxremote.local.only=false -Dcom.sun.management.jmxremote.rmi.port=9992
+      KAFKA_JMX_HOSTNAME: ${PUBLIC_IP:-127.0.0.1}
+    volumes:
+      - ./data-transfer:/data-transfer
+    restart: unless-stopped
+  kafka-2:
+    image: confluentinc/cp-kafka:6.1.0
+    container_name: kafka-2
+    hostname: kafka-2
+    depends_on:
+      - zookeeper-1
+    ports:
+      - 9093:9093
+      - 19093:19093
+      - 29093:29093
+      - 9993:9993
+    environment:
+      KAFKA_BROKER_ID: 2
+      KAFKA_BROKER_RACK: dc1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper-1:2181
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: LISTENER_INTERNAL:PLAINTEXT,LISTENER_DOCKERHOST:PLAINTEXT,LISTENER_EXTERNAL:PLAINTEXT
+      KAFKA_LISTENERS: LISTENER_INTERNAL://kafka-2:19093,LISTENER_DOCKERHOST://kafka-2:29093,LISTENER_EXTERNAL://kafka-2:9093
+      KAFKA_ADVERTISED_LISTENERS: LISTENER_INTERNAL://kafka-2:19093,LISTENER_DOCKERHOST://localhost:29093,LISTENER_EXTERNAL://${PUBLIC_IP:-127.0.0.1}:9093
+      KAFKA_INTER_BROKER_LISTENER_NAME: LISTENER_INTERNAL
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 3
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 3
+      KAFKA_MESSAGE_TIMESTAMP_TYPE: CreateTime
+      KAFKA_MIN_INSYNC_REPLICAS: 1
+      KAFKA_DELETE_TOPIC_ENABLE: 'False'
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: 'False'
+      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 100
+      KAFKA_JMX_PORT: 9993
+      KAFKA_JMX_OPTS: -Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -Dcom.sun.management.jmxremote.local.only=false -Dcom.sun.management.jmxremote.rmi.port=9993
+      KAFKA_JMX_HOSTNAME: ${PUBLIC_IP:-127.0.0.1}
+    volumes:
+      - ./data-transfer:/data-transfer
+    restart: unless-stopped
+  kafka-3:
+    image: confluentinc/cp-kafka:6.1.0
+    container_name: kafka-3
+    hostname: kafka-3
+    depends_on:
+      - zookeeper-1
+    ports:
+      - 9094:9094
+      - 19094:19094
+      - 29094:29094
+      - 9994:9994
+    environment:
+      KAFKA_BROKER_ID: 3
+      KAFKA_BROKER_RACK: dc1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper-1:2181
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: LISTENER_INTERNAL:PLAINTEXT,LISTENER_DOCKERHOST:PLAINTEXT,LISTENER_EXTERNAL:PLAINTEXT
+      KAFKA_LISTENERS: LISTENER_INTERNAL://kafka-3:19094,LISTENER_DOCKERHOST://kafka-3:29094,LISTENER_EXTERNAL://kafka-3:9094
+      KAFKA_ADVERTISED_LISTENERS: LISTENER_INTERNAL://kafka-3:19094,LISTENER_DOCKERHOST://localhost:29094,LISTENER_EXTERNAL://${PUBLIC_IP:-127.0.0.1}:9094
+      KAFKA_INTER_BROKER_LISTENER_NAME: LISTENER_INTERNAL
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 3
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 3
+      KAFKA_MESSAGE_TIMESTAMP_TYPE: CreateTime
+      KAFKA_MIN_INSYNC_REPLICAS: 1
+      KAFKA_DELETE_TOPIC_ENABLE: 'False'
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: 'False'
+      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 100
+      KAFKA_JMX_PORT: 9994
+      KAFKA_JMX_OPTS: -Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -Dcom.sun.management.jmxremote.local.only=false -Dcom.sun.management.jmxremote.rmi.port=9994
+      KAFKA_JMX_HOSTNAME: ${PUBLIC_IP:-127.0.0.1}
+    volumes:
+      - ./data-transfer:/data-transfer
+    restart: unless-stopped
+  #  ================================== Schema Registry ========================================== #
+  schema-registry-1:
+    image: confluentinc/cp-schema-registry:6.1.0
+    hostname: schema-registry-1
+    container_name: schema-registry-1
+    labels:
+      com.platys.restapi.title: Schema Registry REST API
+      com.platys.restapi.url: http://${PUBLIC_IP}:8081
+    ports:
+      - 8081:8081
+    environment:
+      SCHEMA_REGISTRY_HOST_NAME: schema-registry-1
+      SCHEMA_REGISTRY_KAFKASTORE_BOOTSTRAP_SERVERS: kafka-1:19092,kafka-2:19093,kafka-3:19094
+      SCHEMA_REGISTRY_MASTER_ELIGIBILITY: 'true'
+      SCHEMA_REGISTRY_KAFKASTORE_TOPIC_REPLICATION_FACTOR: 1
+      SCHEMA_REGISTRY_ACCESS_CONTROL_ALLOW_ORIGIN: '*'
+      SCHEMA_REGISTRY_ACCESS_CONTROL_ALLOW_METHODS: GET,POST,PUT,OPTIONS
+    volumes:
+      - ./data-transfer:/data-transfer
+    restart: unless-stopped
+  #  ================================== Kafka Connect ========================================== #
+  kafka-connect-1:
+    image: confluentinc/cp-kafka-connect:6.1.0
+    container_name: kafka-connect-1
+    labels:
+      com.platys.restapi.title: Kafka Connect REST API
+      com.platys.restapi.url: http://${PUBLIC_IP}:8083
+    ports:
+      - 8083:8083
+    environment:
+      CONNECT_BOOTSTRAP_SERVERS: kafka-1:19092,kafka-2:19093,kafka-3:19094
+      CONNECT_REST_ADVERTISED_HOST_NAME: kafka-connect-1
+      CONNECT_REST_PORT: 8083
+      CONNECT_GROUP_ID: kafka-connect
+      CONNECT_CONFIG_STORAGE_TOPIC: _connect-configs
+      CONNECT_OFFSET_STORAGE_TOPIC: _connect-offsets
+      CONNECT_STATUS_STORAGE_TOPIC: _connect-status
+      CONNECT_CONFIG_STORAGE_REPLICATION_FACTOR: 3
+      CONNECT_OFFSET_STORAGE_REPLICATION_FACTOR: 3
+      CONNECT_STATUS_STORAGE_REPLICATION_FACTOR: 3
+      CONNECT_OFFSET_FLUSH_INTERVAL_MS: 10000
+      CONNECT_KEY_CONVERTER: io.confluent.connect.avro.AvroConverter
+      CONNECT_KEY_CONVERTER_SCHEMA_REGISTRY_URL: http://schema-registry-1:8081
+      CONNECT_VALUE_CONVERTER: io.confluent.connect.avro.AvroConverter
+      CONNECT_VALUE_CONVERTER_SCHEMA_REGISTRY_URL: http://schema-registry-1:8081
+      CONNECT_INTERNAL_KEY_CONVERTER: org.apache.kafka.connect.json.JsonConverter
+      CONNECT_INTERNAL_VALUE_CONVERTER: org.apache.kafka.connect.json.JsonConverter
+      CONNECT_LOG4J_ROOT_LOGLEVEL: INFO
+      CONNECT_LOG4J_LOGGERS: org.apache.kafka.connect.runtime.rest=WARN,org.reflections=ERROR
+      CONNECT_LOG4J_APPENDER_STDOUT_LAYOUT_CONVERSIONPATTERN: '[%d] %p %X{connector.context}%m (%c:%L)%n'
+      CONNECT_PLUGIN_PATH: /usr/share/java,/etc/kafka-connect/addl-plugins
+      # CONNECT_SECURITY_PROTOCOL: SSL
+      # CONNECT_SASL_MECHANISM: PLAIN
+      # CONNECT_SASL_JAAS_CONFIG: org.apache.kafka.common.security.plain.PlainLoginModule required username="$CLUSTER_API_KEY" password="$CLUSTER_API_SECRET";
+      CLASSPATH: /usr/share/java/monitoring-interceptors/monitoring-interceptors-4.0.0.jar
+      AWS_ACCESS_KEY_ID: V42FCGRVMK24JJ8DHUYG
+      AWS_SECRET_ACCESS_KEY: bKhWxVF3kQoLY9kFmt91l+tDrEoZjqnWXzY9Eza
+      # External secrets config
+      # See https://docs.confluent.io/current/connect/security.html#externalizing-secrets
+      CONNECT_CONFIG_PROVIDERS: file
+      CONNECT_CONFIG_PROVIDERS_FILE_CLASS: org.apache.kafka.common.config.provider.FileConfigProvider
+    volumes:
+      - ./data-transfer:/data-transfer
+      - ./plugins/kafka-connect:/etc/kafka-connect/addl-plugins
+    restart: unless-stopped
+    command:
+      # In the command section, $ are replaced with $$ to avoid the error 'Invalid interpolation format for "command" option'
+      - bash
+      - -c
+      - |
+        echo "Installing Connectors"
+        for i in $$(echo "None" | sed "s/,/ /g")
+        do
+          confluent-hub install --no-prompt --component-dir /etc/kafka-connect/addl-plugins --verbose "$$i"
+        done
+        #
+        echo "Launching Kafka Connect worker"
+        /etc/confluent/docker/run &
+        #
+        sleep infinity
+  kafka-connect-2:
+    image: confluentinc/cp-kafka-connect:6.1.0
+    container_name: kafka-connect-2
+    labels:
+      com.platys.restapi.title: Kafka Connect REST API
+      com.platys.restapi.url: http://${PUBLIC_IP}:8084
+    ports:
+      - 8084:8084
+    environment:
+      CONNECT_BOOTSTRAP_SERVERS: kafka-1:19092,kafka-2:19093,kafka-3:19094
+      CONNECT_REST_ADVERTISED_HOST_NAME: kafka-connect-2
+      CONNECT_REST_PORT: 8084
+      CONNECT_GROUP_ID: kafka-connect
+      CONNECT_CONFIG_STORAGE_TOPIC: _connect-configs
+      CONNECT_OFFSET_STORAGE_TOPIC: _connect-offsets
+      CONNECT_STATUS_STORAGE_TOPIC: _connect-status
+      CONNECT_CONFIG_STORAGE_REPLICATION_FACTOR: 3
+      CONNECT_OFFSET_STORAGE_REPLICATION_FACTOR: 3
+      CONNECT_STATUS_STORAGE_REPLICATION_FACTOR: 3
+      CONNECT_OFFSET_FLUSH_INTERVAL_MS: 10000
+      CONNECT_KEY_CONVERTER: io.confluent.connect.avro.AvroConverter
+      CONNECT_KEY_CONVERTER_SCHEMA_REGISTRY_URL: http://schema-registry-1:8081
+      CONNECT_VALUE_CONVERTER: io.confluent.connect.avro.AvroConverter
+      CONNECT_VALUE_CONVERTER_SCHEMA_REGISTRY_URL: http://schema-registry-1:8081
+      CONNECT_INTERNAL_KEY_CONVERTER: org.apache.kafka.connect.json.JsonConverter
+      CONNECT_INTERNAL_VALUE_CONVERTER: org.apache.kafka.connect.json.JsonConverter
+      CONNECT_LOG4J_ROOT_LOGLEVEL: INFO
+      CONNECT_LOG4J_LOGGERS: org.apache.kafka.connect.runtime.rest=WARN,org.reflections=ERROR
+      CONNECT_LOG4J_APPENDER_STDOUT_LAYOUT_CONVERSIONPATTERN: '[%d] %p %X{connector.context}%m (%c:%L)%n'
+      CONNECT_PLUGIN_PATH: /usr/share/java,/etc/kafka-connect/addl-plugins
+      # CONNECT_SECURITY_PROTOCOL: SSL
+      # CONNECT_SASL_MECHANISM: PLAIN
+      # CONNECT_SASL_JAAS_CONFIG: org.apache.kafka.common.security.plain.PlainLoginModule required username="$CLUSTER_API_KEY" password="$CLUSTER_API_SECRET";
+      CLASSPATH: /usr/share/java/monitoring-interceptors/monitoring-interceptors-4.0.0.jar
+      AWS_ACCESS_KEY_ID: V42FCGRVMK24JJ8DHUYG
+      AWS_SECRET_ACCESS_KEY: bKhWxVF3kQoLY9kFmt91l+tDrEoZjqnWXzY9Eza
+      # External secrets config
+      # See https://docs.confluent.io/current/connect/security.html#externalizing-secrets
+      CONNECT_CONFIG_PROVIDERS: file
+      CONNECT_CONFIG_PROVIDERS_FILE_CLASS: org.apache.kafka.common.config.provider.FileConfigProvider
+    volumes:
+      - ./data-transfer:/data-transfer
+      - ./plugins/kafka-connect:/etc/kafka-connect/addl-plugins
+    restart: unless-stopped
+  #  ================================== Schema Registry UI ========================================== #
+  schema-registry-ui:
+    image: landoop/schema-registry-ui:latest
+    container_name: schema-registry-ui
+    hostname: sc  hema-registry-ui
+    labels:
+      com.platys.webui.title: Confluent Schema Registry UI
+      com.platys.webui.url: http://${PUBLIC_IP}:28102
+    depends_on:
+      - kafka-1
+      - schema-registry-1
+    ports:
+      - 28102:8000
+    environment:
+      SCHEMAREGISTRY_URL: http://${PUBLIC_IP}:8081
+    volumes:
+      - ./data-transfer:/data-transfer
+    restart: unless-stopped
+  #  ================================== Apache Kafka HQ (AKHQ) ========================================== #
+  akhq:
+    image: tchiotludo/akhq:latest
+    container_name: akhq
+    hostname: akhq
+    labels:
+      com.platys.webui.title: Apache Kafka AQ UI
+      com.platys.webui.url: http://${PUBLIC_IP}:28107
+    ports:
+      - 28107:8080
+    environment:
+      AKHQ_CONFIGURATION: |
+        akhq:
+          connections:
+            docker-kafka-server:
+              properties:
+                bootstrap.servers: 'kafka-1:19092,kafka-2:19093,kafka-3:19094'
+              schema-registry:
+                url: "http://schema-registry-1:8081"
+              connect:
+                - name: "kafka-connect-1"
+                  url: "http://kafka-connect-1:8083"
+                - name: "kafka-connect-2"
+                  url: "http://kafka-connect-1:8084"
+    depends_on:
+      - kafka-1
+    volumes:
+      - ./data-transfer:/data-transfer
+    restart: unless-stopped
+  #  ================================== Apache Hadoop ========================================== #
+  namenode:
+    image: bde2020/hadoop-namenode:2.0.0-hadoop3.2.1-java8
+    container_name: namenode
+    hostname: namenode
+    labels:
+      com.mdps.service.webui.name: Hadoop NameNode UI
+      com.platys.webui.url: http://${PUBLIC_IP}:9870
+    ports:
+      - 9870:9870
+    env_file:
+      - ./conf/hadoop.env
+    environment:
+      CLUSTER_NAME: test
+      CORE_CONF_fs_defaultFS: hdfs://namenode:9000
+      MAPRED_CONF_yarn_app_mapreduce_am_env: HADOOP_MAPRED_HOME=/opt/hadoop-3.2.1/
+      MAPRED_CONF_mapreduce_map_env: HADOOP_MAPRED_HOME=/opt/hadoop-3.2.1/
+      MAPRED_CONF_mapreduce_reduce_env: HADOOP_MAPRED_HOME=/opt/hadoop-3.2.1/
+    volumes:
+      - ./data-transfer:/data-transfer
+      - ./container-volume/namenode:/hadoop/dfs/name
+    restart: unless-stopped
+  datanode-1:
+    image: bde2020/hadoop-datanode:2.0.0-hadoop3.2.1-java8
+    container_name: datanode-1
+    labels:
+      com.platys.webui.title: Hadoop DataNode-1 UI
+      com.platys.webui.url: http://${PUBLIC_IP}:9864
+    ports:
+      - 9864:9864
+    env_file:
+      - ./conf/hadoop.env
+    environment:
+      CORE_CONF_fs_defaultFS: hdfs://namenode:9000
+      SERVICE_PRECONDITION: namenode:9870
+      MAPRED_CONF_yarn_app_mapreduce_am_env: HADOOP_MAPRED_HOME=/opt/hadoop-3.2.1/
+      MAPRED_CONF_mapreduce_map_env: HADOOP_MAPRED_HOME=/opt/hadoop-3.2.1/
+      MAPRED_CONF_mapreduce_reduce_env: HADOOP_MAPRED_HOME=/opt/hadoop-3.2.1/
+    volumes:
+      - ./data-transfer:/data-transfer
+      - ./container-volume/datanode-1:/hadoop/dfs/data
+    restart: unless-stopped
+  datanode-2:
+    image: bde2020/hadoop-datanode:2.0.0-hadoop3.2.1-java8
+    container_name: datanode-2
+    labels:
+      com.platys.webui.title: Hadoop DataNode-2 UI
+      com.platys.webui.url: http://${PUBLIC_IP}:9865
+    ports:
+      - 9865:9864
+    env_file:
+      - ./conf/hadoop.env
+    environment:
+      CORE_CONF_fs_defaultFS: hdfs://namenode:9000
+      SERVICE_PRECONDITION: namenode:9870
+      MAPRED_CONF_yarn_app_mapreduce_am_env: HADOOP_MAPRED_HOME=/opt/hadoop-3.2.1/
+      MAPRED_CONF_mapreduce_map_env: HADOOP_MAPRED_HOME=/opt/hadoop-3.2.1/
+      MAPRED_CONF_mapreduce_reduce_env: HADOOP_MAPRED_HOME=/opt/hadoop-3.2.1/
+    volumes:
+      - ./data-transfer:/data-transfer
+      - ./container-volume/datanode-2:/hadoop/dfs/data
+    restart: unless-stopped
+  resourcemanager:
+    image: bde2020/hadoop-resourcemanager:2.0.0-hadoop3.2.1-java8
+    container_name: resourcemanager
+    hostname: resourcemanager
+    labels:
+      com.platys.webui.title: YARN RessourceManager UI
+      com.platys.webui.url: http://${PUBLIC_IP}:18088
+    ports:
+      - 18088:8088
+    depends_on:
+      - namenode
+      - datanode-1
+    env_file:
+      - ./conf/hadoop.env
+    environment:
+      CORE_CONF_fs_defaultFS: hdfs://namenode:9000
+      YARN_CONF_yarn_resourcemanager_webapp_address: resourcemanager:8088
+      YARN_CONF_yarn_nodemanager_webapp_address: nodemanager:8042
+      YARN_CONF_yarn_timeline___service_webapp_address: ${PUBLIC_IP}:18188
+      YARN_CONF_yarn_log_server_url: ${PUBLIC_IP}:18188
+      MAPRED_CONF_yarn_app_mapreduce_am_env: HADOOP_MAPRED_HOME=/opt/hadoop-3.2.1/
+      MAPRED_CONF_mapreduce_map_env: HADOOP_MAPRED_HOME=/opt/hadoop-3.2.1/
+      MAPRED_CONF_mapreduce_reduce_env: HADOOP_MAPRED_HOME=/opt/hadoop-3.2.1/
+    volumes:
+      - ./data-transfer:/data-transfer
+    restart: unless-stopped
+  nodemanager:
+    image: bde2020/hadoop-nodemanager:2.0.0-hadoop3.2.1-java8
+    container_name: nodemanager
+    hostname: nodemanager
+    labels:
+      com.platys.webui.title: YARN NodeManager UI
+      com.platys.webui.url: http://${PUBLIC_IP}:18042
+    ports:
+      - 18042:8042
+    depends_on:
+      - namenode
+      - datanode-1
+    env_file:
+      - ./conf/hadoop.env
+    environment:
+      CORE_CONF_fs_defaultFS: hdfs://namenode:9000
+      YARN_CONF_yarn_resourcemanager_webapp_address: resourcemanager:8088
+      YARN_CONF_yarn_nodemanager_webapp_address: nodemanager:8042
+      YARN_CONF_yarn_timeline___service_webapp_address: ${PUBLIC_IP}:18188
+      YARN_CONF_yarn_log_server_url: ${PUBLIC_IP}:18188
+      MAPRED_CONF_yarn_app_mapreduce_am_env: HADOOP_MAPRED_HOME=/opt/hadoop-3.2.1/
+      MAPRED_CONF_mapreduce_map_env: HADOOP_MAPRED_HOME=/opt/hadoop-3.2.1/
+      MAPRED_CONF_mapreduce_reduce_env: HADOOP_MAPRED_HOME=/opt/hadoop-3.2.1/
+    volumes:
+      - ./data-transfer:/data-transfer
+    restart: unless-stopped
+  historyserver:
+    image: bde2020/hadoop-historyserver:2.0.0-hadoop3.2.1-java8
+    container_name: historyserver
+    hostname: historyserver
+    labels:
+      com.platys.webui.title: YARN History Server
+      com.platys.webui.url: http://${PUBLIC_IP}:18188
+    ports:
+      - 18188:8188
+    depends_on:
+      - namenode
+      - datanode-1
+    env_file:
+      - ./conf/hadoop.env
+    environment:
+      CORE_CONF_fs_defaultFS: hdfs://namenode:9000
+      SERVICE_PRECONDITION: namenode:9870 datanode-1:9864 resourcemanager:18088
+      MAPRED_CONF_yarn_app_mapreduce_am_env: HADOOP_MAPRED_HOME=/opt/hadoop-3.2.1/
+      MAPRED_CONF_mapreduce_map_env: HADOOP_MAPRED_HOME=/opt/hadoop-3.2.1/
+      MAPRED_CONF_mapreduce_reduce_env: HADOOP_MAPRED_HOME=/opt/hadoop-3.2.1/
+    volumes:
+      - ./data-transfer:/data-transfer
+    restart: unless-stopped
+  #  ================================== Apache Spark 2.x ========================================== #
+  spark-master:
+    image: trivadis/apache-spark-master:2.4.7-hadoop2.8
+    container_name: spark-master
+    hostname: spark-master
+    labels:
+      com.platys.webui.title: Spark UI
+      com.platys.webui.url: http://${PUBLIC_IP}:8080
+    ports:
+      - 6066:6066
+      - 7077:7077
+      - 8080:8080
+      - 4040-4044:4040-4044
+    env_file:
+      - ./conf/hadoop.env
+    environment:
+      SPARK_PUBLIC_DNS: ${PUBLIC_IP}
+      INIT_DAEMON_STEP: setup_spark
+      MASTER: spark://spark-master:7077
+      SPARK_DEFAULTS_CONF_spark_jars_repositories:
+      SPARK_DEFAULTS_CONF_spark_jars_packages:
+      SPARK_DEFAULTS_CONF_spark_jars_excludes:
+      SPARK_DEFAULTS_CONF_spark_jars:
+      SPARK_DEFAULTS_CONF_spark_jars_ivySettings:
+      SPARK_DEFAULTS_CONF_spark_sql_catalogImplementation: in-memory
+      CORE_CONF_fs_defaultFS: hdfs://namenode:9000
+      SPARK_DEFAULTS_CONF_spark_sql_warehouse_dir: hdfs://namenode:9000/user/hive/warehouse
+      SPARK_DEFAULTS_CONF_spark_yarn_dist_files: /spark/conf/hive-site.xml
+      SPARK_DEFAULTS_CONF_spark_driver_extraJavaOptions:
+      SPARK_DEFAULTS_CONF_spark_executor_extraJavaOptions:
+    volumes:
+      - ./data-transfer:/data-transfer
+      - ./plugins/spark/jars:/extra-jars
+      - ./container-volume/spark/logs/:/var/log/spark/logs
+    restart: unless-stopped
+  spark-worker-1:
+    image: trivadis/apache-spark-worker:2.4.7-hadoop2.8
+    container_name: spark-worker-1
+    hostname: spark-worker-1
+    depends_on:
+      - spark-master
+    ports:
+      - 28111:28111
+    env_file:
+      - ./conf/hadoop.env
+    environment:
+      SPARK_MASTER: spark://spark-master:7077
+      SPARK_WORKER_WEBUI_PORT: '28111'
+      SPARK_WORKER_OPTS: -Dspark.worker.cleanup.enabled=true
+      SPARK_PUBLIC_DNS: ${PUBLIC_IP}
+      SPARK_DEFAULTS_CONF_spark_jars_repositories:
+      SPARK_DEFAULTS_CONF_spark_jars_packages:
+      SPARK_DEFAULTS_CONF_spark_jars_excludes:
+      SPARK_DEFAULTS_CONF_spark_jars:
+      SPARK_DEFAULTS_CONF_spark_jars_ivySettings:
+      SPARK_DEFAULTS_CONF_spark_sql_catalogImplementation: in-memory
+      CORE_CONF_fs_defaultFS: hdfs://namenode:9000
+      SPARK_DEFAULTS_CONF_spark_sql_warehouse_dir: hdfs://namenode:9000/user/hive/warehouse
+      SPARK_DEFAULTS_CONF_spark_yarn_dist_files: /spark/conf/hive-site.xml
+      SPARK_DEFAULTS_CONF_spark_driver_extraJavaOptions:
+      SPARK_DEFAULTS_CONF_spark_executor_extraJavaOptions:
+    volumes:
+      - ./data-transfer:/data-transfer
+      - ./plugins/spark/jars:/extra-jars
+      - ./container-volume/spark/logs/:/var/log/spark/logs
+    restart: unless-stopped
+  spark-worker-2:
+    image: trivadis/apache-spark-worker:2.4.7-hadoop2.8
+    container_name: spark-worker-2
+    hostname: spark-worker-2
+    depends_on:
+      - spark-master
+    ports:
+      - 28112:28112
+    env_file:
+      - ./conf/hadoop.env
+    environment:
+      SPARK_MASTER: spark://spark-master:7077
+      SPARK_WORKER_WEBUI_PORT: '28112'
+      SPARK_WORKER_OPTS: -Dspark.worker.cleanup.enabled=true
+      SPARK_PUBLIC_DNS: ${PUBLIC_IP}
+      SPARK_DEFAULTS_CONF_spark_jars_repositories:
+      SPARK_DEFAULTS_CONF_spark_jars_packages:
+      SPARK_DEFAULTS_CONF_spark_jars_excludes:
+      SPARK_DEFAULTS_CONF_spark_jars:
+      SPARK_DEFAULTS_CONF_spark_jars_ivySettings:
+      SPARK_DEFAULTS_CONF_spark_sql_catalogImplementation: in-memory
+      CORE_CONF_fs_defaultFS: hdfs://namenode:9000
+      SPARK_DEFAULTS_CONF_spark_sql_warehouse_dir: hdfs://namenode:9000/user/hive/warehouse
+      SPARK_DEFAULTS_CONF_spark_yarn_dist_files: /spark/conf/hive-site.xml
+      SPARK_DEFAULTS_CONF_spark_driver_extraJavaOptions:
+      SPARK_DEFAULTS_CONF_spark_executor_extraJavaOptions:
+    volumes:
+      - ./data-transfer:/data-transfer
+      - ./plugins/spark/jars:/extra-jars
+      - ./container-volume/spark/logs/:/var/log/spark/logs
+    restart: unless-stopped
+  spark-history:
+    image: trivadis/apache-spark-worker:2.4.7-hadoop2.8
+    command: /spark/bin/spark-class org.apache.spark.deploy.history.HistoryServer
+    container_name: spark-history
+    hostname: spark-history
+    labels:
+      com.platys.webui.title: Spark History Server
+      com.platys.webui.url: http://${PUBLIC_IP}:28117
+      com.platys.restapi.title: Spark History Server
+      com.platys.restapi.url: http://${PUBLIC_IP}:28117/api/v1
+    expose:
+      - 18080
+    ports:
+      - 28117:18080
+    environment:
+      SPARK_DEFAULTS_CONF_spark_jars_repositories:
+      SPARK_DEFAULTS_CONF_spark_jars_packages:
+      SPARK_DEFAULTS_CONF_spark_jars_excludes:
+      SPARK_DEFAULTS_CONF_spark_jars_ivySettings:
+      SPARK_DEFAULTS_CONF_spark_sql_catalogImplementation: in-memory
+      CORE_CONF_fs_defaultFS: hdfs://namenode:9000
+      SPARK_DEFAULTS_CONF_spark_sql_warehouse_dir: hdfs://namenode:9000/user/hive/warehouse
+      SPARK_DEFAULTS_CONF_spark_yarn_dist_files: /spark/conf/hive-site.xml
+      SPARK_DEFAULTS_CONF_spark_driver_extraJavaOptions:
+      SPARK_DEFAULTS_CONF_spark_executor_extraJavaOptions:
+    volumes:
+      - ./data-transfer:/data-transfer
+      - ./plugins/spark/jars:/extra-jars
+      - ./container-volume/spark/logs/:/var/log/spark/logs
+    restart: unless-stopped
+  #  ================================== Apache Hive Server ========================================== #
+  hive-server:
+    image: trivadis/apache-hive:3.1.2-postgresql-metastore-s3
+    container_name: hive-server
+    hostname: hive-server
+    labels:
+      com.platys.webui.title: Hive Server UI
+      com.platys.webui.url: http://${PUBLIC_IP}:10001
+    ports:
+      - 10000:10000
+      - 10001:10001
+      - 10002:10002
+    env_file:
+      - ./conf/hadoop.env
+    environment:
+      CORE_CONF_fs_defaultFS: hdfs://namenode:9000
+      HIVE_SITE_CONF_javax_jdo_option_ConnectionURL: jdbc:postgresql://hive-metastore/metastore
+      SERVICE_PRECONDITION: hive-metastore:9083
+      MAPRED_CONF_yarn_app_mapreduce_am_env: HADOOP_MAPRED_HOME=/opt/hadoop-3.2.1/
+      MAPRED_CONF_mapreduce_map_env: HADOOP_MAPRED_HOME=/opt/hadoop-3.2.1/
+      MAPRED_CONF_mapreduce_reduce_env: HADOOP_MAPRED_HOME=/opt/hadoop-3.2.1/
+    volumes:
+      - ./data-transfer:/data-transfer
+    restart: unless-stopped
+  #  ================================== Apache Hive Metastore ========================================== #
+  hive-metastore:
+    image: trivadis/apache-hive:3.1.2-postgresql-metastore-s3
+    container_name: hive-metastore
+    hostname: hive-metastore
+    ports:
+      - 9083:9083
+    env_file:
+      - ./conf/hadoop.env
+    environment:
+      CORE_CONF_fs_defaultFS: hdfs://namenode:9000
+      HIVE_SITE_CONF_hive_metastore_dir: hdfs://namenode:9000/user/hive/warehouse
+      SERVICE_PRECONDITION: hive-metastore-db:5432
+    volumes:
+      - ./data-transfer:/data-transfer
+    command: /opt/hive/bin/hive --service metastore
+    restart: unless-stopped
+  hive-metastore-db:
+    image: trivadis/apache-hive-metastore-postgresql:3.1.0-postgres9.5.3
+    container_name: hive-metastore-db
+    hostname: hive-metastore-db
+    volumes:
+      - ./data-transfer:/data-transfer
+    restart: unless-stopped
+  #  ================================== Apache Hue ========================================== #
+  hue:
+    image: gethue/hue:4.8.0
+    container_name: hue
+    hostname: hue
+    dns: 8.8.8.8
+    depends_on:
+      - hue-db
+      - solr
+    ports:
+      - 8888:8888
+    volumes:
+      - ./data-transfer:/data-transfer
+      - ./conf/hue/hue.ini:/usr/share/hue/desktop/conf/hue.ini
+    restart: unless-stopped
+  hue-db:
+    image: postgres:10
+    container_name: hue-db
+    hostname: hue-db
+    environment:
+      POSTGRES_DB: hue
+      POSTGRES_PASSWORD: hue
+      POSTGRES_USER: hue
+    volumes:
+      - ./data-transfer:/data-transfer
+    restart: unless-stopped
+  #  ================================== NiFi ========================================== #
+  nifi-1:
+    image: apache/nifi:1.12.1
+    container_name: nifi-1
+    hostname: nifi-1
+    labels:
+      com.platys.webui.title: Apache NiFi UI
+      com.platys.webui.url: http://${PUBLIC_IP}:18080/nifi
+    ports:
+      # HTTP
+      - 18080:8080
+      # Remote Input Socket
+      - 10005:10000/tcp
+    environment:
+      NIFI_WEB_HTTP_PORT: '8080'
+    volumes:
+      - ./data-transfer:/data-transfer
+    restart: unless-stopped
+#  ================================== Airflow ========================================== #
+  airflow:
+    image: bitnami/airflow:2
+    container_name: airflow
+    hostname: airflow
+    labels:
+      com.platys.webui.title: Airflow UI
+      com.platys.webui.url: http://${PUBLIC_IP}:28139
+      com.platys.restapi.title: Airflow REST API
+      com.platys.restapi.url: http://${PUBLIC_IP}:28139/api/experimental/
+    ports:
+      - 28139:8080
+    environment:
+      - AIRFLOW_DATABASE_NAME=bitnami_airflow
+      - AIRFLOW_DATABASE_USERNAME=bn_airflow
+      - AIRFLOW_DATABASE_PASSWORD=abc123!
+      - AIRFLOW_DATABASE_HOST=airflow-db
+      - AIRFLOW_DATABASE_PORT_NUMBER=5432
+      - REDIS_HOST=airflow-redis
+      - REDIS_PORT_NUMBER=6379
+      - AIRFLOW_EXECUTOR=LocalExecutor
+      - AIRFLOW_FERNET_KEY=46BKJoQYlPPOexq0OhDZnIlNepKFf87WFwLbfzqDDho=
+      - AIRFLOW_HOME=/opt/bitnami/airflow
+      - AIRFLOW_LOAD_EXAMPLES=no
+      - AIRFLOW_PASSWORD=abc123!
+      - AIRFLOW_USERNAME=airflow
+      - PYTHONPATH=/bitnami/python
+    volumes:
+      - ./data-transfer:/data-transfer
+      - ./scripts/airflow/dags:/opt/bitnami/airflow/dags:Z
+      - ./plugins/airflow/:/opt/bitnami/airflow/plugins:Z
+    restart: unless-stopped
+  airflow-scheduler:
+    image: bitnami/airflow-scheduler:2
+    container_name: airflow-scheduler
+    hostname: airflow-scheduler
+    environment:
+      - AIRFLOW_DATABASE_NAME=bitnami_airflow
+      - AIRFLOW_DATABASE_USERNAME=bn_airflow
+      - AIRFLOW_DATABASE_PASSWORD=abc123!
+      - AIRFLOW_DATABASE_HOST=airflow-db
+      - AIRFLOW_DATABASE_PORT_NUMBER=5432
+      - REDIS_HOST=airflow-redis
+      - REDIS_PORT_NUMBER=6379
+      - AIRFLOW_EXECUTOR=LocalExecutor
+      - AIRFLOW_WEBSERVER_HOST=airflow
+      - AIRFLOW_WEBSERVER_PORT_NUMBER=8080
+      - AIRFLOW_LOAD_EXAMPLES=no
+      - AIRFLOW_HOME=/opt/bitnami/airflow
+      - AIRFLOW_FERNET_KEY=46BKJoQYlPPOexq0OhDZnIlNepKFf87WFwLbfzqDDho=
+      - PYTHONPATH=/bitnami/python
+    volumes:
+      - ./data-transfer:/data-transfer
+      - ./scripts/airflow/dags:/opt/bitnami/airflow/dags:Z
+      - ./plugins/airflow/:/opt/bitnami/airflow/plugins:Z
+    restart: unless-stopped
+  airflow-db:
+    image: bitnami/postgresql:10
+    container_name: airflow-db
+    hostname: airflow-db
+    environment:
+      - POSTGRESQL_DATABASE=bitnami_airflow
+      - POSTGRESQL_USERNAME=bn_airflow
+      - POSTGRESQL_PASSWORD=abc123!
+      - ALLOW_EMPTY_PASSWORD=yes
+    volumes:
+      - ./data-transfer:/data-transfer
+    restart: unless-stopped
+  #  ================================== Zeppelin ========================================== #
+  zeppelin:
+    image: trivadis/apache-zeppelin:0.9.0-spark2.4-hadoop2.8
+    container_name: zeppelin
+    hostname: zeppelin
+    labels:
+      com.platys.webui.title: Apache Zeppelin UI
+      com.platys.webui.url: http://${PUBLIC_IP}:28080
+    ports:
+      - 28080:8080
+      - 6060:6060
+      - 5050:5050
+      - 4050-4054:4050-4054
+    env_file:
+      - ./conf/hadoop.env
+    environment:
+      SPARK_DEFAULTS_CONF_spark_jars_repositories:
+      SPARK_DEFAULTS_CONF_spark_jars_packages:
+      SPARK_DEFAULTS_CONF_spark_jars_excludes:
+      SPARK_DEFAULTS_CONF_spark_jars:
+      SPARK_DEFAULTS_CONF_spark_jars_ivySettings:
+      SPARK_DEFAULTS_CONF_spark_sql_catalogImplementation: in-memory
+      CORE_CONF_fs_defaultFS: hdfs://namenode:9000
+      SPARK_DEFAULTS_CONF_spark_sql_warehouse_dir: hdfs://namenode:9000/user/hive/warehouse
+      SPARK_DEFAULTS_CONF_spark_yarn_dist_files: /spark/conf/hive-site.xml
+      SPARK_DEFAULTS_CONF_spark_driver_extraJavaOptions:
+      SPARK_DEFAULTS_CONF_spark_executor_extraJavaOptions:
+      ZEPPELIN_ADDR: 0.0.0.0
+      ZEPPELIN_PORT: '8080'
+      ZEPPELIN_MEM: -Xms1024m -Xmx1024m -XX:MaxMetaspaceSize=512m
+      ZEPPELIN_INTERPRETER_CONNECT_TIMEOUT: 120000
+      ZEPPELIN_INTERPRETER_DEP_MVNREPO: https://repo.maven.apache.org/maven2
+      ZEPPELIN_ADMIN_USERNAME: admin
+      ZEPPELIN_ADMIN_PASSWORD: changeme
+      ZEPPELIN_USER_USERNAME: zeppelin
+      ZEPPELIN_USER_PASSWORD: changeme
+      # set spark-master for Zeppelin interpreter
+      ZEPPELIN_SPARK_MASTER: spark://spark-master:7077
+      ZEPPELIN_NOTEBOOK_CRON_ENABLE: 'True'
+      PYSPARK_PYTHON: python3
+      SPARK_SUBMIT_OPTIONS: None --conf spark.ui.port=4050 --conf spark.driver.host=${DOCKER_HOST_IP} --conf spark.driver.port=5050 --conf spark.driver.bindAddress=0.0.0.0 --conf spark.blockManager.port=6060 --conf spark.driver.extraJavaOptions=-Dcom.amazonaws.services.s3.enableV4 --conf spark.executor.extraJavaOptions=-Dcom.amazonaws.services.s3.enableV4
+    volumes:
+      - ./data-transfer:/data-transfer
+      - ./plugins/spark/jars:/extra-jars
+      - ./container-volume/spark/logs/:/var/log/spark/logs
+      - ./conf/s3cfg:/root/.s3cfg.template
+    restart: unless-stopped
+  #  ================================== Jupyter ========================================== #
+  jupyter:
+    image: jupyter/all-spark-notebook:f9b134f7bd08
+    container_name: jupyter
+    hostname: jupyter
+    labels:
+      com.platys.webui.title: Jupyter UI
+      com.platys.webui.url: http://${PUBLIC_IP}:28888
+    ports:
+      - 28888:8888
+    environment:
+      JUPYTER_ENABLE_LAB: 'true'
+      JUPYTER_TOKEN: abc123!
+      GRANT_SUDO: 'true'
+      TINI_SUBREAPER: 'true'
+    volumes:
+      - ./data-transfer:/data-transfer
+    restart: unless-stopped
+  #  ================================== SolR ========================================== #
+  solr:
+    image: solr:8.6
+    container_name: solr
+    hostname: solr
+    labels:
+      com.platys.webui.title: SolR UI
+      com.platys.webui.url: http://${PUBLIC_IP}:8983
+    ports:
+      - 8983:8983
+    volumes:
+      - ./data-transfer:/data-transfer
+    restart: unless-stopped
+  #  ================================== Trino ========================================== #
+  trino-1:
+    image: starburstdata/starburst-enterprise:356-e.1
+    hostname: trino-1
+    container_name: trino-1
+    labels:
+      com.platys.webui.title: Trino UI
+      com.platys.webui.url: http://${PUBLIC_IP}:28082
+    ports:
+      - 28082:8080
+    environment:
+      # this is only generated to keep the structure valid if no other env variables are present
+      IGNORE: ignore
+    volumes:
+      - ./data-transfer:/data-transfer
+      - ./conf/starburstdata/single/config.properties:/usr/lib/presto/etc/config.properties
+      - ./conf/starburstdata/cluster/node.properties:/usr/lib/presto/etc/node.properties
+      - ./conf/starburstdata/catalog/hdfs.properties:/usr/lib/presto/etc/catalog/hdfs.properties
+    restart: unless-stopped
+  trino-cli:
+    image: trivadis/trino-cli:latest
+    hostname: trino-cli
+    container_name: trino-cli
+    volumes:
+      - ./data-transfer:/data-transfer
+    tty: true
+    restart: unless-stopped
+  #  ================================== Code-Server IDE (VS Code in Browser) ================= #
+  code-server:
+    image: trivadis/code-server:latest
+    container_name: code-server
+    hostname: code-server
+    labels:
+      com.platys.webui.title: Code-Server UI
+      com.platys.webui.url: http://${PUBLIC_IP}:28140
+    user: 0:0
+    ports:
+      - 28140:8080
+    environment:
+      PASSWORD: abc123!
+    volumes:
+      - ./data-transfer:/home/coder/data-transfer
+    restart: unless-stopped
+  #  ================================== cAdvisor ========================================== #
+  wetty:
+    image: svenihoney/wetty:latest
+    container_name: wetty
+    hostname: wetty
+    labels:
+      com.platys.webui.title: WeTTY UI
+      com.platys.webui.url: http://${PUBLIC_IP}:3001
+    ports:
+      - 3001:3000
+    environment:
+      - REMOTE_SSH_SERVER=${DOCKER_HOST_IP}
+      - REMOTE_SSH_PORT=22
+      - REMOTE_SSH_USER=
+      - WETTY_PORT=3000
+    volumes:
+      - ./data-transfer:/data-transfer
+    restart: unless-stopped
+  #  ================================== markdown-viewer ========================================== #
+  markdown-viewer:
+    image: minimum/markdown-web:latest
+    container_name: markdown-viewer
+    hostname: markdown-viewer
+    labels:
+      com.platys.webui.title: Markdown Viewer UI
+      com.platys.webui.url: http://${PUBLIC_IP}:80
+    ports:
+      - 80:80
+    volumes:
+      - ./documentation:/home/python/markdown
+      - ./data-transfer:/data-transfer
+    restart: unless-stopped
+  markdown-renderer:
+    image: trivadis/jinja2-renderer:latest
+    container_name: markdown-renderer
+    hostname: markdown-renderer
+    environment:
+      USE_PUBLIC_IP: 'True'
+      PUBLIC_IP: ${PUBLIC_IP}
+      DOCKER_HOST_IP: ${DOCKER_HOST_IP}
+      DATAPLATFORM_HOME: ${DATAPLATFORM_HOME}
+    volumes:
+      - ./documentation/templates:/templates
+      - ./documentation/templates:/scripts
+      - .:/variables
+      - ./documentation:/output
+      - ./data-transfer:/data-transfer
+  #  ================================== data-provisioning ========================================== #
+  data-provisioning:
+    image: trivadis/platys-modern-data-platform-data:latest
+    container_name: data-provisioning
+    hostname: data-provisioning
+    volumes:
+      - ./data-transfer:/data-transfer
