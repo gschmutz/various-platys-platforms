@@ -28,7 +28,7 @@
       KAFKA_edition: 'community'
       KAFKA_volume_map_data: false
       KAFKA_broker_nodes: 3
-      KAFKA_delete_topic_enable: false
+      KAFKA_delete_topic_enable: true
       KAFKA_auto_create_topics_enable: false
 
       #kafka schema registry
@@ -40,9 +40,11 @@
       #kafka connect
       KAFKA_CONNECT_enable: true
       KAFKA_CONNECT_nodes: 2
+      KAFKA_CONNECT_connectors: 'confluentinc/kafka-connect-jdbc:10.0.0,confluentinc/kafka-connect-hdfs3:1.1.1'
+      
 
       #ksqldb
-      KAFKA_KSQLDB_enable: false
+      KAFKA_KSQLDB_enable: true
       KAFKA_KSQLDB_edition: 'oss'
       KAFKA_KSQLDB_nodes: 1
 
@@ -54,7 +56,7 @@
 
       KAFKA_SCHEMA_REGISTRY_UI_enable: true
       KAFKA_TOPICS_UI_enable: false
-      KAFKA_CONNECT_UI_enable: false
+      KAFKA_CONNECT_UI_enable: true
 
       KAFKA_CMAK_enable: false
       KAFKA_KAFDROP_enable: false
@@ -126,7 +128,7 @@
       SQOOP_enable: false
 
       # ===== Apache Airflow  ========
-      AIRFLOW_enable: true
+      AIRFLOW_enable: false
       AIRFLOW_provision_examples: false
 
       # ===== Zeppelin ========
@@ -134,7 +136,7 @@
       ZEPPELIN_volume_map_data: false
 
       # ===== Jupyter ========
-      JUPYTER_enable: true
+      JUPYTER_enable: false
       # one of 'minimal', 'r', 'scipy', 'tensorflow', 'datascience', 'all-spark'
       JUPYTER_edition: 'all-spark'
       JUPYTER_volume_map_data: false
@@ -199,7 +201,7 @@
       MYSQL_enable: false
       SQLSERVER_enable: false
 
-      POSTGRESQL_enable: false
+      POSTGRESQL_enable: true
       POSTGRESQL_volume_map_data: false
       TIMESCALEDB_enable: false
       TIMESCALEDB_volume_map_data: false
@@ -241,7 +243,7 @@
       FTP_enable: false
 
       # ===== Code Server ========
-      CODE_SERVER_enable: true
+      CODE_SERVER_enable: false
       CODE_SERVER_volume_map_platform_root: false
 
       # ===== Container Mgmt ========

@@ -9,6 +9,7 @@ networks:
     name: bigdata-hdfs-platform
 # enforce some dependencies
 # enforce some dependencies
+# enforce some dependencies
 services:
   #  ================================== Zookeeper ========================================== #
   zookeeper-1:
@@ -51,7 +52,7 @@ services:
       KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 3
       KAFKA_MESSAGE_TIMESTAMP_TYPE: CreateTime
       KAFKA_MIN_INSYNC_REPLICAS: 1
-      KAFKA_DELETE_TOPIC_ENABLE: 'False'
+      KAFKA_DELETE_TOPIC_ENABLE: 'True'
       KAFKA_AUTO_CREATE_TOPICS_ENABLE: 'False'
       KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 100
       KAFKA_JMX_PORT: 9992
@@ -84,7 +85,7 @@ services:
       KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 3
       KAFKA_MESSAGE_TIMESTAMP_TYPE: CreateTime
       KAFKA_MIN_INSYNC_REPLICAS: 1
-      KAFKA_DELETE_TOPIC_ENABLE: 'False'
+      KAFKA_DELETE_TOPIC_ENABLE: 'True'
       KAFKA_AUTO_CREATE_TOPICS_ENABLE: 'False'
       KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 100
       KAFKA_JMX_PORT: 9993
@@ -117,7 +118,7 @@ services:
       KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 3
       KAFKA_MESSAGE_TIMESTAMP_TYPE: CreateTime
       KAFKA_MIN_INSYNC_REPLICAS: 1
-      KAFKA_DELETE_TOPIC_ENABLE: 'False'
+      KAFKA_DELETE_TOPIC_ENABLE: 'True'
       KAFKA_AUTO_CREATE_TOPICS_ENABLE: 'False'
       KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 100
       KAFKA_JMX_PORT: 9994
@@ -197,7 +198,7 @@ services:
       - -c
       - |
         echo "Installing Connectors"
-        for i in $$(echo "None" | sed "s/,/ /g")
+        for i in $$(echo "confluentinc/kafka-connect-jdbc:10.0.0,confluentinc/kafka-connect-hdfs3:1.1.1" | sed "s/,/ /g")
         do
           confluent-hub install --no-prompt --component-dir /etc/kafka-connect/addl-plugins --verbose "$$i"
         done
@@ -250,6 +251,67 @@ services:
       - ./data-transfer:/data-transfer
       - ./plugins/kafka-connect:/etc/kafka-connect/addl-plugins
     restart: unless-stopped
+  #  ================================== ksqlDB ========================================== #
+  ksqldb-server-1:
+    image: confluentinc/ksqldb-server:0.17.0
+    hostname: ksqldb-server-1
+    container_name: ksqldb-server-1
+    labels:
+      com.platys.restapi.title: ksqlDB Server REST API
+      com.platys.restapi.url: http://${PUBLIC_IP}:8088
+    ports:
+      - 8088:8088
+      - 1095:1095
+    environment:
+      KSQL_LOG4J_ROOT_LOGLEVEL: INFO
+      KSQL_LOG4J_OPTS: -Dlog4j.configuration=file:/etc/ksqldb/log4j.properties
+      KSQL_LOG4J_PROCESSING_LOG_BROKERLIST: kafka-1:19092,kafka-2:19093,kafka-3:19094
+      KSQL_LOG4J_PROCESSING_LOG_TOPIC: demo_processing_log
+      KSQL_KSQL_LOGGING_PROCESSING_TOPIC_NAME: demo_processing_log
+      KSQL_KSQL_LOGGING_PROCESSING_TOPIC_REPLICATION_FACTOR: 1
+      KSQL_KSQL_LOGGING_PROCESSING_TOPIC_AUTO_CREATE: 'true'
+      KSQL_KSQL_LOGGING_PROCESSING_STREAM_AUTO_CREATE: 'true'
+      # For Demo purposes: improve resource utilization and avoid timeouts
+      KSQL_KSQL_STREAMS_NUM_STREAM_THREADS: 1
+      KSQL_PRODUCER_ENABLE_IDEMPOTENCE: 'true'
+      KSQL_APPLICATION_ID: kafka-demo
+      KSQL_KSQL_SERVICE_ID: kafka-demo
+      KSQL_HOST_NAME: ksqldb-server-1
+      KSQL_LISTENERS: http://0.0.0.0:8088
+      KSQL_BOOTSTRAP_SERVERS: kafka-1:19092,kafka-2:19093,kafka-3:19094
+      KSQL_CACHE_MAX_BYTES_BUFFERING: 0
+      KSQL_RESPONSE_HTTP_HEADERS_CONFIG: ''
+      KSQL_KSQL_CONNECT_URL: http://kafka-connect-1:8083
+      KSQL_KSQL_SCHEMA_REGISTRY_URL: http://schema-registry-1:8081
+      KSQL_KSQL_SCHEMA_REGISTRY_BASIC_AUTH_CREDENTIALS_SOURCE: USER_INFO
+      KSQL_KSQL_INTERNAL_TOPIC_REPLICAS: 1
+      KSQL_KSQL_STREAMS_REPLICATION_FACTOR: 1
+      KSQL_KSQL_QUERY_PULL_METRICS_ENABLED: 'true'
+      KSQL_KSQL_HIDDEN_TOPICS: ^_.*,default_ksql_processing_log
+#      KSQL_PRODUCER_INTERCEPTOR_CLASSES: "io.confluent.monitoring.clients.interceptor.MonitoringProducerInterceptor"
+#      KSQL_CONSUMER_INTERCEPTOR_CLASSES: "io.confluent.monitoring.clients.interceptor.MonitoringConsumerInterceptor"
+      KSQL_KSQL_SUPPRESS_ENABLED: 'False'
+      KSQL_KSQL_SUPPRESS_BUFFER_SIZE_BYTES: '-1'
+      KSQL_KSQL_QUERY_PULL_TABLE_SCAN_ENABLED: 'False'
+      KSQL_CONFIG_DIR: /etc/ksql
+      KSQL_KSQL_EXTENSION_DIR: /etc/ksqldb/ext/
+      KSQL_JMX_OPTS: -Djava.rmi.server.hostname=localhost -Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.port=1095 -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -Dcom.sun.management.jmxremote.rmi.port=1095
+    volumes:
+      - ./data-transfer:/data-transfer
+      - ./plugins/ksql:/etc/ksqldb/ext
+    restart: unless-stopped
+  # Access the cli by running:
+  # > docker exec -it ksqldb-cli ksql http://ksqldb-server-1:8088
+  ksqldb-cli:
+    image: confluentinc/ksqldb-cli:0.17.0
+    container_name: ksqldb-cli
+    hostname: ksqldb-cli
+    depends_on:
+      - ksqldb-server-1
+    volumes:
+      - ./data-transfer:/data-transfer
+    entrypoint: /bin/sh
+    tty: true
   #  ================================== Schema Registry UI ========================================== #
   schema-registry-ui:
     image: landoop/schema-registry-ui:latest
@@ -265,6 +327,24 @@ services:
       - 28102:8000
     environment:
       SCHEMAREGISTRY_URL: http://${PUBLIC_IP}:8081
+    volumes:
+      - ./data-transfer:/data-transfer
+    restart: unless-stopped
+  #  ================================== Kafka Connect UI ========================================== #
+  kafka-connect-ui:
+    image: landoop/kafka-connect-ui:latest
+    container_name: kafka-connect-ui
+    hostname: kafka-connect-ui
+    labels:
+      com.platys.webui.title: Kafka Connect UI
+      com.platys.webui.url: http://${PUBLIC_IP}:28103
+    depends_on:
+      - kafka-connect-1
+    ports:
+      - 28103:8000
+    environment:
+      CONNECT_URL: http://${PUBLIC_IP}:8083/,http://${PUBLIC_IP}:8084/
+      PROXY: 'true'
     volumes:
       - ./data-transfer:/data-transfer
     restart: unless-stopped
@@ -653,74 +733,6 @@ services:
     volumes:
       - ./data-transfer:/data-transfer
     restart: unless-stopped
-#  ================================== Airflow ========================================== #
-  airflow:
-    image: bitnami/airflow:2
-    container_name: airflow
-    hostname: airflow
-    labels:
-      com.platys.webui.title: Airflow UI
-      com.platys.webui.url: http://${PUBLIC_IP}:28139
-      com.platys.restapi.title: Airflow REST API
-      com.platys.restapi.url: http://${PUBLIC_IP}:28139/api/experimental/
-    ports:
-      - 28139:8080
-    environment:
-      - AIRFLOW_DATABASE_NAME=bitnami_airflow
-      - AIRFLOW_DATABASE_USERNAME=bn_airflow
-      - AIRFLOW_DATABASE_PASSWORD=abc123!
-      - AIRFLOW_DATABASE_HOST=airflow-db
-      - AIRFLOW_DATABASE_PORT_NUMBER=5432
-      - REDIS_HOST=airflow-redis
-      - REDIS_PORT_NUMBER=6379
-      - AIRFLOW_EXECUTOR=LocalExecutor
-      - AIRFLOW_FERNET_KEY=46BKJoQYlPPOexq0OhDZnIlNepKFf87WFwLbfzqDDho=
-      - AIRFLOW_HOME=/opt/bitnami/airflow
-      - AIRFLOW_LOAD_EXAMPLES=no
-      - AIRFLOW_PASSWORD=abc123!
-      - AIRFLOW_USERNAME=airflow
-      - PYTHONPATH=/bitnami/python
-    volumes:
-      - ./data-transfer:/data-transfer
-      - ./scripts/airflow/dags:/opt/bitnami/airflow/dags:Z
-      - ./plugins/airflow/:/opt/bitnami/airflow/plugins:Z
-    restart: unless-stopped
-  airflow-scheduler:
-    image: bitnami/airflow-scheduler:2
-    container_name: airflow-scheduler
-    hostname: airflow-scheduler
-    environment:
-      - AIRFLOW_DATABASE_NAME=bitnami_airflow
-      - AIRFLOW_DATABASE_USERNAME=bn_airflow
-      - AIRFLOW_DATABASE_PASSWORD=abc123!
-      - AIRFLOW_DATABASE_HOST=airflow-db
-      - AIRFLOW_DATABASE_PORT_NUMBER=5432
-      - REDIS_HOST=airflow-redis
-      - REDIS_PORT_NUMBER=6379
-      - AIRFLOW_EXECUTOR=LocalExecutor
-      - AIRFLOW_WEBSERVER_HOST=airflow
-      - AIRFLOW_WEBSERVER_PORT_NUMBER=8080
-      - AIRFLOW_LOAD_EXAMPLES=no
-      - AIRFLOW_HOME=/opt/bitnami/airflow
-      - AIRFLOW_FERNET_KEY=46BKJoQYlPPOexq0OhDZnIlNepKFf87WFwLbfzqDDho=
-      - PYTHONPATH=/bitnami/python
-    volumes:
-      - ./data-transfer:/data-transfer
-      - ./scripts/airflow/dags:/opt/bitnami/airflow/dags:Z
-      - ./plugins/airflow/:/opt/bitnami/airflow/plugins:Z
-    restart: unless-stopped
-  airflow-db:
-    image: bitnami/postgresql:10
-    container_name: airflow-db
-    hostname: airflow-db
-    environment:
-      - POSTGRESQL_DATABASE=bitnami_airflow
-      - POSTGRESQL_USERNAME=bn_airflow
-      - POSTGRESQL_PASSWORD=abc123!
-      - ALLOW_EMPTY_PASSWORD=yes
-    volumes:
-      - ./data-transfer:/data-transfer
-    restart: unless-stopped
   #  ================================== Zeppelin ========================================== #
   zeppelin:
     image: trivadis/apache-zeppelin:0.9.0-spark2.4-hadoop2.8
@@ -768,24 +780,6 @@ services:
       - ./container-volume/spark/logs/:/var/log/spark/logs
       - ./conf/s3cfg:/root/.s3cfg.template
     restart: unless-stopped
-  #  ================================== Jupyter ========================================== #
-  jupyter:
-    image: jupyter/all-spark-notebook:f9b134f7bd08
-    container_name: jupyter
-    hostname: jupyter
-    labels:
-      com.platys.webui.title: Jupyter UI
-      com.platys.webui.url: http://${PUBLIC_IP}:28888
-    ports:
-      - 28888:8888
-    environment:
-      JUPYTER_ENABLE_LAB: 'true'
-      JUPYTER_TOKEN: abc123!
-      GRANT_SUDO: 'true'
-      TINI_SUBREAPER: 'true'
-    volumes:
-      - ./data-transfer:/data-transfer
-    restart: unless-stopped
   #  ================================== SolR ========================================== #
   solr:
     image: solr:8.6
@@ -799,6 +793,24 @@ services:
     volumes:
       - ./data-transfer:/data-transfer
     restart: unless-stopped
+  #  ================================== PostgreSQL ========================================== #
+  postgresql:
+    image: postgres:13
+    container_name: postgresql
+    hostname: postgresql
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_PASSWORD=abc123!
+      - POSTGRES_USER=demo
+      - POSTGRES_DB=demodb
+      - PGDATA=/var/lib/postgresql/data/pgdata
+      - DB_SCHEMA=demo
+      - DB_ANON_ROLE=appuser
+    volumes:
+      - ./data-transfer:/data-transfer
+      - ./init/postgresql:/docker-entrypoint-initdb.d/
+    restart: unless-stopped
   #  ================================== Trino ========================================== #
   trino-1:
     image: starburstdata/starburst-enterprise:356-e.1
@@ -810,6 +822,8 @@ services:
     ports:
       - 28082:8080
     environment:
+      POSTGRESQL_USER: demo
+      POSTGRESQL_PASSWORD: abc123!
       # this is only generated to keep the structure valid if no other env variables are present
       IGNORE: ignore
     volumes:
@@ -817,6 +831,7 @@ services:
       - ./conf/starburstdata/single/config.properties:/usr/lib/presto/etc/config.properties
       - ./conf/starburstdata/cluster/node.properties:/usr/lib/presto/etc/node.properties
       - ./conf/starburstdata/catalog/hdfs.properties:/usr/lib/presto/etc/catalog/hdfs.properties
+      - ./conf/starburstdata/catalog/postgresql.properties:/usr/lib/presto/etc/catalog/postgresql.properties
     restart: unless-stopped
   trino-cli:
     image: trivadis/trino-cli:latest
@@ -825,22 +840,6 @@ services:
     volumes:
       - ./data-transfer:/data-transfer
     tty: true
-    restart: unless-stopped
-  #  ================================== Code-Server IDE (VS Code in Browser) ================= #
-  code-server:
-    image: trivadis/code-server:latest
-    container_name: code-server
-    hostname: code-server
-    labels:
-      com.platys.webui.title: Code-Server UI
-      com.platys.webui.url: http://${PUBLIC_IP}:28140
-    user: 0:0
-    ports:
-      - 28140:8080
-    environment:
-      PASSWORD: abc123!
-    volumes:
-      - ./data-transfer:/home/coder/data-transfer
     restart: unless-stopped
   #  ================================== cAdvisor ========================================== #
   wetty:

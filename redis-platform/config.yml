@@ -382,6 +382,7 @@
       # ===== Redis ========
       #
       REDIS_enable: true
+      REDIS_version: 4.0.14
       REDIS_replicasets: 0
       REDIS_allow_empty_password: yes
       REDIS_disable_commands:
