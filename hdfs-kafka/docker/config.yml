@@ -4,7 +4,7 @@
       platys:
         platform-name: 'bigdata-hdfs-platform'
         platform-stack: 'trivadis/platys-modern-data-platform'
-        platform-stack-version: '1.12.0'
+        platform-stack-version: '1.13.0-preview'
         structure: 'flat'
 
       # ===== Global configuation, valid for all or a group of services ========
@@ -24,6 +24,8 @@
 
       # ===== Apache Kafka ========
       KAFKA_enable: true
+      CONFLUENT_PLATFORM_version: 6.1.0
+
       # one of enterprise, community
       KAFKA_edition: 'community'
       KAFKA_volume_map_data: false
@@ -246,6 +248,11 @@
       CODE_SERVER_enable: false
       CODE_SERVER_volume_map_platform_root: false
 
+      #
+      # ===== Firefox Browser ========
+      #
+      FIREFOX_enable: true
+
       # ===== Container Mgmt ========
       PORTAINER_enable: false
       CADVISOR_enable: false
@@ -255,7 +262,8 @@
 
       # ===== Markdown Viewer ========
       MARKDOWN_VIEWER_enable: true
-
+      MARKDOWN_VIEWER_use_port_80: false
+      
       # ===== Python image ========
       PYTHON_enable: false
       PYTHON_script_folder: ''
