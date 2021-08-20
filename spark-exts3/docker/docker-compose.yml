@@ -1,0 +1,353 @@
+# =======================================================================
+# Platform Name            spark-exts3-platform
+# Platform Stack:          trivadis/platys-modern-data-platform
+# Platform Stack Version:  1.13.0-preview
+# =======================================================================
+version: '3.5'
+networks:
+  default:
+    name: spark-exts3-platform
+services:
+  #  ================================== Apache Spark 2.x ========================================== #
+  spark-master:
+    image: trivadis/apache-spark-master:2.4.7-hadoop2.8
+    container_name: spark-master
+    hostname: spark-master
+    labels:
+      com.platys.webui.title: Spark UI
+      com.platys.webui.url: http://${PUBLIC_IP}:8080
+    ports:
+      - 6066:6066
+      - 7077:7077
+      - 8080:8080
+      - 4040-4044:4040-4044
+    env_file:
+      - ./conf/hadoop.env
+    environment:
+      CORE_CONF_fs_s3a_endpoint: s3.amazonaws.com
+      CORE_CONF_fs_s3a_path_style_access: 'False'
+      HIVE_SITE_CONF_fs_s3a_endpoint: s3.amazonaws.com
+      HIVE_SITE_CONF_fs_s3a_access_key: ${PLATYS_AWS_ACCESS_KEY:?PLATYS_AWS_ACCESS_KEY must be set either in .env or as an environment variable}
+      HIVE_SITE_CONF_fs_s3a_secret_key: ${PLATYS_AWS_SECRET_ACCESS_KEY:?PLATYS_AWS_SECRET_ACCESS_KEY must be set either in .env or as an environment variable}
+      HIVE_SITE_CONF_fs_s3a_path_style_access: 'False'
+      HIVE_SITE_CONF_fs_s3a_impl: org.apache.hadoop.fs.s3a.S3AFileSystem
+      SPARK_DEFAULTS_CONF_spark_hadoop_fs_s3a_impl: org.apache.hadoop.fs.s3a.S3AFileSystem
+      SPARK_DEFAULTS_CONF_spark_hadoop_fs_s3a_endpoint: s3.amazonaws.com
+      SPARK_DEFAULTS_CONF_spark_hadoop_fs_s3a_path_style_access: 'False'
+      SPARK_PUBLIC_DNS: ${PUBLIC_IP}
+      INIT_DAEMON_STEP: setup_spark
+      MASTER: spark://spark-master:7077
+      SPARK_DEFAULTS_CONF_spark_jars_repositories:
+      SPARK_DEFAULTS_CONF_spark_jars_packages:
+      SPARK_DEFAULTS_CONF_spark_jars_excludes:
+      SPARK_DEFAULTS_CONF_spark_jars:
+      SPARK_DEFAULTS_CONF_spark_jars_ivySettings:
+      SPARK_DEFAULTS_CONF_spark_sql_catalogImplementation: in-memory
+      CORE_CONF_fs_defaultFS: s3a://admin-bucket
+      SPARK_DEFAULTS_CONF_spark_sql_warehouse_dir: s3a://admin-bucket/hive/warehouse
+      SPARK_DEFAULTS_CONF_spark_yarn_dist_files: /spark/conf/hive-site.xml
+      SPARK_DEFAULTS_CONF_spark_driver_extraJavaOptions:
+      SPARK_DEFAULTS_CONF_spark_executor_extraJavaOptions:
+    volumes:
+      - ./data-transfer:/data-transfer
+      - ./plugins/spark/jars:/extra-jars
+      - ./container-volume/spark/logs/:/var/log/spark/logs
+    restart: unless-stopped
+  spark-worker-1:
+    image: trivadis/apache-spark-worker:2.4.7-hadoop2.8
+    container_name: spark-worker-1
+    hostname: spark-worker-1
+    depends_on:
+      - spark-master
+    ports:
+      - 28111:28111
+    env_file:
+      - ./conf/hadoop.env
+    environment:
+      SPARK_MASTER: spark://spark-master:7077
+      SPARK_WORKER_WEBUI_PORT: '28111'
+      SPARK_WORKER_OPTS: -Dspark.worker.cleanup.enabled=true
+      SPARK_PUBLIC_DNS: ${PUBLIC_IP}
+      CORE_CONF_fs_s3a_endpoint: s3.amazonaws.com
+      CORE_CONF_fs_s3a_path_style_access: 'False'
+      HIVE_SITE_CONF_fs_s3a_endpoint: s3.amazonaws.com
+      HIVE_SITE_CONF_fs_s3a_access_key: ${PLATYS_AWS_ACCESS_KEY:?PLATYS_AWS_ACCESS_KEY must be set either in .env or as an environment variable}
+      HIVE_SITE_CONF_fs_s3a_secret_key: ${PLATYS_AWS_SECRET_ACCESS_KEY:?PLATYS_AWS_SECRET_ACCESS_KEY must be set either in .env or as an environment variable}
+      HIVE_SITE_CONF_fs_s3a_path_style_access: 'False'
+      HIVE_SITE_CONF_fs_s3a_impl: org.apache.hadoop.fs.s3a.S3AFileSystem
+      SPARK_DEFAULTS_CONF_spark_hadoop_fs_s3a_impl: org.apache.hadoop.fs.s3a.S3AFileSystem
+      SPARK_DEFAULTS_CONF_spark_hadoop_fs_s3a_endpoint: s3.amazonaws.com
+      SPARK_DEFAULTS_CONF_spark_hadoop_fs_s3a_path_style_access: 'False'
+      SPARK_DEFAULTS_CONF_spark_jars_repositories:
+      SPARK_DEFAULTS_CONF_spark_jars_packages:
+      SPARK_DEFAULTS_CONF_spark_jars_excludes:
+      SPARK_DEFAULTS_CONF_spark_jars:
+      SPARK_DEFAULTS_CONF_spark_jars_ivySettings:
+      SPARK_DEFAULTS_CONF_spark_sql_catalogImplementation: in-memory
+      CORE_CONF_fs_defaultFS: s3a://admin-bucket
+      SPARK_DEFAULTS_CONF_spark_sql_warehouse_dir: s3a://admin-bucket/hive/warehouse
+      SPARK_DEFAULTS_CONF_spark_yarn_dist_files: /spark/conf/hive-site.xml
+      SPARK_DEFAULTS_CONF_spark_driver_extraJavaOptions:
+      SPARK_DEFAULTS_CONF_spark_executor_extraJavaOptions:
+    volumes:
+      - ./data-transfer:/data-transfer
+      - ./plugins/spark/jars:/extra-jars
+      - ./container-volume/spark/logs/:/var/log/spark/logs
+    restart: unless-stopped
+  spark-worker-2:
+    image: trivadis/apache-spark-worker:2.4.7-hadoop2.8
+    container_name: spark-worker-2
+    hostname: spark-worker-2
+    depends_on:
+      - spark-master
+    ports:
+      - 28112:28112
+    env_file:
+      - ./conf/hadoop.env
+    environment:
+      SPARK_MASTER: spark://spark-master:7077
+      SPARK_WORKER_WEBUI_PORT: '28112'
+      SPARK_WORKER_OPTS: -Dspark.worker.cleanup.enabled=true
+      SPARK_PUBLIC_DNS: ${PUBLIC_IP}
+      CORE_CONF_fs_s3a_endpoint: s3.amazonaws.com
+      CORE_CONF_fs_s3a_path_style_access: 'False'
+      HIVE_SITE_CONF_fs_s3a_endpoint: s3.amazonaws.com
+      HIVE_SITE_CONF_fs_s3a_access_key: ${PLATYS_AWS_ACCESS_KEY:?PLATYS_AWS_ACCESS_KEY must be set either in .env or as an environment variable}
+      HIVE_SITE_CONF_fs_s3a_secret_key: ${PLATYS_AWS_SECRET_ACCESS_KEY:?PLATYS_AWS_SECRET_ACCESS_KEY must be set either in .env or as an environment variable}
+      HIVE_SITE_CONF_fs_s3a_path_style_access: 'False'
+      HIVE_SITE_CONF_fs_s3a_impl: org.apache.hadoop.fs.s3a.S3AFileSystem
+      SPARK_DEFAULTS_CONF_spark_hadoop_fs_s3a_impl: org.apache.hadoop.fs.s3a.S3AFileSystem
+      SPARK_DEFAULTS_CONF_spark_hadoop_fs_s3a_endpoint: s3.amazonaws.com
+      SPARK_DEFAULTS_CONF_spark_hadoop_fs_s3a_path_style_access: 'False'
+      SPARK_DEFAULTS_CONF_spark_jars_repositories:
+      SPARK_DEFAULTS_CONF_spark_jars_packages:
+      SPARK_DEFAULTS_CONF_spark_jars_excludes:
+      SPARK_DEFAULTS_CONF_spark_jars:
+      SPARK_DEFAULTS_CONF_spark_jars_ivySettings:
+      SPARK_DEFAULTS_CONF_spark_sql_catalogImplementation: in-memory
+      CORE_CONF_fs_defaultFS: s3a://admin-bucket
+      SPARK_DEFAULTS_CONF_spark_sql_warehouse_dir: s3a://admin-bucket/hive/warehouse
+      SPARK_DEFAULTS_CONF_spark_yarn_dist_files: /spark/conf/hive-site.xml
+      SPARK_DEFAULTS_CONF_spark_driver_extraJavaOptions:
+      SPARK_DEFAULTS_CONF_spark_executor_extraJavaOptions:
+    volumes:
+      - ./data-transfer:/data-transfer
+      - ./plugins/spark/jars:/extra-jars
+      - ./container-volume/spark/logs/:/var/log/spark/logs
+    restart: unless-stopped
+  spark-history:
+    image: trivadis/apache-spark-worker:2.4.7-hadoop2.8
+    command: /spark/bin/spark-class org.apache.spark.deploy.history.HistoryServer
+    container_name: spark-history
+    hostname: spark-history
+    labels:
+      com.platys.webui.title: Spark History Server
+      com.platys.webui.url: http://${PUBLIC_IP}:28117
+      com.platys.restapi.title: Spark History Server
+      com.platys.restapi.url: http://${PUBLIC_IP}:28117/api/v1
+    expose:
+      - 18080
+    ports:
+      - 28117:18080
+    environment:
+      SPARK_DEFAULTS_CONF_spark_jars_repositories:
+      SPARK_DEFAULTS_CONF_spark_jars_packages:
+      SPARK_DEFAULTS_CONF_spark_jars_excludes:
+      SPARK_DEFAULTS_CONF_spark_jars_ivySettings:
+      SPARK_DEFAULTS_CONF_spark_hadoop_fs_s3a_impl: org.apache.hadoop.fs.s3a.S3AFileSystem
+      SPARK_DEFAULTS_CONF_spark_hadoop_fs_s3a_endpoint: s3.amazonaws.com
+      SPARK_DEFAULTS_CONF_spark_hadoop_fs_s3a_path_style_access: 'False'
+      SPARK_DEFAULTS_CONF_spark_sql_catalogImplementation: in-memory
+      CORE_CONF_fs_defaultFS: s3a://admin-bucket
+      SPARK_DEFAULTS_CONF_spark_sql_warehouse_dir: s3a://admin-bucket/hive/warehouse
+      SPARK_DEFAULTS_CONF_spark_yarn_dist_files: /spark/conf/hive-site.xml
+      SPARK_DEFAULTS_CONF_spark_driver_extraJavaOptions:
+      SPARK_DEFAULTS_CONF_spark_executor_extraJavaOptions:
+    volumes:
+      - ./data-transfer:/data-transfer
+      - ./plugins/spark/jars:/extra-jars
+      - ./container-volume/spark/logs/:/var/log/spark/logs
+    restart: unless-stopped
+  spark-thriftserver:
+    image: trivadis/apache-spark-thriftserver:2.4.7-hadoop2.8
+    container_name: spark-thriftserver
+    hostname: spark-thriftserver
+    ports:
+      - 28118:10000
+    env_file:
+      - ./conf/hadoop.env
+    environment:
+      CORE_CONF_fs_s3a_endpoint: s3.amazonaws.com
+      CORE_CONF_fs_s3a_path_style_access: 'False'
+      HIVE_SITE_CONF_fs_s3a_endpoint: s3.amazonaws.com
+      HIVE_SITE_CONF_fs_s3a_access_key: ${PLATYS_AWS_ACCESS_KEY:?PLATYS_AWS_ACCESS_KEY must be set either in .env or as an environment variable}
+      HIVE_SITE_CONF_fs_s3a_secret_key: ${PLATYS_AWS_SECRET_ACCESS_KEY:?PLATYS_AWS_SECRET_ACCESS_KEY must be set either in .env or as an environment variable}
+      HIVE_SITE_CONF_fs_s3a_path_style_access: 'False'
+      HIVE_SITE_CONF_fs_s3a_impl: org.apache.hadoop.fs.s3a.S3AFileSystem
+      SPARK_DEFAULTS_CONF_spark_hadoop_fs_s3a_impl: org.apache.hadoop.fs.s3a.S3AFileSystem
+      SPARK_DEFAULTS_CONF_spark_hadoop_fs_s3a_endpoint: s3.amazonaws.com
+      SPARK_DEFAULTS_CONF_spark_hadoop_fs_s3a_path_style_access: 'False'
+      SPARK_DEFAULTS_CONF_spark_jars_repositories:
+      SPARK_DEFAULTS_CONF_spark_jars_packages:
+      SPARK_DEFAULTS_CONF_spark_jars_excludes:
+      SPARK_DEFAULTS_CONF_spark_jars:
+      SPARK_DEFAULTS_CONF_spark_jars_ivySettings:
+      SPARK_DEFAULTS_CONF_spark_sql_catalogImplementation: in-memory
+      CORE_CONF_fs_defaultFS: s3a://admin-bucket
+      SPARK_DEFAULTS_CONF_spark_sql_warehouse_dir: s3a://admin-bucket/hive/warehouse
+      SPARK_DEFAULTS_CONF_spark_yarn_dist_files: /spark/conf/hive-site.xml
+      SPARK_DEFAULTS_CONF_spark_driver_extraJavaOptions:
+      SPARK_DEFAULTS_CONF_spark_executor_extraJavaOptions:
+    volumes:
+      - ./data-transfer:/data-transfer
+      - ./plugins/spark/jars:/extra-jars
+      - ./container-volume/spark/logs/:/var/log/spark/logs
+      - ./scripts/docker/wait-for-it.sh:/usr/src/app/wait-for-it.sh
+    command: [/usr/src/app/wait-for-it.sh, hive-metastore:9083, --timeout=120, --, ./thriftserver.sh]
+    restart: unless-stopped
+  #  ================================== Elasticsearch ========================================== #
+  elasticsearch-1:
+    image: elasticsearch:7.10.1
+    hostname: elasticsearch-1
+    container_name: elasticsearch-1
+    labels:
+      com.platys.restapi.title: Elasticsearch REST API
+      com.platys.restapi.url: http://${PUBLIC_IP}:9200
+      com.platys.manual.step.msgs: sudo sysctl -w vm.max_map_count=262144
+    ports:
+      - 9200:9200
+      - 9300:9300
+    environment:
+      discovery.type: single-node
+      xpack.security.enabled: 'false'
+      xpack.monitoring.enabled: 'false'
+      http.cors.enabled: 'true'
+      http.cors.allow-origin: http://dejavu:1358,http://dataplatform:28125,http://analyticsplatform:28125,http://${PUBLIC_IP}:28125,http://${DOCKER_HOST_IP}:28125,http://127.0.0.1:1358
+      http.cors.allow-headers: X-Requested-With,X-Auth-Token,Content-Type,Content-Length,Authorization
+      http.cors.allow-credentials: 'true'
+      ES_JAVA_OPTS: -Xms512m -Xmx512m
+    volumes:
+      - ./data-transfer:/data-transfer
+    restart: unless-stopped
+  dejavu:
+    image: appbaseio/dejavu:latest
+    container_name: dejavu
+    hostname: dejuvu
+    labels:
+      com.platys.webui.title: Elasticsearch Dejavu UI
+      com.platys.webui.url: http://${PUBLIC_IP}:28125
+    ports:
+      - 28125:1358
+    volumes:
+      - ./data-transfer:/data-transfer
+    restart: unless-stopped
+  cerebro:
+    image: lmenezes/cerebro:latest
+    container_name: cerebro
+    hostname: cerebro
+    labels:
+      com.platys.webui.title: Elasticsearch Cerbero UI
+      com.platys.webui.url: http://${PUBLIC_IP}:28126
+    ports:
+      - 28126:9000
+    volumes:
+      - ./data-transfer:/data-transfer
+    restart: unless-stopped
+  elastichq:
+    image: elastichq/elasticsearch-hq:latest
+    container_name: elastichq
+    hostname: elatichq
+    labels:
+      com.platys.webui.title: ElasticHQ UI
+      com.platys.webui.url: http://${PUBLIC_IP}:28127
+    ports:
+      - 28127:5000
+    volumes:
+      - ./data-transfer:/data-transfer
+    restart: unless-stopped
+  #  ================================== Kibana ========================================== #
+  kibana:
+    image: kibana:7.10.1
+    hostname: kibana
+    container_name: kibana
+    labels:
+      com.platys.webui.title: Kibana UI
+      com.platys.webui.url: http://${PUBLIC_IP}:5601
+    depends_on:
+      - elasticsearch-1
+    ports:
+      - 5601:5601
+    environment:
+      discovery.type: single-node
+      ELASTICSEARCH_HOSTS: http://elasticsearch-1:9200
+      SERVER_HOST: 0.0.0.0
+      SERVER_NAME: kibana
+      XPACK_GRAPH_enabled: 'false'
+      XPACK_MONITORING_enabled: 'false'
+      XPACK_REPORTING_enabled: 'false'
+      XPACK_SECURITY_enabled: 'false'
+    volumes:
+      - ./data-transfer:/data-transfer
+    command: [/bin/bash, -c, /usr/share/kibana/bin/kibana-plugin remove x-pack; /usr/local/bin/kibana-docker]
+    restart: unless-stopped
+  #  ================================== File Browser ================= #
+  file-browser:
+    image: filebrowser/filebrowser:latest
+    container_name: file-browser
+    hostname: file-browser
+    labels:
+      com.platys.webui.title: File Browser UI
+      com.platys.webui.url: http://${PUBLIC_IP}:28178
+    ports:
+      - 28178:80
+    volumes:
+      - ./data-transfer:/srv
+      - ./conf/filebrowser/filebrowser.json:/.filebrowser.json
+    restart: unless-stopped
+  #  ================================== cAdvisor ========================================== #
+  wetty:
+    image: svenihoney/wetty:latest
+    container_name: wetty
+    hostname: wetty
+    labels:
+      com.platys.webui.title: WeTTY UI
+      com.platys.webui.url: http://${PUBLIC_IP}:3001
+    ports:
+      - 3001:3000
+    environment:
+      - REMOTE_SSH_SERVER=${DOCKER_HOST_IP}
+      - REMOTE_SSH_PORT=22
+      - REMOTE_SSH_USER=
+      - WETTY_PORT=3000
+    volumes:
+      - ./data-transfer:/data-transfer
+    restart: unless-stopped
+  #  ================================== markdown-viewer ========================================== #
+  markdown-viewer:
+    image: minimum/markdown-web:latest
+    container_name: markdown-viewer
+    hostname: markdown-viewer
+    labels:
+      com.platys.webui.title: Markdown Viewer UI
+      com.platys.webui.url: http://${PUBLIC_IP}:80
+    ports:
+      - 80:80
+    volumes:
+      - ./documentation:/home/python/markdown
+      - ./data-transfer:/data-transfer
+    restart: unless-stopped
+  markdown-renderer:
+    image: trivadis/jinja2-renderer:latest
+    container_name: markdown-renderer
+    hostname: markdown-renderer
+    environment:
+      USE_PUBLIC_IP: 'True'
+      PUBLIC_IP: ${PUBLIC_IP}
+      DOCKER_HOST_IP: ${DOCKER_HOST_IP}
+      DATAPLATFORM_HOME: ${DATAPLATFORM_HOME}
+    volumes:
+      - ./documentation/templates:/templates
+      - ./documentation/templates:/scripts
+      - .:/variables
+      - ./documentation:/output
+      - ./data-transfer:/data-transfer
