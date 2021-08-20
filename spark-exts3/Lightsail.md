@@ -22,7 +22,7 @@ Optionally change the password from the default value of `ubuntu` to a more secu
 ```
 export GITHUB_PROJECT=various-platys-platforms
 export GITHUB_OWNER=gschmutz
-export DATAPLATFORM_HOME=spark-exts3-platform/docker
+export DATAPLATFORM_HOME=spark-exts3/docker
 export DOCKER_COMPOSE_VERSION=1.25.3
 export PLATYS_VERSION=2.4.0
 export NETWORK_NAME=eth0
