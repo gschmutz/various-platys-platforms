@@ -296,7 +296,7 @@
       #
       # ===== Zeppelin ========
       #
-      ZEPPELIN_enable: false
+      ZEPPELIN_enable: true
       ZEPPELIN_volume_map_data: false
       ZEPPELIN_admin_username: admin
       ZEPPELIN_admin_password: changeme
@@ -308,7 +308,7 @@
       #
       # ===== Jupyter ========
       #
-      JUPYTER_enable: false
+      JUPYTER_enable: true
       # one of 'minimal', 'r', 'scipy', 'tensorflow', 'datascience', 'all-spark'
       JUPYTER_edition: 'minimal'
       JUPYTER_volume_map_data: false
