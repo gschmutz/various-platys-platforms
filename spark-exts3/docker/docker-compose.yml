@@ -207,7 +207,7 @@ services:
     restart: unless-stopped
   #  ================================== Apache Tikka Server ========================================== #
   tikka:
-    image: trivadis/tika:2.0.0
+    image: apache/tika:2.0.0
     container_name: tikka
     hostname: tikka
     labels:
