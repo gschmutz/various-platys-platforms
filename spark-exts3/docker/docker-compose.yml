@@ -372,6 +372,21 @@ services:
       - ./data-transfer:/data-transfer
     command: [/bin/bash, -c, /usr/share/kibana/bin/kibana-plugin remove x-pack; /usr/local/bin/kibana-docker]
     restart: unless-stopped
+  #  ================================== Awscli ========================================== #
+  awscli:
+    image: trivadis/awscli-s3cmd:latest
+    container_name: awscli
+    hostname: awscli
+    environment:
+      AWS_ACCESS_KEY_ID: ${PLATYS_AWS_ACCESS_KEY:?PLATYS_AWS_ACCESS_KEY must be set either in .env or as an environment variable}
+      AWS_SECRET_ACCESS_KEY: ${PLATYS_AWS_SECRET_ACCESS_KEY:-bKhWxVF3kQoLY9kFmt91l+tDrEoZjqnWXzY9Eza}
+      AWS_ENDPOINT: s3.amazonaws.com
+      AWS_DEFAULT_REGION: eu-central-1
+    volumes:
+      - ./data-transfer:/data-transfer
+      - ./conf/s3cfg:/root/.s3cfg.template
+    command: tail -f /dev/null
+    restart: unless-stopped
   #  ================================== File Browser ================= #
   file-browser:
     image: filebrowser/filebrowser:latest

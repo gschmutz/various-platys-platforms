@@ -558,7 +558,7 @@
       # add additional buckets, comma separated, admin-bucket will be created by default
       MINIO_default_buckets: ''
       MINIO_browser_enable: true
-      AWSCLI_enable: false
+      AWSCLI_enable: true
       #
       # ===== FTP ========
       #
