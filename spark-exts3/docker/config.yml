@@ -198,10 +198,10 @@
       #
       LIVY_enable: false
       #
-      # ===== Apache Tikka ========
+      # ===== Apache Tika ========
       #
-      TIKKA_enable: true  
-      TIKKA_edition: 'full'          
+      TIKA_enable: true  
+      TIKA_edition: 'full'          
       #
       # ===== Apache Hive ========
       #

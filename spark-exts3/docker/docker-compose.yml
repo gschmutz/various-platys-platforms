@@ -205,13 +205,13 @@ services:
       - ./scripts/docker/wait-for-it.sh:/usr/src/app/wait-for-it.sh
     command: [/usr/src/app/wait-for-it.sh, hive-metastore:9083, --timeout=120, --, ./thriftserver.sh]
     restart: unless-stopped
-  #  ================================== Apache Tikka Server ========================================== #
-  tikka:
-    image: apache/tika:2.0.0
-    container_name: tikka
-    hostname: tikka
+  #  ================================== Apache Tika Server ========================================== #
+  tika-server:
+    image: apache/tika:2.0.0-full
+    container_name: tika-server
+    hostname: tika-server
     labels:
-      com.platys.restapi.title: Tikka API
+      com.platys.restapi.title: Tika Server API
       com.platys.restapi.url: http://${PUBLIC_IP}:28228/
     ports:
       - 28228:9998
