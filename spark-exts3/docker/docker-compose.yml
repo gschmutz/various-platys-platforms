@@ -299,6 +299,8 @@ services:
       TINI_SUBREAPER: 'true'
     volumes:
       - ./data-transfer:/data-transfer
+      - ./plugins/jupyter/aws-java-sdk-1.11.375.jar:/usr/local/spark/jars
+      - ./plugins/jupyter/hadoop-aws-3.2.1.jar:/usr/local/spark/jars
     restart: unless-stopped
   #  ================================== Elasticsearch ========================================== #
   elasticsearch-1:
