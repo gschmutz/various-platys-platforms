@@ -305,6 +305,7 @@ services:
       - ./data-transfer:/data-transfer
       - ./plugins/jupyter/aws-java-sdk-bundle-1.11.563.jar:/usr/local/spark/jars/aws-java-sdk-bundle-1.11.563.jar
       - ./plugins/jupyter/hadoop-aws-3.2.1.jar:/usr/local/spark/jars/hadoop-aws-3.2.1.jar      
+      - ./plugins/jupyter/guava-27.1-jre.jar:/usr/local/spark/jars/guava-27.1-jre.jar     
     restart: unless-stopped
   #  ================================== Elasticsearch ========================================== #
   elasticsearch-1:
