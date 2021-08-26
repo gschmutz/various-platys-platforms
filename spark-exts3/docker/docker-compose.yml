@@ -297,6 +297,10 @@ services:
       JUPYTER_TOKEN: abc123!
       GRANT_SUDO: 'true'
       TINI_SUBREAPER: 'true'
+      AWS_ACCESS_KEY_ID: ${PLATYS_AWS_ACCESS_KEY:?PLATYS_AWS_ACCESS_KEY must be set either in .env or as an environment variable}
+      AWS_SECRET_ACCESS_KEY: ${PLATYS_AWS_SECRET_ACCESS_KEY:-bKhWxVF3kQoLY9kFmt91l+tDrEoZjqnWXzY9Eza}
+      AWS_ENDPOINT: s3.amazonaws.com
+      AWS_DEFAULT_REGION: eu-central-1
     volumes:
       - ./data-transfer:/data-transfer
       - ./plugins/jupyter/aws-java-sdk-bundle-1.11.563.jar:/usr/local/spark/jars/aws-java-sdk-bundle-1.11.563.jar
