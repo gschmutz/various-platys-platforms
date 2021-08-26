@@ -284,7 +284,7 @@ services:
     restart: unless-stopped
   #  ================================== Jupyter ========================================== #
   jupyter:
-    image: jupyter/all-spark-notebook:016833b15ceb
+    image: jupyter/all-spark-notebook:spark-3.1.1
     container_name: jupyter
     hostname: jupyter
     labels:
