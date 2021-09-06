@@ -1,0 +1,93 @@
+# =======================================================================
+# Platform Name            demo-platform
+# Platform Stack:          trivadis/platys-modern-data-platform
+# Platform Stack Version:  1.13.0-preview
+# =======================================================================
+version: '3.5'
+networks:
+  default:
+    name: demo-platform
+# Enable PostgreSQL or MySQL for MLflow server
+services:
+  #  ================================== Grafana ========================================== #
+  grafana:
+    image: grafana/grafana:8.1.2
+    hostname: grafana
+    container_name: grafana
+    labels:
+      com.platys.webui.title: Grafana UI
+      com.platys.webui.url: http://${PUBLIC_IP}:3000
+    expose:
+      - 3000
+    ports:
+      - 3000:3000
+    environment:
+      - GF_INSTALL_PLUGINS=grafana-piechart-panel
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=abc123!
+      - GF_USERS_ALLOW_SIGN_UP=false
+    volumes:
+      - ./data-transfer:/data-transfer
+      - ./plugins/grafana:/etc/grafana/provisioning
+    restart: unless-stopped
+  #  ================================== Timescale DB ========================================== #
+  timescaledb:
+    image: timescale/timescaledb:latest-pg12
+    container_name: timescaledb
+    hostname: timescaledb
+    ports:
+      - 5433:5432
+    environment:
+      POSTGRES_PASSWORD: 6AXL3g7}+2G2Kc;
+      POSTGRES_USER: timescaledb
+      POSTGRES_DB: timescaledb
+    volumes:
+      - ./data-transfer:/data-transfer
+    restart: always
+  #  ================================== cAdvisor ========================================== #
+  wetty:
+    image: svenihoney/wetty:latest
+    container_name: wetty
+    hostname: wetty
+    labels:
+      com.platys.webui.title: WeTTY UI
+      com.platys.webui.url: http://${PUBLIC_IP}:3001
+    ports:
+      - 3001:3000
+    environment:
+      - REMOTE_SSH_SERVER=${DOCKER_HOST_IP}
+      - REMOTE_SSH_PORT=22
+      - REMOTE_SSH_USER=
+      - WETTY_PORT=3000
+    volumes:
+      - ./data-transfer:/data-transfer
+    restart: unless-stopped
+  #  ================================== markdown-viewer ========================================== #
+  markdown-viewer:
+    image: trivadis/markdown-web:latest
+    container_name: markdown-viewer
+    hostname: markdown-viewer
+    labels:
+      com.platys.webui.title: Markdown Viewer UI
+      com.platys.webui.url: http://${PUBLIC_IP}:80
+    ports:
+      - 80:80
+    volumes:
+      - ./documentation:/home/python/markdown
+      - ./data-transfer:/data-transfer
+    restart: unless-stopped
+  markdown-renderer:
+    image: trivadis/jinja2-renderer:latest
+    container_name: markdown-renderer
+    hostname: markdown-renderer
+    environment:
+      USE_PUBLIC_IP: 'True'
+      PUBLIC_IP: ${PUBLIC_IP}
+      DOCKER_HOST_IP: ${DOCKER_HOST_IP}
+      DATAPLATFORM_HOME: ${DATAPLATFORM_HOME}
+    volumes:
+      - ./documentation/templates:/templates
+      - ./documentation/templates:/scripts
+      - .:/variables
+      - ./documentation:/output
+      - ./data-transfer:/data-transfer

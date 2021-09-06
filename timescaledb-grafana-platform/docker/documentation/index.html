@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Markdown Viewer</title>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+  <meta name="description" content="Description">
+  <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <link rel="stylesheet" href="//unpkg.com/docsify-themeable/dist/css/theme-simple-dark.css">
+  <style>
+    :root {
+      /* App */
+      --theme-color: #00d58e;
+
+      /* Base */
+      --base-font-family: 'PingFang SC', 'Microsoft YaHei UI', Monaco, Futura, 'Segoe UI', sans-serif;
+      --code-font-family: Monaco, Consolas, Futura, 'Segoe UI', sans-serif;
+
+      /* Content */
+      --code-font-size: calc(var(--font-size-m) * 0.9);
+      --code-inline-color: #00ffb6;
+      --code-theme-comment: #808080;
+      --link-text-decoration: underline;
+      /*--link-text-decoration--hover: underline;*/
+      --link-text-decoration-color: #606060;
+
+      /* Sidebar */
+      --sidebar-width: 22rem;
+    }
+  </style>
+</head>
+
+<body>
+<div id="app">Loading...</div>
+<script>
+  window.$docsify = {
+    name: 'Markdown Viewer',
+    repo: '',
+    auto2top: true,
+    // loadSidebar: '_sidebar.md',
+    subMaxLevel: 3,
+    notFoundPage: {
+      '/': '_404.md'
+    },
+    search: {
+      placeholder: 'Search...',
+      noData: 'No result'
+    }
+  }
+</script>
+<script src="//unpkg.com/docsify/lib/docsify.min.js"></script>
+<script src="//unpkg.com/docsify/lib/plugins/emoji.js"></script>
+<script src="//unpkg.com/docsify/lib/plugins/search.min.js"></script>
+<script src="//unpkg.com/prismjs/components/prism-http.js"></script>
+<script src="//unpkg.com/prismjs/components/prism-json.js"></script>
+<script src="//unpkg.com/prismjs/components/prism-java.js"></script>
+<script src="//unpkg.com/docsify-themeable/dist/js/docsify-themeable.min.js"></script>
+</body>
+
+</html>
