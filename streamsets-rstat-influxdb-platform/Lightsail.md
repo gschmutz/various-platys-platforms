@@ -82,9 +82,9 @@ printf "\n" >> /home/$USERNAME/.bash_profile
 sudo chown ${USERNAME}:${USERNAME} /home/$USERNAME/.bash_profile
 
 # create the .env file
-rm $PWD/.env
-printf "STREAMSETS_CLOUD_DEPLOYMENT_ID =$STREAMSETS_CLOUD_DEPLOYMENT_ID\n" >> $PWD/.env
-printf "STREAMSETS_CLOUD_DEPLOYMENT_TOKEN =$STREAMSETS_CLOUD_DEPLOYMENT_TOKEN\n" >> $PWD/.env
+sudo rm $DATAPLATFORM_HOME/.env
+printf "STREAMSETS_CLOUD_DEPLOYMENT_ID=$STREAMSETS_CLOUD_DEPLOYMENT_ID\n" >> $PWD/.env
+printf "STREAMSETS_CLOUD_DEPLOYMENT_TOKEN=$STREAMSETS_CLOUD_DEPLOYMENT_TOKEN\n" >> $PWD/.env
 
 # Startup Environment
 docker-compose up -d
