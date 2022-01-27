@@ -1,0 +1,193 @@
+# =======================================================================
+# Platform Name            demo-platform
+# Platform Stack:          trivadis/platys-modern-data-platform
+# Platform Stack Version:  1.13.0
+# =======================================================================
+version: '3.5'
+networks:
+  default:
+    name: demo-platform
+# Enable PostgreSQL or MySQL for MLflow server
+services:
+  #  ================================== StreamSets DataCollector ========================================== #
+  streamsets-1:
+    image: streamsets/datacollector:3.22.2
+    container_name: streamsets-1
+    hostname: streamsets-1
+    labels:
+      com.platys.webui.title: StreamSets Data Collector UI
+      com.platys.webui.url: http://${PUBLIC_IP}:18630
+      com.platys.restapi.title: StreamSets Data Collector REST API
+      com.platys.restapi.url: http://${PUBLIC_IP}:18630/collector/restapi
+    ports:
+      - 18630:18630
+    environment:
+      SDC_OFFSET_DIRECTORY: /data/custom-offset-el
+      SDC_INSTALL_STAGES: streamsets-datacollector-aws-lib
+      SDC_INSTALL_ENTERPRISE_STAGES: ''
+      SDC_JAVA_OPTS: -Xmx2g -Xms2g
+      SDC_JAVA8_OPTS: -XX:+UseG1GC
+      SDC_CONF_MONITOR_MEMORY: 'true'
+      SDC_CONF_PIPELINE_MAX_RUNNERS_COUNT: 50
+      SDC_CONF_http_authentication: form
+    volumes:
+      - ./data-transfer:/data-transfer
+      - ./conf/streamsets/pre-docker-entrypoint.sh:/pre-docker-entrypoint.sh
+      - ./plugins/streamsets/user-libs:/opt/streamsets-datacollector-user-libs:Z
+    ulimits:
+      nofile:
+        soft: 32768
+        hard: 32768
+    user: '1000'
+    command:
+      - dc
+      - -exec
+      - -verbose
+    entrypoint:
+      - /pre-docker-entrypoint.sh
+    restart: unless-stopped
+  #  ================================== RStudio ========================================== #
+  rstudio:
+    image: rocker/rstudio:4
+    container_name: rstudio
+    hostname: rstudio
+    labels:
+      com.platys.webui.title: RStudio UI
+      com.platys.webui.url: http://${PUBLIC_IP}:8787
+    ports:
+      - 8787:8787
+    environment:
+      PASSWORD: rstudio
+      ROOT: 'False'
+      DISABLE_AUTH: 'False'
+    volumes:
+      - ./data-transfer:/data-transfer
+    restart: unless-stopped
+  #  ================================== Grafana ========================================== #
+  grafana:
+    image: grafana/grafana:8.2.0
+    hostname: grafana
+    container_name: grafana
+    labels:
+      com.platys.webui.title: Grafana UI
+      com.platys.webui.url: http://${PUBLIC_IP}:3000
+    expose:
+      - 3000
+    ports:
+      - 3000:3000
+    environment:
+      - GF_INSTALL_PLUGINS=grafana-piechart-panel
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=abc123!
+      - GF_USERS_ALLOW_SIGN_UP=false
+    volumes:
+      - ./data-transfer:/data-transfer
+      - ./plugins/grafana:/etc/grafana/provisioning
+    restart: unless-stopped
+  #  ================================== InfluxDB 2 ========================================== #
+  influxdb2:
+    image: influxdb:2.0.8
+    hostname: influxdb2
+    container_name: influxdb2
+    labels:
+      com.platys.webui.title: InfluxDB 2.0 UI
+      com.platys.webui.url: http://${PUBLIC_IP}:9999
+      com.platys.restapi.title: InfluxDB 2.0 Rest API
+      com.platys.restapi.url: http://${PUBLIC_IP}:9999/api/v2
+    ports:
+      - 9999:8086
+    volumes:
+      - ./data-transfer:/data-transfer
+    command: --reporting-disabled
+    restart: unless-stopped
+  #  ================================== Minio ========================================== #
+  minio-1:
+    image: minio/minio:RELEASE.2021-09-15T04-54-25Z
+    container_name: minio-1
+    hostname: minio-1
+    labels:
+      com.platys.webui.title: MinIO UI
+      com.platys.webui.url: http://${PUBLIC_IP}:9000
+    ports:
+      - 9000:9000
+      - 9010:9010
+    environment:
+      MINIO_ROOT_USER: V42FCGRVMK24JJ8DHUYG
+      MINIO_ROOT_PASSWORD: bKhWxVF3kQoLY9kFmt91l+tDrEoZjqnWXzY9Eza
+      MINIO_REGION_NAME: us-east-1
+      MINIO_BROWSER: 'True'
+      #MINIO_PUBLIC_IPS: minio-1
+      #MINIO_DOMAIN: minio.io
+      #MINIO_DEFAULT_BUCKETS: 'admin-bucket,'
+    volumes:
+      - ./data-transfer:/data-transfer
+    command: server /data --console-address ":9010"
+    restart: unless-stopped
+  #  ================================== Minio MC ========================================== #
+  minio-mc:
+    image: minio/mc:latest
+    container_name: minio-mc
+    hostname: minio-mc
+    volumes:
+      - ./data-transfer:/data-transfer
+      - ./conf/minio/config.json:/root/.mc/config.json
+    entrypoint:
+      - /bin/sh
+      - -c
+      - |
+        sleep 10
+        mc mb --ignore-existing minio-1/admin-bucket
+           for i in $$(echo "" | sed "s/,/ /g")
+        do
+          mc mb --ignore-existing minio-1/$$i
+        done
+        #
+        while [ 1 -eq 1 ];do sleep 60;done
+    restart: unless-stopped
+  #  ================================== cAdvisor ========================================== #
+  wetty:
+    image: svenihoney/wetty:latest
+    container_name: wetty
+    hostname: wetty
+    labels:
+      com.platys.webui.title: WeTTY UI
+      com.platys.webui.url: http://${PUBLIC_IP}:3001
+    ports:
+      - 3001:3000
+    environment:
+      - REMOTE_SSH_SERVER=${DOCKER_HOST_IP}
+      - REMOTE_SSH_PORT=22
+      - REMOTE_SSH_USER=
+      - WETTY_PORT=3000
+    volumes:
+      - ./data-transfer:/data-transfer
+    restart: unless-stopped
+  #  ================================== markdown-viewer ========================================== #
+  markdown-viewer:
+    image: trivadis/markdown-web:latest
+    container_name: markdown-viewer
+    hostname: markdown-viewer
+    labels:
+      com.platys.webui.title: Markdown Viewer UI
+      com.platys.webui.url: http://${PUBLIC_IP}:80
+    ports:
+      - 80:80
+    volumes:
+      - ./doc:/home/python/markdown
+      - ./data-transfer:/data-transfer
+    restart: unless-stopped
+  markdown-renderer:
+    image: trivadis/jinja2-renderer:latest
+    container_name: markdown-renderer
+    hostname: markdown-renderer
+    environment:
+      USE_PUBLIC_IP: 'True'
+      PUBLIC_IP: ${PUBLIC_IP}
+      DOCKER_HOST_IP: ${DOCKER_HOST_IP}
+      DATAPLATFORM_HOME: ${DATAPLATFORM_HOME}
+    volumes:
+      - ./doc/templates:/templates
+      - ./doc/templates:/scripts
+      - .:/variables
+      - ./doc:/output
+      - ./data-transfer:/data-transfer
