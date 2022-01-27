@@ -28,8 +28,8 @@ export PLATYS_VERSION=2.4.2
 export NETWORK_NAME=eth0
 export USERNAME=ubuntu
 export PASSWORD=ubuntu
-export STREAMSETS_CLOUD_DEPLOYMENT_ID=<replace it by Streamsets Data Hub deployment id>
-export STREAMSETS_CLOUD_DEPLOYMENT_TOKEN=<replace it by Streamsets Data Hub deployment token>
+export STREAMSETS_CLOUD_DEPLOYMENT_ID="<replace it by Streamsets Data Hub deployment id>"
+export STREAMSETS_CLOUD_DEPLOYMENT_TOKEN="<replace it by Streamsets Data Hub deployment token>"
 
 # Prepare Environment Variables 
 export PUBLIC_IP=$(curl ipinfo.io/ip)
