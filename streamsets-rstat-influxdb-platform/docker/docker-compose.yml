@@ -1,50 +1,33 @@
 # =======================================================================
-# Platform Name            demo-platform
+# Platform Name            hslu-data-platform
 # Platform Stack:          trivadis/platys-modern-data-platform
-# Platform Stack Version:  1.13.0
+# Platform Stack Version:  1.14.0-preview
 # =======================================================================
 version: '3.5'
 networks:
   default:
-    name: demo-platform
+    name: hslu-data-platform
+# backward compatiblity to platform < 1.14.0
 # Enable PostgreSQL or MySQL for MLflow server
 services:
-  #  ================================== StreamSets DataCollector ========================================== #
-  streamsets-1:
-    image: streamsets/datacollector:3.22.2
-    container_name: streamsets-1
-    hostname: streamsets-1
+  #  ================================== StreamSets DataCollector Cloud ========================================== #
+  streamsets-cloud-1:
+    image: streamsets/datacollector:4.3.0
+    container_name: streamsets-cloud-1
+    hostname: streamsets-cloud-1
     labels:
-      com.platys.webui.title: StreamSets Data Collector UI
-      com.platys.webui.url: http://${PUBLIC_IP}:18630
-      com.platys.restapi.title: StreamSets Data Collector REST API
-      com.platys.restapi.url: http://${PUBLIC_IP}:18630/collector/restapi
-    ports:
-      - 18630:18630
+      com.platys.name: streamsets-cloud
     environment:
-      SDC_OFFSET_DIRECTORY: /data/custom-offset-el
-      SDC_INSTALL_STAGES: streamsets-datacollector-aws-lib
-      SDC_INSTALL_ENTERPRISE_STAGES: ''
-      SDC_JAVA_OPTS: -Xmx2g -Xms2g
-      SDC_JAVA8_OPTS: -XX:+UseG1GC
-      SDC_CONF_MONITOR_MEMORY: 'true'
-      SDC_CONF_PIPELINE_MAX_RUNNERS_COUNT: 50
-      SDC_CONF_http_authentication: form
+      STREAMSETS_DEPLOYMENT_SCH_URL: https://eu01.hub.streamsets.com
+      STREAMSETS_DEPLOYMENT_ID: ${STREAMSETS_CLOUD_DEPLOYMENT_ID}
+      STREAMSETS_DEPLOYMENT_TOKEN: ${STREAMSETS_CLOUD_DEPLOYMENT_TOKEN}
+      SDC_JAVA_OPTS: -Dlog4j2.formatMsgNoLookups=true
     volumes:
       - ./data-transfer:/data-transfer
-      - ./conf/streamsets/pre-docker-entrypoint.sh:/pre-docker-entrypoint.sh
-      - ./plugins/streamsets/user-libs:/opt/streamsets-datacollector-user-libs:Z
     ulimits:
       nofile:
         soft: 32768
         hard: 32768
-    user: '1000'
-    command:
-      - dc
-      - -exec
-      - -verbose
-    entrypoint:
-      - /pre-docker-entrypoint.sh
     restart: unless-stopped
   #  ================================== RStudio ========================================== #
   rstudio:
@@ -52,6 +35,7 @@ services:
     container_name: rstudio
     hostname: rstudio
     labels:
+      com.platys.name: rstudio
       com.platys.webui.title: RStudio UI
       com.platys.webui.url: http://${PUBLIC_IP}:8787
     ports:
@@ -63,39 +47,19 @@ services:
     volumes:
       - ./data-transfer:/data-transfer
     restart: unless-stopped
-  #  ================================== Grafana ========================================== #
-  grafana:
-    image: grafana/grafana:8.2.0
-    hostname: grafana
-    container_name: grafana
-    labels:
-      com.platys.webui.title: Grafana UI
-      com.platys.webui.url: http://${PUBLIC_IP}:3000
-    expose:
-      - 3000
-    ports:
-      - 3000:3000
-    environment:
-      - GF_INSTALL_PLUGINS=grafana-piechart-panel
-      - GF_SECURITY_ADMIN_USER=admin
-      - GF_SECURITY_ADMIN_PASSWORD=abc123!
-      - GF_USERS_ALLOW_SIGN_UP=false
-    volumes:
-      - ./data-transfer:/data-transfer
-      - ./plugins/grafana:/etc/grafana/provisioning
-    restart: unless-stopped
   #  ================================== InfluxDB 2 ========================================== #
   influxdb2:
-    image: influxdb:2.0.8
+    image: influxdb:2.1.1
     hostname: influxdb2
     container_name: influxdb2
     labels:
+      com.platys.name: influxdb2
       com.platys.webui.title: InfluxDB 2.0 UI
-      com.platys.webui.url: http://${PUBLIC_IP}:9999
+      com.platys.webui.url: http://${PUBLIC_IP}:19999
       com.platys.restapi.title: InfluxDB 2.0 Rest API
-      com.platys.restapi.url: http://${PUBLIC_IP}:9999/api/v2
+      com.platys.restapi.url: http://${PUBLIC_IP}:19999/api/v2
     ports:
-      - 9999:8086
+      - 19999:8086
     volumes:
       - ./data-transfer:/data-transfer
     command: --reporting-disabled
@@ -106,6 +70,7 @@ services:
     container_name: minio-1
     hostname: minio-1
     labels:
+      com.platys.name: minio
       com.platys.webui.title: MinIO UI
       com.platys.webui.url: http://${PUBLIC_IP}:9000
     ports:
@@ -128,6 +93,8 @@ services:
     image: minio/mc:latest
     container_name: minio-mc
     hostname: minio-mc
+    labels:
+      com.platys.name: minio
     volumes:
       - ./data-transfer:/data-transfer
       - ./conf/minio/config.json:/root/.mc/config.json
@@ -144,12 +111,36 @@ services:
         #
         while [ 1 -eq 1 ];do sleep 60;done
     restart: unless-stopped
-  #  ================================== cAdvisor ========================================== #
+  #  ================================== Grafana ========================================== #
+  grafana:
+    image: grafana/grafana:8.2.0
+    hostname: grafana
+    container_name: grafana
+    labels:
+      com.platys.name: grafana
+      com.platys.webui.title: Grafana UI
+      com.platys.webui.url: http://${PUBLIC_IP}:3000
+    expose:
+      - 3000
+    ports:
+      - 3000:3000
+    environment:
+      - GF_INSTALL_PLUGINS=grafana-piechart-panel
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=abc123!
+      - GF_USERS_ALLOW_SIGN_UP=false
+      - GF_FEATURE_TOGGLES_ENABLE=
+    volumes:
+      - ./data-transfer:/data-transfer
+      - ./plugins/grafana:/etc/grafana/provisioning
+    restart: unless-stopped
+  #  ================================== Wetty ========================================== #
   wetty:
     image: svenihoney/wetty:latest
     container_name: wetty
     hostname: wetty
     labels:
+      com.platys.name: wetty
       com.platys.webui.title: WeTTY UI
       com.platys.webui.url: http://${PUBLIC_IP}:3001
     ports:
@@ -168,26 +159,33 @@ services:
     container_name: markdown-viewer
     hostname: markdown-viewer
     labels:
+      com.platys.name: markdown-viewer
       com.platys.webui.title: Markdown Viewer UI
       com.platys.webui.url: http://${PUBLIC_IP}:80
     ports:
       - 80:80
     volumes:
-      - ./doc:/home/python/markdown
+      - ./artefacts:/home/python/markdown
       - ./data-transfer:/data-transfer
     restart: unless-stopped
   markdown-renderer:
     image: trivadis/jinja2-renderer:latest
     container_name: markdown-renderer
     hostname: markdown-renderer
+    labels:
+      com.platys.name: markdown-renderer
     environment:
       USE_PUBLIC_IP: 'True'
       PUBLIC_IP: ${PUBLIC_IP}
       DOCKER_HOST_IP: ${DOCKER_HOST_IP}
       DATAPLATFORM_HOME: ${DATAPLATFORM_HOME}
+      PLATYS_PLATFORM_NAME: hslu-data-platform
+      PLATYS_PLATFORM_STACK: trivadis/platys-modern-data-platform
+      PLATYS_PLATFORM_STACK_VERSION: 1.14.0-preview
+      PLATYS_COPY_COOKBOOK_DATA: 'True'
     volumes:
-      - ./doc/templates:/templates
-      - ./doc/templates:/scripts
+      - ./artefacts/templates:/templates
+      - ./artefacts/templates:/scripts
       - .:/variables
-      - ./doc:/output
+      - ./artefacts:/output
       - ./data-transfer:/data-transfer
