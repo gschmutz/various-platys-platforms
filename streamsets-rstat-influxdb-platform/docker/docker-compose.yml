@@ -60,6 +60,9 @@ services:
       com.platys.restapi.url: http://${PUBLIC_IP}:19999/api/v2
     ports:
       - 19999:8086
+    environment:
+      INFLUXDB_USERNAME: influx
+      INFLUXDB_PASSWORD: abc123!
     volumes:
       - ./data-transfer:/data-transfer
     command: --reporting-disabled
