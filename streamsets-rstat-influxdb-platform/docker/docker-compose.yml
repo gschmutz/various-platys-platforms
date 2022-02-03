@@ -61,8 +61,10 @@ services:
     ports:
       - 19999:8086
     environment:
-      INFLUXDB_USERNAME: influx
-      INFLUXDB_PASSWORD: abc123!
+      DOCKER_INFLUXDB_INIT_USERNAME: influx
+      DOCKER_INFLUXDB_INIT_PASSWORD: abc123!
+      DOCKER_INFLUXDB_INIT_ORG: platys
+      DOCKER_INFLUXDB_INIT_BUCKET: demo-bucket
     volumes:
       - ./data-transfer:/data-transfer
     command: --reporting-disabled
