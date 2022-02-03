@@ -13,6 +13,6 @@ platys gen
 
 ## How to use it?
 
-Navigate to <http://dataplatform:9000>
+Navigate to <http://192.168.142.129:9000>
 
 
