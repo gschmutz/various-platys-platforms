@@ -73,7 +73,7 @@ services:
     restart: unless-stopped
   #  ================================== Minio ========================================== #
   minio-1:
-    image: minio/minio:RELEASE.2021-09-15T04-54-25Z
+    image: minio/minio:RELEASE.2022-02-01T18-00-14Z
     container_name: minio-1
     hostname: minio-1
     labels:
@@ -120,7 +120,7 @@ services:
     restart: unless-stopped
   #  ================================== Grafana ========================================== #
   grafana:
-    image: grafana/grafana:8.2.0
+    image: grafana/grafana:8.3.4
     hostname: grafana
     container_name: grafana
     labels:
