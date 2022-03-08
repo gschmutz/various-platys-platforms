@@ -42,7 +42,7 @@ services:
       - 8787:8787
     environment:
       PASSWORD: rstudio
-      ROOT: 'False'
+      ROOT: 'True'
       DISABLE_AUTH: 'False'
     volumes:
       - ./data-transfer:/data-transfer
