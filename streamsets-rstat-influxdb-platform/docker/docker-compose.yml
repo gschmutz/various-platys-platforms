@@ -31,7 +31,7 @@ services:
     restart: unless-stopped
   #  ================================== RStudio ========================================== #
   rstudio:
-    image: rocker/rstudio:4
+    image: rocker/tidyverse:4
     container_name: rstudio
     hostname: rstudio
     labels:
