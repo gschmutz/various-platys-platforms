@@ -1,12 +1,12 @@
 # =======================================================================
-# Platform Name            platys-platform
+# Platform Name            trino-postgresql-platform
 # Platform Stack:          trivadis/platys-modern-data-platform
 # Platform Stack Version:  1.16.0-preview
 # =======================================================================
 version: '3.5'
 networks:
   default:
-    name: platys-platform
+    name: trino-postgresql-platform
 #  
 services:
   #  ================================== PostgreSQL ========================================== #
@@ -110,7 +110,7 @@ services:
       PUBLIC_IP: ${PUBLIC_IP}
       DOCKER_HOST_IP: ${DOCKER_HOST_IP}
       DATAPLATFORM_HOME: ${DATAPLATFORM_HOME}
-      PLATYS_PLATFORM_NAME: platys-platform
+      PLATYS_PLATFORM_NAME: trino-postgresql-platform
       PLATYS_PLATFORM_STACK: trivadis/platys-modern-data-platform
       PLATYS_PLATFORM_STACK_VERSION: 1.16.0-preview
       PLATYS_COPY_COOKBOOK_DATA: 'True'

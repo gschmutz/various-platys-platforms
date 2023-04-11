@@ -13,5 +13,5 @@ platys gen
 
 ### Connect through JDBC
 
-* **JDBC Url:**  	`jdbc:oracle:thin:@:1522/XEPDB1`
+* **JDBC Url:**  	`jdbc:oracle:thin:@dataplatform:1522/XEPDB1`
 * **JDBC Driver Class Name:** 	`oracle.jdbc.driver.OracleDriver`
