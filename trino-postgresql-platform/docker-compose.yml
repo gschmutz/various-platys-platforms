@@ -1,0 +1,134 @@
+# =======================================================================
+# Platform Name            platys-platform
+# Platform Stack:          trivadis/platys-modern-data-platform
+# Platform Stack Version:  1.16.0-preview
+# =======================================================================
+version: '3.5'
+networks:
+  default:
+    name: platys-platform
+#  
+services:
+  #  ================================== PostgreSQL ========================================== #
+  postgresql:
+    image: postgres:15
+    container_name: postgresql
+    hostname: postgresql
+    labels:
+      com.platys.name: postgresql
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_PASSWORD=abc123!
+      - POSTGRES_USER=postgres
+      - POSTGRES_DB=postgres
+      - POSTGRES_MULTIPLE_DATABASES=demodb
+      - POSTGRES_MULTIPLE_USERS=demo
+      - POSTGRES_MULTIPLE_PASSWORDS=abc123!
+      - POSTGRES_MULTIPLE_ADDL_ROLES=
+      - PGDATA=/var/lib/postgresql/data/pgdata
+      - DB_SCHEMA=demo
+    volumes:
+      - ./data-transfer:/data-transfer
+      - ./init/postgresql:/docker-entrypoint-initdb.d/
+    restart: unless-stopped
+  #  ================================== Trino ========================================== #
+  trino-1:
+    image: trinodb/trino:412
+    hostname: trino-1
+    container_name: trino-1
+    labels:
+      com.platys.name: trino
+      com.platys.webui.title: Trino UI
+      com.platys.webui.url: http://${PUBLIC_IP}:28082
+    ports:
+      - 28082:8080
+      - 28083:8443
+    environment:
+      # this is only generated to keep the structure valid if no other env variables are present
+      DUMMY: make-it-valid
+      POSTGRESQL_DATABASE: postgres
+      POSTGRESQL_USER: postgres
+      POSTGRESQL_PASSWORD: abc123!
+    volumes:
+      - ./data-transfer:/data-transfer
+      - ./conf/trino/cluster/coordinator.config.properties:/etc/trino/config.properties
+      - ./conf/trino/cluster/node.properties:/etc/trino/node.properties
+      - ./conf/trino/catalog/postgresql.properties:/etc/trino/catalog/postgresql.properties
+      - ./custom-conf/trino/security:/etc/trino/security
+    restart: unless-stopped
+  trino-worker-1:
+    image: trinodb/trino:412
+    hostname: trino-worker-1
+    container_name: trino-worker-1
+    environment:
+      # this is only generated to keep the structure valid if no other env variables are present
+      DUMMY: make-it-valid
+      POSTGRESQL_DATABASE: postgres
+      POSTGRESQL_USER: postgres
+      POSTGRESQL_PASSWORD: abc123!
+    volumes:
+      - ./data-transfer:/data-transfer
+      - ./conf/trino/cluster/worker.config.properties:/etc/trino/config.properties
+      - ./conf/trino/cluster/node.properties:/etc/trino/node.properties
+      - ./conf/trino/catalog/postgresql.properties:/etc/trino/catalog/postgresql.properties
+      - ./custom-conf/trino/security:/etc/trino/security
+    restart: unless-stopped
+  trino-cli:
+    image: trivadis/trino-cli:latest
+    hostname: trino-cli
+    container_name: trino-cli
+    labels:
+      com.platys.name: trino
+    volumes:
+      - ./data-transfer:/data-transfer
+    tty: true
+    restart: unless-stopped
+  #  ================================== markdown-viewer ========================================== #
+  markdown-viewer:
+    image: trivadis/markdown-web:latest
+    container_name: markdown-viewer
+    hostname: markdown-viewer
+    labels:
+      com.platys.name: markdown-viewer
+      com.platys.webui.title: Markdown Viewer UI
+      com.platys.webui.url: http://${PUBLIC_IP}:80
+    ports:
+      - 80:80
+    volumes:
+      - ./artefacts:/home/python/markdown
+      - ./data-transfer:/data-transfer
+    restart: unless-stopped
+  markdown-renderer:
+    image: trivadis/jinja2-renderer:latest
+    container_name: markdown-renderer
+    hostname: markdown-renderer
+    labels:
+      com.platys.name: markdown-renderer
+    environment:
+      USE_PUBLIC_IP: 'True'
+      PUBLIC_IP: ${PUBLIC_IP}
+      DOCKER_HOST_IP: ${DOCKER_HOST_IP}
+      DATAPLATFORM_HOME: ${DATAPLATFORM_HOME}
+      PLATYS_PLATFORM_NAME: platys-platform
+      PLATYS_PLATFORM_STACK: trivadis/platys-modern-data-platform
+      PLATYS_PLATFORM_STACK_VERSION: 1.16.0-preview
+      PLATYS_COPY_COOKBOOK_DATA: 'True'
+    volumes:
+      - ./artefacts/templates:/templates
+      - ./artefacts/templates:/scripts
+      - .:/variables
+      - ./artefacts:/output
+      - ./data-transfer:/data-transfer
+  #  ================================== data-provisioning ========================================== #
+  data-provisioning:
+    image: trivadis/platys-modern-data-platform-data:latest
+    container_name: data-provisioning
+    hostname: data-provisioning
+    labels:
+      com.platys.name: data-provisioning
+    volumes:
+      - ./data-transfer:/data-transfer
+volumes:
+  data-transfer-vol:
+    name: data_transfer_vol
