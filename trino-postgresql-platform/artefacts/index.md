@@ -1,8 +1,8 @@
-# platys-platform
+# trino-postgresql-platform
 
 | Platform Stack | Platform Stack Version | Public IP | Docker-Host IP
 |-------------- |------|------------|------------
-| [ trivadis/platys-modern-data-platform ](https://hub.docker.com/repository/docker/trivadis/platys-modern-data-platform) | 1.16.0-preview |  | 
+| [ trivadis/platys-modern-data-platform ](https://hub.docker.com/repository/docker/trivadis/platys-modern-data-platform) | 1.16.0-preview | 192.168.205.1 | localhost
 
 This environment has been generated using the [Platys](http://github.com/trivadispf/platys) toolkit.
 

@@ -34,7 +34,7 @@ services:
     restart: unless-stopped
   #  ================================== Trino ========================================== #
   trino-1:
-    image: trinodb/trino:412
+    image: trinodb/trino:414
     hostname: trino-1
     container_name: trino-1
     labels:
@@ -55,12 +55,16 @@ services:
       - ./conf/trino/cluster/coordinator.config.properties:/etc/trino/config.properties
       - ./conf/trino/cluster/node.properties:/etc/trino/node.properties
       - ./conf/trino/catalog/postgresql.properties:/etc/trino/catalog/postgresql.properties
+      - ./custom-conf/trino/catalog/teradata.properties:/etc/trino/catalog/teradata.properties
+      - ./plugins/trino/connector/trino-teradata:/usr/lib/trino/plugin/trino-teradata
       - ./custom-conf/trino/security:/etc/trino/security
     restart: unless-stopped
   trino-worker-1:
-    image: trinodb/trino:412
+    image: trinodb/trino:414
     hostname: trino-worker-1
     container_name: trino-worker-1
+    labels:
+      com.platys.name: trino
     environment:
       # this is only generated to keep the structure valid if no other env variables are present
       DUMMY: make-it-valid
@@ -72,6 +76,8 @@ services:
       - ./conf/trino/cluster/worker.config.properties:/etc/trino/config.properties
       - ./conf/trino/cluster/node.properties:/etc/trino/node.properties
       - ./conf/trino/catalog/postgresql.properties:/etc/trino/catalog/postgresql.properties
+      - ./custom-conf/trino/catalog/teradata.properties:/etc/trino/catalog/teradata.properties
+      - ./plugins/trino/connector/trino-teradata:/usr/lib/trino/plugin/trino-teradata
       - ./custom-conf/trino/security:/etc/trino/security
     restart: unless-stopped
   trino-cli:

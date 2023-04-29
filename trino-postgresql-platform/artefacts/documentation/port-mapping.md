@@ -12,6 +12,7 @@ Container Port(s) | Internal Port(s)           | Service (alternatives) |
 1433 | 1433 | sqlserver |
 1521 | 1521 | oracledb-ee |
 1522 | 1521 | oracledb-xe |
+1523 | 1521 | oracledb-free |
 1095 | 1095 | ksqldb-server-1 (jmx) |
 1096 | 1096 | ksqldb-server-2 (jmx) |
 1097 | 1097 | ksqldb-server-3 (jmx) |
@@ -435,7 +436,7 @@ Container Port(s) | Internal Port(s)           | Service (alternatives) |
 28235 | 8001 | business-central (drools) |
 28236 | 8080 | business-central (drools) |
 28237 | 8081 | flink-jobmanager |
-28238 | 8081 | nussknacker-designer |
+28238 | 8083 | flink-sqlgateway |
 28239 | 8080 | kowl |
 28240 | 8080 | ignite-1 |
 28241 | 8080 | ignite-2 |
@@ -496,6 +497,7 @@ Container Port(s) | Internal Port(s)           | Service (alternatives) |
 28299 | 80 | baserow |
 28300 | 443 | baserow |
 28301 | 10001 | querybook |
+28302 | 8081 | nussknacker-designer |
 
 
 ## Ports > 28500
