@@ -13,10 +13,10 @@ platys gen
 
 ## How to use it?
 
-Navigate to <http://:7474> to use the Neo4J Browser.
+Navigate to <http://172.20.10.2:7474> to use the Neo4J Browser.
 
 To use the `cypher-shell`, in a terminal window execute
 
 ```bash
-docker exec -ti neo4j-1 ./bin/cypher-shell -u neo4j -p abc123!
+docker exec -ti neo4j-1 ./bin/cypher-shell -u neo4j -p abc123abc123
 ```

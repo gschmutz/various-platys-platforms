@@ -55,5 +55,5 @@ docker exec -ti oracledb-xe sqlplus "user1/abc123!"@//localhost/XEPDB1
 
 ### Connect through JDBC
 
-* **JDBC Url:**  	`jdbc:oracle:thin:@:1522/XEPDB1`
+* **JDBC Url:**  	`jdbc:oracle:thin:@172.20.10.2:1522/XEPDB1`
 * **JDBC Driver Class Name:** 	`oracle.jdbc.driver.OracleDriver`

@@ -13,4 +13,4 @@ platys gen
 
 ## How to use it?
 
-Navigate to <http://:28236/business-central> or <http://:28234>.
+Navigate to <http://172.20.10.2:28236/business-central> or <http://172.20.10.2:28234>.

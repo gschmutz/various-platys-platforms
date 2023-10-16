@@ -13,4 +13,4 @@ platys gen
 
 ## How to use it?
 
-Navigate to <http://:1337>
+Navigate to <http://172.20.10.2:1337>

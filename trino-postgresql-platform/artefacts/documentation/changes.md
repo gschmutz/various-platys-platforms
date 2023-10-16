@@ -2,6 +2,21 @@
 
 See [Upgrade to a new platform stack version](https://github.com/TrivadisPF/platys/blob/master/documentation/upgrade-platform-stack) for how to upgrade to newer version.
 
+## What's new in 1.17.0
+
+The Modern Data Platform version 1.16.0 contains the following bug fixes and enhancements:
+
+### New Services
+
+ * Minio Web
+
+### Version upgrades
+
+ * Update `zeebe` to `8.2.5`
+ * Update `druid` to `26.0.0`
+ * Update `trino` to `419`
+
+
 ## What's new in 1.16.0
 
 The Modern Data Platform version 1.16.0 contains the following bug fixes and enhancements:
@@ -41,6 +56,9 @@ The Modern Data Platform version 1.16.0 contains the following bug fixes and enh
  * Querybook
  * Oracle Database Free
  * Kafka CLI (Kafka software without a running broker)
+ * Kafkistry
+ * Parquet Tools
+ * SQL Chat
 
 ### New/Updated Cookbook Recipes
 
@@ -63,13 +81,13 @@ The Modern Data Platform version 1.16.0 contains the following bug fixes and enh
 
 ### Version upgrades
 
- * Update `DataHub` to `v0.10.2`
- * Update `Trino` to `414`
- * Update `Starburst Enterprise` to `412-e`
+ * Update `DataHub` to `v0.10.3`
+ * Update `Trino` to `418`
+ * Update `Starburst Enterprise` to `413-e`
  * Update `dremio` to `24.0`
  * Update `Jikkou` to `0.14.0`
  * Update `Hasura` to `v2.16.1`
- * Update `Confluent Platform` to `7.3.1`
+ * Update `Confluent Platform` to `7.4.0`
  * Update `ksqldb` to `0.28.2`
  * Update `datastax` to `6.8.34`
  * Update `datastax-opscenter` to `6.8.26`
@@ -83,7 +101,7 @@ The Modern Data Platform version 1.16.0 contains the following bug fixes and enh
  * Update `graphdb` to `10.1.2`
  * Update `nifi` to `1.21.0`
  * Update `jikkou` to `0.13.0`
- * Update `spark` to `3.1.3`, `3.2.3` and `3.3.1`
+ * Update `spark` to `3.1.3`, `3.2.4` and `3.3.2` and `3.4.0`
  * Update `materialize` to `v0.52.2`
  * Update `neo4j` to `5.7`
  * Update `eventstoredb` to `22.10.0-buster-slim`
@@ -113,7 +131,7 @@ The Modern Data Platform version 1.16.0 contains the following bug fixes and enh
  * Update `drill` to `1.20.2`
  * Update `hasura` to `v2.23.0`
  * Update `cedalo-management-center` to `2.5.8`
- * Update `lakefs` to `0.99.0`
+ * Update `lakefs` to `0.101.0`
  * Update `vault` to `1.13.1`
  * Update `portainer` to `2.16.2-alpine`
  * Update `watchtower` to `1.5.1`
@@ -124,10 +142,11 @@ The Modern Data Platform version 1.16.0 contains the following bug fixes and enh
  * Update `nodered` to `2.2.3`
  * Update `dataiku-dss` to `11.2.0`
  * Update `postgres` to `15`
- * Update `Airflow` to `2.5.3`
+ * Update `Airflow` to `2.6.1` with default python `3.10`
  * Update `TimescaleDB` to `2.10.2-pg15`
  * Update `Pinot` to `0.12.1`
  * Update `Jupyter-spark` to `spark-3.3.2` and `spark-3.4.0`
+ * Update `Hue` to `4.11.0`
 
 ### Bug Fixes
 
@@ -147,6 +166,9 @@ The Modern Data Platform version 1.16.0 contains the following bug fixes and enh
  * Ember Frontend for Datahub removed (as React is the new standard UI)
  * Rename `SPARK_THRIFT_enable` to `SPARK_THRIFTSERVER_enable`
  * Rename folder `./init/oraclexe` to `./init/oracle-xe`
+ * Spark Master UI now runs on port `28304` and no longer on standard `8080`
+ * Change `FLINK_NUSSKNACKER_enable` to `NUSSKNACKER_enable`
+ * Change `MINIO_default_buckets` to `MINIO_buckets`
 
 ### Enhancements
 
@@ -158,6 +180,8 @@ The Modern Data Platform version 1.16.0 contains the following bug fixes and enh
  * added options to further configure AKHQ 
  * support Trino security with password file and access control file
  * support for multiple Airflow workers if `celery` executor mode is used
+ * support for custom Trino catalogs and connectors
+ * add concept of an environment to a platys stack, so that the same docker-compose can be run multiple time on different machines, but having a separate environment.
  
 ## What's new in 1.15.0
 

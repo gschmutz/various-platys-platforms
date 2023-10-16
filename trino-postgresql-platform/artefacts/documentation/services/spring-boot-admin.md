@@ -12,4 +12,4 @@ platys gen
 
 ## How to use it?
 
-Navigate to <http://:28293>.
+Navigate to <http://172.20.10.2:28293>.

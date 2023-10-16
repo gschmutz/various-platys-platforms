@@ -1,0 +1,574 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>com.starburstdata.presto</groupId>
+        <artifactId>starburst-enterprise-root</artifactId>
+        <version>420-e</version>
+        <relativePath>../..</relativePath>
+    </parent>
+
+    <artifactId>starburst-teradata</artifactId>
+    <description>Starburst Enterprise - Teradata Connector</description>
+    <packaging>trino-plugin</packaging>
+
+    <properties>
+        <air.main.basedir>${project.parent.basedir}</air.main.basedir>
+        <air.test.jvmsize>4g</air.test.jvmsize>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.starburstdata.presto</groupId>
+            <artifactId>starburst-base-jdbc</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.starburstdata.presto</groupId>
+            <artifactId>starburst-direct</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.starburstdata.presto</groupId>
+            <artifactId>starburst-kerberos</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.starburstdata.presto</groupId>
+            <artifactId>starburst-license</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.starburstdata.presto</groupId>
+            <artifactId>starburst-managed-statistics</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.starburstdata.presto</groupId>
+            <artifactId>starburst-plugin-toolkit</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>io.trino</groupId>
+            <artifactId>trino-base-jdbc</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>io.trino</groupId>
+            <artifactId>trino-collect</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>io.trino</groupId>
+            <artifactId>trino-matching</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>io.trino</groupId>
+            <artifactId>trino-plugin-toolkit</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>io.airlift</groupId>
+            <artifactId>configuration</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>io.airlift</groupId>
+            <artifactId>log</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>io.airlift</groupId>
+            <artifactId>log-manager</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>io.airlift</groupId>
+            <artifactId>units</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.google.errorprone</groupId>
+            <artifactId>error_prone_annotations</artifactId>
+            <optional>true</optional>
+        </dependency>
+
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.google.inject</groupId>
+            <artifactId>guice</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>dev.failsafe</groupId>
+            <artifactId>failsafe</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>jakarta.annotation</groupId>
+            <artifactId>jakarta.annotation-api</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>javax.validation</groupId>
+            <artifactId>validation-api</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jdbi</groupId>
+            <artifactId>jdbi3-core</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.weakref</groupId>
+            <artifactId>jmxutils</artifactId>
+        </dependency>
+
+        <!-- used by tests but also needed transitively -->
+        <dependency>
+            <groupId>com.starburstdata.presto</groupId>
+            <artifactId>starburst-redirection</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jetbrains</groupId>
+            <artifactId>annotations</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+
+        <!-- Trino SPI -->
+        <dependency>
+            <groupId>io.trino</groupId>
+            <artifactId>trino-spi</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>io.airlift</groupId>
+            <artifactId>slice</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-annotations</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.teradata.jdbc</groupId>
+            <artifactId>terajdbc</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>io.opentelemetry</groupId>
+            <artifactId>opentelemetry-api</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>io.opentelemetry</groupId>
+            <artifactId>opentelemetry-context</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.openjdk.jol</groupId>
+            <artifactId>jol-core</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
+        <!-- for testing -->
+        <dependency>
+            <groupId>com.starburstdata.presto</groupId>
+            <artifactId>starburst-base-jdbc</artifactId>
+            <type>test-jar</type>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.starburstdata.presto</groupId>
+            <artifactId>starburst-direct</artifactId>
+            <type>test-jar</type>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.starburstdata.presto</groupId>
+            <artifactId>starburst-engine</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.starburstdata.presto</groupId>
+            <artifactId>starburst-engine</artifactId>
+            <type>test-jar</type>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.starburstdata.presto</groupId>
+            <artifactId>starburst-license</artifactId>
+            <type>test-jar</type>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.starburstdata.presto</groupId>
+            <artifactId>starburst-managed-statistics</artifactId>
+            <type>test-jar</type>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.starburstdata.presto</groupId>
+            <artifactId>starburst-redirection</artifactId>
+            <type>test-jar</type>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.starburstdata.presto</groupId>
+            <artifactId>starburst-testing</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.starburstdata.presto</groupId>
+            <artifactId>starburst-trino-testing</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>io.trino</groupId>
+            <artifactId>trino-base-jdbc</artifactId>
+            <type>test-jar</type>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>io.trino</groupId>
+            <artifactId>trino-exchange-filesystem</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>io.trino</groupId>
+            <artifactId>trino-jmx</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>io.trino</groupId>
+            <artifactId>trino-main</artifactId>
+            <type>test-jar</type>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>io.trino</groupId>
+            <artifactId>trino-main</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>io.trino</groupId>
+            <artifactId>trino-memory</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>io.trino</groupId>
+            <artifactId>trino-parser</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>io.trino</groupId>
+            <artifactId>trino-spi</artifactId>
+            <type>test-jar</type>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>io.trino</groupId>
+            <artifactId>trino-testing</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>io.trino</groupId>
+            <artifactId>trino-testing-services</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>io.trino</groupId>
+            <artifactId>trino-tpch</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>io.trino.tpch</groupId>
+            <artifactId>tpch</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>io.airlift</groupId>
+            <artifactId>testing</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.jcraft</groupId>
+            <artifactId>jsch</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.assertj</groupId>
+            <artifactId>assertj-core</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.testcontainers</groupId>
+            <artifactId>jdbc</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.testng</groupId>
+            <artifactId>testng</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <systemPropertyVariables combine.children="append">
+                        <teradata.server.url>${teradata.server.url}</teradata.server.url>
+                    </systemPropertyVariables>
+                </configuration>
+                <dependencies>
+                    <!-- Specify TestNG explicitly for avoiding 'No tests were executed!' due to JUnit -->
+                    <dependency>
+                        <groupId>org.apache.maven.surefire</groupId>
+                        <artifactId>surefire-testng</artifactId>
+                        <version>${dep.plugin.surefire.version}</version>
+                    </dependency>
+                </dependencies>
+            </plugin>
+            <plugin>
+                <groupId>io.trino</groupId>
+                <artifactId>trino-maven-plugin</artifactId>
+                <extensions>true</extensions>
+                <configuration>
+                    <allowedProvidedDependencies>
+                        <id>com.teradata.jdbc:terajdbc</id>
+                    </allowedProvidedDependencies>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+    <profiles>
+        <profile>
+            <id>default</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <configuration>
+                            <excludes>
+                                <!-- jdbc -->
+                                <exclude>**/TestTeradataConnectorTest.java</exclude>
+                                <exclude>**/TestTeradataImpersonation.java</exclude>
+                                <exclude>**/TestTeradataImpersonationWithAuthToLocal.java</exclude>
+                                <exclude>**/TestTeradataImpersonationWithCacheSharing.java</exclude>
+                                <exclude>**/TestTeradataTableStatistics.java</exclude>
+                                <exclude>**/TestTeradataTypeMapping.java</exclude>
+                                <exclude>**/TestTeradataConvertToVarchar.java</exclude>
+                                <exclude>**/TestTeradataJdbcParallelism.java</exclude>
+                                <exclude>**/TestTeradataJdbcDynamicFiltering.java</exclude>
+                                <exclude>**/TestTeradataJdbcTableScanRedirection.java</exclude>
+                                <exclude>**/TestTeradataJdbcManagedStatistics.java</exclude>
+                                <exclude>**/TestTeradataAutomaticJoinPushdown.java</exclude>
+                                <exclude>**/TestTeradataClient.java</exclude>
+                                <exclude>**/TestTeradataAnsiDateFormat.java</exclude>
+                                <exclude>**/TestTeradataJmxStats.java</exclude>
+                                <exclude>**/TestTeradataJdbcQueryFailureRecovery.java</exclude>
+                                <exclude>**/TestTeradataJdbcTaskFailureRecovery.java</exclude>
+                                <!-- tera -->
+                                <exclude>**/TestTeradataWithTmodeTeraConnectorTest.java</exclude>
+                                <exclude>**/TestTeradataTypeMappingWithTmodeTera.java</exclude>
+                                <!-- kerberos -->
+                                <exclude>**/TestTeradataKerberosImpersonation.java</exclude>
+                                <exclude>**/TestTeradataKerberosImpersonationWithAuthToLocal.java</exclude>
+                                <exclude>**/TestTeradataKerberosConnectorSmokeTest.java</exclude>
+                                <exclude>**/TestTeradataKerberosDirectImpersonation.java</exclude>
+                                <exclude>**/TestTeradataKerberosDirectImpersonationWithAuthTofLocal.java</exclude>
+                                <exclude>**/TestTeradataKerberosDirectConnectorSmokeTest.java</exclude>
+                                <!-- direct -->
+                                <exclude>**/TestTeradataDirectConvertToVarchar.java</exclude>
+                                <exclude>**/TestTeradataDirectConnectorTest.java</exclude>
+                                <exclude>**/TestTeradataDirectTypeMapping.java</exclude>
+                                <exclude>**/TestTeradataEncryptedDirectConnectorSmokeTest.java</exclude>
+                                <exclude>**/TestTeradataCompressedDirectConnectorSmokeTest.java</exclude>
+                                <exclude>**/TestTeradataDirectImpersonation.java</exclude>
+                                <exclude>**/TestTeradataDirectImpersonationWithAuthToLocal.java</exclude>
+                                <exclude>**/TestTeradataDirectDynamicFiltering.java</exclude>
+                                <exclude>**/TestTeradataDirectTableScanRedirection.java</exclude>
+                                <exclude>**/TestTeradataDirectJmxStats.java</exclude>
+                                <exclude>**/TestTeradataDirectManagedStatistics.java</exclude>
+                                <exclude>**/TestTeradataDirectQueryFailureRecovery.java</exclude>
+                                <!-- table-stats -->
+                                <exclude>**/TestTeradataTableStatisticsTest.java</exclude>
+                                <exclude>**/TestTeradataTableStatisticsDirectTest.java</exclude>
+                            </excludes>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>jdbc</id>
+            <build>
+                <directory>${project.basedir}/target/jdbc</directory>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <configuration>
+                            <includes>
+                                <include>**/TestTeradataConnectorTest.java</include>
+                                <include>**/TestTeradataImpersonation.java</include>
+                                <include>**/TestTeradataImpersonationWithAuthToLocal.java</include>
+                                <include>**/TestTeradataImpersonationWithCacheSharing.java</include>
+                                <include>**/TestTeradataTableStatistics.java</include>
+                                <include>**/TestTeradataTypeMapping.java</include>
+                                <include>**/TestTeradataConvertToVarchar.java</include>
+                                <include>**/TestTeradataJdbcParallelism.java</include>
+                                <include>**/TestTeradataJdbcDynamicFiltering.java</include>
+                                <include>**/TestTeradataJdbcTableScanRedirection.java</include>
+                                <include>**/TestTeradataJdbcManagedStatistics.java</include>
+                                <include>**/TestTeradataAnsiDateFormat.java</include>
+                                <include>**/TestTeradataAutomaticJoinPushdown.java</include>
+                                <include>**/TestTeradataClient.java</include>
+                                <include>**/TestTeradataJmxStats.java</include>
+                                <include>**/TestTeradataJdbcQueryFailureRecovery.java</include>
+                                <include>**/TestTeradataJdbcTaskFailureRecovery.java</include>
+                            </includes>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>tera</id>
+            <build>
+                <directory>${project.basedir}/target/tera</directory>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <configuration>
+                            <includes>
+                                <include>**/TestTeradataWithTmodeTeraConnectorTest.java</include>
+                                <include>**/TestTeradataTypeMappingWithTmodeTera.java</include>
+                            </includes>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>kerberos</id>
+            <build>
+                <directory>${project.basedir}/target/kerberos</directory>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <configuration>
+                            <includes>
+                                <include>**/TestTeradataKerberosImpersonation.java</include>
+                                <include>**/TestTeradataKerberosImpersonationWithAuthToLocal.java</include>
+                                <include>**/TestTeradataKerberosConnectorSmokeTest.java</include>
+                                <include>**/TestTeradataKerberosDirectImpersonation.java</include>
+                                <include>**/TestTeradataKerberosDirectImpersonationWithAuthTofLocal.java</include>
+                                <include>**/TestTeradataKerberosDirectConnectorSmokeTest.java</include>
+                            </includes>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>direct</id>
+            <build>
+                <directory>${project.basedir}/target/direct</directory>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <configuration>
+                            <includes>
+                                <include>**/TestTeradataDirectConvertToVarchar.java</include>
+                                <include>**/TestTeradataDirectConnectorTest.java</include>
+                                <include>**/TestTeradataDirectTypeMapping.java</include>
+                                <include>**/TestTeradataEncryptedDirectConnectorSmokeTest.java</include>
+                                <include>**/TestTeradataCompressedDirectConnectorSmokeTest.java</include>
+                                <include>**/TestTeradataDirectImpersonation.java</include>
+                                <include>**/TestTeradataDirectImpersonationWithAuthToLocal.java</include>
+                                <include>**/TestTeradataDirectDynamicFiltering.java</include>
+                                <include>**/TestTeradataDirectTableScanRedirection.java</include>
+                                <include>**/TestTeradataDirectJmxStats.java</include>
+                                <include>**/TestTeradataDirectManagedStatistics.java</include>
+                                <include>**/TestTeradataDirectQueryFailureRecovery.java</include>
+                            </includes>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>table-stats</id>
+            <properties>
+                <!-- To avoid concurrent change conflict on database. Otherwise, it may throw an exception during 'teradata.system.analyze' procedure -->
+                <air.test.parallel>false</air.test.parallel>
+            </properties>
+            <build>
+                <directory>${project.basedir}/target/table-stats</directory>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <configuration>
+                            <includes>
+                                <include>**/TestTeradataTableStatisticsTest.java</include>
+                                <include>**/TestTeradataTableStatisticsDirectTest.java</include>
+                            </includes>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+</project>

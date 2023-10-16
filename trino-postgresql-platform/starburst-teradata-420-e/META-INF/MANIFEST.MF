@@ -1,0 +1,10 @@
+Manifest-Version: 1.0
+Created-By: Maven JAR Plugin 3.3.0
+Build-Jdk-Spec: 17
+Specification-Title: starburst-teradata
+Specification-Version: 420.0
+Implementation-Title: starburst-teradata
+Build-Time: 2023-06-27T20:26:22+0000
+Git-Commit-Id: cad143be1e3a0e108142f6fce2954efc367c1b43
+Implementation-Version: 420-e
+

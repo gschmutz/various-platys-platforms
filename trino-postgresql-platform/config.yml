@@ -4,7 +4,7 @@
       platys:
           platform-name: 'trino-postgresql-platform'
           platform-stack: 'trivadis/platys-modern-data-platform'
-          platform-stack-version: '1.16.0-preview'
+          platform-stack-version: '1.17.0-preview'
           structure: 'flat'
       # ========================================================================
       # Global configuration, valid for all or a group of services
@@ -1183,6 +1183,7 @@
       # ===== Trino ========
       #
       TRINO_enable: true
+      TRINO_version: 414
       # "single" or "cluster" install
       TRINO_install: cluster
       TRINO_workers: 1

@@ -11,5 +11,5 @@ platys gen
 
 ## How to use it?
 
-Navigate to <http://:5800>.
+Navigate to <http://172.20.10.2:5800>.
 
