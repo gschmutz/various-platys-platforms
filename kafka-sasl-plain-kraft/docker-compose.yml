@@ -1,0 +1,313 @@
+# =======================================================================
+# Platform Name            demo-platform
+# Platform Stack:          trivadis/platys-modern-data-platform
+# Platform Stack Version:  1.17.0-preview
+# =======================================================================
+version: '3.5'
+networks:
+  default:
+    name: demo-platform
+#  ns.securityProtocolCONTROLLER = SASL_PLAINTEXT
+#  ns.securityProtocolBROKER = SASL_PLAINTEXT
+#  ns.securityProtocolLOCAL = SASL_PLAINTEXT
+#  ns.securityProtocolDOCKERHOST = SASL_PLAINTEXT
+#  ns.securityProtocolEXTERNAL = SASL_PLAINTEXT
+#
+#  ns.saslMechanismCONTROLLER = PLAIN
+#  ns.saslMechanismBROKER = PLAIN
+#  ns.saslMechanismLOCAL = PLAIN
+#  ns.saslMechanismDOCKERHOST = PLAIN
+#  ns.saslMechanismEXTERNAL = PLAIN
+#  ns.loginModuleLOCAL = org.apache.kafka.common.security.plain.PlainLoginModule
+#  ns.loginModuleDOCKERHOST = org.apache.kafka.common.security.plain.PlainLoginModule
+#  ns.loginModuleEXTERNAL = org.apache.kafka.common.security.plain.PlainLoginModule
+services:
+#  ================================== Kafka ========================================== #
+  kafka-1:
+    image: confluentinc/cp-kafka:7.5.0
+    container_name: kafka-1
+    hostname: kafka-1
+    labels:
+      com.platys.name: kafka
+    ports:
+      - 9092:9092
+      - 19092:19092
+      - 29092:29092
+      - 39092:39092
+      - 9992:9992
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_BROKER_RACK: rack1
+      KAFKA_INTER_BROKER_LISTENER_NAME: BROKER
+      KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
+      KAFKA_CONTROLLER_QUORUM_VOTERS: 1@kafka-1:49092,2@kafka-2:49093,3@kafka-3:49094
+      KAFKA_PROCESS_ROLES: broker,controller
+      KAFKA_NODE_ID: 1
+      CLUSTER_ID: y4vRIwfDT0SkZ65tD7Ey2A
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: CONTROLLER:SASL_PLAINTEXT,BROKER:SASL_PLAINTEXT,LOCAL:SASL_PLAINTEXT,DOCKERHOST:SASL_PLAINTEXT,EXTERNAL:SASL_PLAINTEXT
+      KAFKA_LISTENERS: CONTROLLER://kafka-1:49092,BROKER://kafka-1:19092,LOCAL://kafka-1:39092,DOCKERHOST://kafka-1:29092,EXTERNAL://kafka-1:9092
+      KAFKA_ADVERTISED_LISTENERS: BROKER://kafka-1:19092,LOCAL://localhost:39092,DOCKERHOST://${DOCKER_HOST_IP:-127.0.0.1}:29092,EXTERNAL://${PUBLIC_IP:-127.0.0.1}:9092
+      KAFKA_SASL_MECHANISM_INTER_BROKER_PROTOCOL: PLAIN
+      KAFKA_SASL_ENABLED_MECHANISMS: PLAIN
+      KAFKA_SASL_MECHANISM_CONTROLLER_PROTOCOL: PLAIN
+      KAFKA_LISTENER_NAME_CONTROLLER_SASL_ENABLED_MECHANISMS: PLAIN
+      KAFKA_LISTENER_NAME_CONTROLLER_PLAIN_SASL_JAAS_CONFIG: org.apache.kafka.common.security.plain.PlainLoginModule required username="broker" password="broker" user_broker="broker";
+      KAFKA_LISTENER_NAME_BROKER_SASL_ENABLED_MECHANISMS: PLAIN
+      KAFKA_LISTENER_NAME_BROKER_PLAIN_SASL_JAAS_CONFIG: org.apache.kafka.common.security.plain.PlainLoginModule required username="broker" password="broker" user_broker="broker" user_connect="connect-secret" user_schemaregistry="schemaregistry-secret" user_ksqldb="ksqldb-secret" user_client="client-secret" ;
+      KAFKA_LISTENER_NAME_LOCAL_SASL_ENABLED_MECHANISMS: PLAIN
+      KAFKA_LISTENER_NAME_LOCAL_PLAIN_SASL_JAAS_CONFIG: org.apache.kafka.common.security.plain.PlainLoginModule required username="broker" password="broker" user_broker="broker" user_connect="connect-secret" user_schemaregistry="schemaregistry-secret" user_ksqldb="ksqldb-secret" user_client="client-secret" ;
+      KAFKA_LISTENER_NAME_DOCKERHOST_SASL_ENABLED_MECHANISMS: PLAIN
+      KAFKA_LISTENER_NAME_DOCKERHOST_PLAIN_SASL_JAAS_CONFIG: org.apache.kafka.common.security.plain.PlainLoginModule required username="broker" password="broker" user_broker="broker" user_connect="connect-secret" user_schemaregistry="schemaregistry-secret" user_ksqldb="ksqldb-secret" user_client="client-secret" ;
+      KAFKA_LISTENER_NAME_EXTERNAL_SASL_ENABLED_MECHANISMS: PLAIN
+      KAFKA_LISTENER_NAME_EXTERNAL_PLAIN_SASL_JAAS_CONFIG: org.apache.kafka.common.security.plain.PlainLoginModule required username="broker" password="broker" user_broker="broker" user_connect="connect-secret" user_schemaregistry="schemaregistry-secret" user_ksqldb="ksqldb-secret" user_client="client-secret" ;
+      KAFKA_SASL_SERVER_CALLBACK_HANDLER_CLASS:
+      CONFLUENT_METRICS_REPORTER_SASL_MECHANISM: PLAIN
+      CONFLUENT_METRICS_REPORTER_SECURITY_PROTOCOL: SASL_PLAINTEXT
+      CONFLUENT_METRICS_REPORTER_SASL_JAAS_CONFIG: org.apache.kafka.common.security.plain.PlainLoginModule required username="client" password="client-secret";
+      KAFKA_OPTS: -Djava.security.auth.login.config=/etc/kafka/kafka_server_jaas.conf
+      KAFKA_ALLOW_EVERYONE_IF_NO_ACL_FOUND: 'true'
+      KAFKA_AUTHORIZER_CLASS_NAME: org.apache.kafka.metadata.authorizer.StandardAuthorizer
+      KAFKA_SUPER_USERS: User:broker;User:client
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 3
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 3
+      KAFKA_MESSAGE_TIMESTAMP_TYPE: CreateTime
+      KAFKA_MIN_INSYNC_REPLICAS: 1
+      KAFKA_DELETE_TOPIC_ENABLE: 'True'
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: 'False'
+      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 100
+      KAFKA_JMX_PORT: 9992
+      KAFKA_JMX_OPTS: -Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -Dcom.sun.management.jmxremote.local.only=false -Dcom.sun.management.jmxremote.rmi.port=9992
+      KAFKA_JMX_HOSTNAME: ${PUBLIC_IP:-127.0.0.1}
+      KAFKA_LOG4J_ROOT_LOGLEVEL: INFO
+      KAFKA_TOOLS_LOG4J_LOGLEVEL: INFO
+    volumes:
+      - ./data-transfer:/data-transfer
+      - ./security/kafka/plain/kafka.jaas.conf:/etc/kafka/kafka_server_jaas.conf
+      - ./security/kafka/plain/client.properties:/tmp/client.properties
+    restart: unless-stopped
+  kafka-2:
+    image: confluentinc/cp-kafka:7.5.0
+    container_name: kafka-2
+    hostname: kafka-2
+    labels:
+      com.platys.name: kafka
+    ports:
+      - 9093:9093
+      - 19093:19093
+      - 29093:29093
+      - 39093:39093
+      - 9993:9993
+    environment:
+      KAFKA_BROKER_ID: 2
+      KAFKA_BROKER_RACK: rack1
+      KAFKA_INTER_BROKER_LISTENER_NAME: BROKER
+      KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
+      KAFKA_CONTROLLER_QUORUM_VOTERS: 1@kafka-1:49092,2@kafka-2:49093,3@kafka-3:49094
+      KAFKA_PROCESS_ROLES: broker,controller
+      KAFKA_NODE_ID: 2
+      CLUSTER_ID: y4vRIwfDT0SkZ65tD7Ey2A
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: CONTROLLER:SASL_PLAINTEXT,BROKER:SASL_PLAINTEXT,LOCAL:SASL_PLAINTEXT,DOCKERHOST:SASL_PLAINTEXT,EXTERNAL:SASL_PLAINTEXT
+      KAFKA_LISTENERS: CONTROLLER://kafka-2:49093,BROKER://kafka-2:19093,LOCAL://kafka-2:39093,DOCKERHOST://kafka-2:29093,EXTERNAL://kafka-2:9093
+      KAFKA_ADVERTISED_LISTENERS: BROKER://kafka-2:19093,LOCAL://localhost:39093,DOCKERHOST://${DOCKER_HOST_IP:-127.0.0.1}:29093,EXTERNAL://${PUBLIC_IP:-127.0.0.1}:9093
+      KAFKA_SASL_MECHANISM_INTER_BROKER_PROTOCOL: PLAIN
+      KAFKA_SASL_ENABLED_MECHANISMS: PLAIN
+      KAFKA_SASL_MECHANISM_CONTROLLER_PROTOCOL: PLAIN
+      KAFKA_LISTENER_NAME_CONTROLLER_SASL_ENABLED_MECHANISMS: PLAIN
+      KAFKA_LISTENER_NAME_CONTROLLER_PLAIN_SASL_JAAS_CONFIG: org.apache.kafka.common.security.plain.PlainLoginModule required username="broker" password="broker" user_broker="broker";
+      KAFKA_LISTENER_NAME_BROKER_SASL_ENABLED_MECHANISMS: PLAIN
+      KAFKA_LISTENER_NAME_BROKER_PLAIN_SASL_JAAS_CONFIG: org.apache.kafka.common.security.plain.PlainLoginModule required username="broker" password="broker" user_broker="broker" user_connect="connect-secret" user_schemaregistry="schemaregistry-secret" user_ksqldb="ksqldb-secret" user_client="client-secret" ;
+      KAFKA_LISTENER_NAME_LOCAL_SASL_ENABLED_MECHANISMS: PLAIN
+      KAFKA_LISTENER_NAME_LOCAL_PLAIN_SASL_JAAS_CONFIG: org.apache.kafka.common.security.plain.PlainLoginModule required username="broker" password="broker" user_broker="broker" user_connect="connect-secret" user_schemaregistry="schemaregistry-secret" user_ksqldb="ksqldb-secret" user_client="client-secret" ;
+      KAFKA_LISTENER_NAME_DOCKERHOST_SASL_ENABLED_MECHANISMS: PLAIN
+      KAFKA_LISTENER_NAME_DOCKERHOST_PLAIN_SASL_JAAS_CONFIG: org.apache.kafka.common.security.plain.PlainLoginModule required username="broker" password="broker" user_broker="broker" user_connect="connect-secret" user_schemaregistry="schemaregistry-secret" user_ksqldb="ksqldb-secret" user_client="client-secret" ;
+      KAFKA_LISTENER_NAME_EXTERNAL_SASL_ENABLED_MECHANISMS: PLAIN
+      KAFKA_LISTENER_NAME_EXTERNAL_PLAIN_SASL_JAAS_CONFIG: org.apache.kafka.common.security.plain.PlainLoginModule required username="broker" password="broker" user_broker="broker" user_connect="connect-secret" user_schemaregistry="schemaregistry-secret" user_ksqldb="ksqldb-secret" user_client="client-secret" ;
+      KAFKA_SASL_SERVER_CALLBACK_HANDLER_CLASS:
+      CONFLUENT_METRICS_REPORTER_SASL_MECHANISM: PLAIN
+      CONFLUENT_METRICS_REPORTER_SECURITY_PROTOCOL: SASL_PLAINTEXT
+      CONFLUENT_METRICS_REPORTER_SASL_JAAS_CONFIG: org.apache.kafka.common.security.plain.PlainLoginModule required username="client" password="client-secret";
+      KAFKA_OPTS: -Djava.security.auth.login.config=/etc/kafka/kafka_server_jaas.conf
+      KAFKA_ALLOW_EVERYONE_IF_NO_ACL_FOUND: 'true'
+      KAFKA_AUTHORIZER_CLASS_NAME: org.apache.kafka.metadata.authorizer.StandardAuthorizer
+      KAFKA_SUPER_USERS: User:broker;User:client
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 3
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 3
+      KAFKA_MESSAGE_TIMESTAMP_TYPE: CreateTime
+      KAFKA_MIN_INSYNC_REPLICAS: 1
+      KAFKA_DELETE_TOPIC_ENABLE: 'True'
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: 'False'
+      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 100
+      KAFKA_JMX_PORT: 9993
+      KAFKA_JMX_OPTS: -Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -Dcom.sun.management.jmxremote.local.only=false -Dcom.sun.management.jmxremote.rmi.port=9993
+      KAFKA_JMX_HOSTNAME: ${PUBLIC_IP:-127.0.0.1}
+      KAFKA_LOG4J_ROOT_LOGLEVEL: INFO
+      KAFKA_TOOLS_LOG4J_LOGLEVEL: INFO
+    volumes:
+      - ./data-transfer:/data-transfer
+      - ./security/kafka/plain/kafka.jaas.conf:/etc/kafka/kafka_server_jaas.conf
+      - ./security/kafka/plain/client.properties:/tmp/client.properties
+    restart: unless-stopped
+  kafka-3:
+    image: confluentinc/cp-kafka:7.5.0
+    container_name: kafka-3
+    hostname: kafka-3
+    labels:
+      com.platys.name: kafka
+    ports:
+      - 9094:9094
+      - 19094:19094
+      - 29094:29094
+      - 39094:39094
+      - 9994:9994
+    environment:
+      KAFKA_BROKER_ID: 3
+      KAFKA_BROKER_RACK: rack1
+      KAFKA_INTER_BROKER_LISTENER_NAME: BROKER
+      KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
+      KAFKA_CONTROLLER_QUORUM_VOTERS: 1@kafka-1:49092,2@kafka-2:49093,3@kafka-3:49094
+      KAFKA_PROCESS_ROLES: broker,controller
+      KAFKA_NODE_ID: 3
+      CLUSTER_ID: y4vRIwfDT0SkZ65tD7Ey2A
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: CONTROLLER:SASL_PLAINTEXT,BROKER:SASL_PLAINTEXT,LOCAL:SASL_PLAINTEXT,DOCKERHOST:SASL_PLAINTEXT,EXTERNAL:SASL_PLAINTEXT
+      KAFKA_LISTENERS: CONTROLLER://kafka-3:49094,BROKER://kafka-3:19094,LOCAL://kafka-3:39094,DOCKERHOST://kafka-3:29094,EXTERNAL://kafka-3:9094
+      KAFKA_ADVERTISED_LISTENERS: BROKER://kafka-3:19094,LOCAL://localhost:39094,DOCKERHOST://${DOCKER_HOST_IP:-127.0.0.1}:29094,EXTERNAL://${PUBLIC_IP:-127.0.0.1}:9094
+      KAFKA_SASL_MECHANISM_INTER_BROKER_PROTOCOL: PLAIN
+      KAFKA_SASL_ENABLED_MECHANISMS: PLAIN
+      KAFKA_SASL_MECHANISM_CONTROLLER_PROTOCOL: PLAIN
+      KAFKA_LISTENER_NAME_CONTROLLER_SASL_ENABLED_MECHANISMS: PLAIN
+      KAFKA_LISTENER_NAME_CONTROLLER_PLAIN_SASL_JAAS_CONFIG: org.apache.kafka.common.security.plain.PlainLoginModule required username="broker" password="broker" user_broker="broker";
+      KAFKA_LISTENER_NAME_BROKER_SASL_ENABLED_MECHANISMS: PLAIN
+      KAFKA_LISTENER_NAME_BROKER_PLAIN_SASL_JAAS_CONFIG: org.apache.kafka.common.security.plain.PlainLoginModule required username="broker" password="broker" user_broker="broker" user_connect="connect-secret" user_schemaregistry="schemaregistry-secret" user_ksqldb="ksqldb-secret" user_client="client-secret" ;
+      KAFKA_LISTENER_NAME_LOCAL_SASL_ENABLED_MECHANISMS: PLAIN
+      KAFKA_LISTENER_NAME_LOCAL_PLAIN_SASL_JAAS_CONFIG: org.apache.kafka.common.security.plain.PlainLoginModule required username="broker" password="broker" user_broker="broker" user_connect="connect-secret" user_schemaregistry="schemaregistry-secret" user_ksqldb="ksqldb-secret" user_client="client-secret" ;
+      KAFKA_LISTENER_NAME_DOCKERHOST_SASL_ENABLED_MECHANISMS: PLAIN
+      KAFKA_LISTENER_NAME_DOCKERHOST_PLAIN_SASL_JAAS_CONFIG: org.apache.kafka.common.security.plain.PlainLoginModule required username="broker" password="broker" user_broker="broker" user_connect="connect-secret" user_schemaregistry="schemaregistry-secret" user_ksqldb="ksqldb-secret" user_client="client-secret" ;
+      KAFKA_LISTENER_NAME_EXTERNAL_SASL_ENABLED_MECHANISMS: PLAIN
+      KAFKA_LISTENER_NAME_EXTERNAL_PLAIN_SASL_JAAS_CONFIG: org.apache.kafka.common.security.plain.PlainLoginModule required username="broker" password="broker" user_broker="broker" user_connect="connect-secret" user_schemaregistry="schemaregistry-secret" user_ksqldb="ksqldb-secret" user_client="client-secret" ;
+      KAFKA_SASL_SERVER_CALLBACK_HANDLER_CLASS:
+      CONFLUENT_METRICS_REPORTER_SASL_MECHANISM: PLAIN
+      CONFLUENT_METRICS_REPORTER_SECURITY_PROTOCOL: SASL_PLAINTEXT
+      CONFLUENT_METRICS_REPORTER_SASL_JAAS_CONFIG: org.apache.kafka.common.security.plain.PlainLoginModule required username="client" password="client-secret";
+      KAFKA_OPTS: -Djava.security.auth.login.config=/etc/kafka/kafka_server_jaas.conf
+      KAFKA_ALLOW_EVERYONE_IF_NO_ACL_FOUND: 'true'
+      KAFKA_AUTHORIZER_CLASS_NAME: org.apache.kafka.metadata.authorizer.StandardAuthorizer
+      KAFKA_SUPER_USERS: User:broker;User:client
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 3
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 3
+      KAFKA_MESSAGE_TIMESTAMP_TYPE: CreateTime
+      KAFKA_MIN_INSYNC_REPLICAS: 1
+      KAFKA_DELETE_TOPIC_ENABLE: 'True'
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: 'False'
+      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 100
+      KAFKA_JMX_PORT: 9994
+      KAFKA_JMX_OPTS: -Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -Dcom.sun.management.jmxremote.local.only=false -Dcom.sun.management.jmxremote.rmi.port=9994
+      KAFKA_JMX_HOSTNAME: ${PUBLIC_IP:-127.0.0.1}
+      KAFKA_LOG4J_ROOT_LOGLEVEL: INFO
+      KAFKA_TOOLS_LOG4J_LOGLEVEL: INFO
+    volumes:
+      - ./data-transfer:/data-transfer
+      - ./security/kafka/plain/kafka.jaas.conf:/etc/kafka/kafka_server_jaas.conf
+      - ./security/kafka/plain/client.properties:/tmp/client.properties
+    restart: unless-stopped
+  #  ================================== Apache Kafka HQ (AKHQ) ========================================== #
+  akhq:
+    image: tchiotludo/akhq:latest
+    container_name: akhq
+    hostname: akhq
+    labels:
+      com.platys.name: akhq
+      com.platys.webui.title: Apache Kafka AQ UI
+      com.platys.webui.url: http://dataplatform:28107
+    ports:
+      - 28107:8080
+    environment:
+      AKHQ_CONFIGURATION: |
+        akhq:
+          pagination.page-size: 25
+          topic-data:
+            size: 50
+            poll-timeout: 1000
+            kafka-max-message-length: 1000000
+          ui-options:
+            topic:
+              default-view: HIDE_INTERNAL
+              skip-consumer-groups: false
+              skip-last-record: true
+              show-all-consumer-groups: true
+            topic-data:
+              sort: OLDEST
+          connections:
+            docker-kafka-server:
+              properties:
+                bootstrap.servers: 'kafka-1:19092,kafka-2:19093,kafka-3:19094'
+                security.protocol: "SASL_PLAINTEXT"
+                sasl.mechanism: "PLAIN"
+                sasl.jaas.config: "org.apache.kafka.common.security.plain.PlainLoginModule required username=\"client\" password=\"client-secret\";"
+    volumes:
+      - ./data-transfer:/data-transfer
+    restart: unless-stopped
+  #  ================================== Wetty ========================================== #
+  wetty:
+    image: wettyoss/wetty:latest
+    container_name: wetty
+    hostname: wetty
+    labels:
+      com.platys.name: wetty
+      com.platys.webui.title: WeTTY UI
+      com.platys.webui.url: http://dataplatform:3001
+    ports:
+      - 3001:3000
+    environment:
+      - SSHHOST=${DOCKER_HOST_IP}
+      - SSHPORT=22
+      - SSHUSER=
+      - SSHAUTH=password
+      - PORT=3000
+      - BASE=/
+    volumes:
+      - ./data-transfer:/data-transfer
+    restart: unless-stopped
+  #  ================================== markdown-viewer ========================================== #
+  markdown-viewer:
+    image: dannyben/madness:latest
+    container_name: markdown-viewer
+    hostname: markdown-viewer
+    labels:
+      com.platys.name: markdown-viewer
+      com.platys.webui.title: Markdown Viewer UI
+      com.platys.webui.url: http://dataplatform:80
+    ports:
+      - 80:3000
+    volumes:
+      - ./artefacts:/docs
+      - ./conf/markdown-viewer/markdown-madness.yml:/docs/.madness.yml
+      - ./data-transfer:/data-transfer
+    command: server
+    restart: unless-stopped
+  markdown-renderer:
+    image: trivadis/jinja2-renderer:latest
+    container_name: markdown-renderer
+    hostname: markdown-renderer
+    labels:
+      com.platys.name: markdown-renderer
+    environment:
+      USE_PUBLIC_IP: 'True'
+      PUBLIC_IP: ${PUBLIC_IP}
+      DOCKER_HOST_IP: ${DOCKER_HOST_IP}
+      DATAPLATFORM_HOME: ${DATAPLATFORM_HOME}
+      PLATYS_PLATFORM_NAME: demo-platform
+      PLATYS_PLATFORM_STACK: trivadis/platys-modern-data-platform
+      PLATYS_PLATFORM_STACK_VERSION: 1.17.0-preview
+      PLATYS_COPY_COOKBOOK_DATA: 'True'
+    volumes:
+      - ./artefacts/templates:/templates
+      - ./artefacts/templates:/scripts
+      - .:/variables
+      - ./artefacts:/output
+      - ./data-transfer:/data-transfer
+volumes:
+  data-transfer-vol:
+    name: data_transfer_vol
