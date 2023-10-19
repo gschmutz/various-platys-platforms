@@ -22,7 +22,7 @@ Optionally change the password from the default value of `ubuntu` to a more secu
 ```
 export GITHUB_PROJECT=various-platys-platforms
 export GITHUB_OWNER=gschmutz
-export DATAPLATFORM_NAME=sdc-exts3-nosql-platform
+export DATAPLATFORM_NAME=kafka-self-service-poc
 export PLATYS_VERSION=2.4.0
 export NETWORK_NAME=ens5
 export USERNAME=ubuntu
@@ -90,12 +90,12 @@ sudo echo "export DOCKER_HOST_IP=$DOCKER_HOST_IP" | sudo tee -a /etc/profile.d/p
 sudo echo "export DATAPLATFORM_HOME=$PWD" | sudo tee -a /etc/profile.d/platys-platform-env.sh
 
 # create the .env file
-rm $PWD/.env
+rm -f $PWD/.env
 printf "PLATYS_AWS_ACCESS_KEY=$AWS_ACCESS_KEY\n" >> $PWD/.env
 printf "PLATYS_AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY\n" >> $PWD/.env
 
 # Startup Environment
-docker-compose up -d
+docker compose up -d
 ```
 
 into the **Launch Script** edit field
