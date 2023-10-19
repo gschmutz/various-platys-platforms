@@ -27,8 +27,8 @@ export PLATYS_VERSION=2.4.0
 export NETWORK_NAME=ens5
 export USERNAME=ubuntu
 export PASSWORD=abc123!
-export AWS_ACCESS_KEY=<replace it by an AWS access key>
-export AWS_SECRET_ACCESS_KEY=<replace it by an AWS secret key>
+export AWS_ACCESS_KEY=
+export AWS_SECRET_ACCESS_KEY=
 
 # Prepare Environment Variables 
 export PUBLIC_IP=$(curl ipinfo.io/ip)
@@ -37,7 +37,7 @@ export DOCKER_HOST_IP=$(ip addr show ${NETWORK_NAME} | grep "inet\b" | awk '{pri
 # allow login by password
 sudo sed -i "s/.*PasswordAuthentication.*/PasswordAuthentication yes/g" /etc/ssh/sshd_config
 echo "${USERNAME}:${PASSWORD}"|chpasswd
-sudo service sshd restart__
+sudo service sshd restart
 
 # add alias "dataplatform" to /etc/hosts
 echo "$DOCKER_HOST_IP     dataplatform" | sudo tee -a /etc/hosts
