@@ -3,6 +3,7 @@
 | Service Name | Web UI | Rest API |
 |-------------- |------|------------
 |[akhq](./documentation/services/akhq )|<http://198.19.249.242:28107>| <http://198.19.249.242:28107/api>
+|[focalboard](./documentation/services/focalboard )|<http://198.19.249.242:28324>
 |[jikkou](./documentation/services/jikkou )|
 |[kafka-1](./documentation/services/kafka )|
 |[kafka-2](./documentation/services/kafka )|

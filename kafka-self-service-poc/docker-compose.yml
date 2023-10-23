@@ -351,7 +351,7 @@ services:
       - 28310:9343
     environment:
       - KLAW_CLUSTERAPI_ACCESS_BASE64_SECRET=VGhpc0lzRXhhY3RseUEzMkNoYXJTdHJpbmdTZWNyZXQK
-      - _KAFKASASL_JAASCONFIG_PLAIN=org.apache.kafka.common.security.plain.PlainLoginModule required username='tool' password='tool-secret';
+      - STG1_KAFKASASL_JAASCONFIG_PLAIN=org.apache.kafka.common.security.plain.PlainLoginModule required username='tool' password='tool-secret';
       - LOGGING_LEVEL_ROOT=info
     volumes:
       - ./data-transfer:/data-transfer
@@ -388,6 +388,23 @@ services:
       POSTGRES_USER: taskcafe
       POSTGRES_PASSWORD: abc123!
       POSTGRES_DB: taskcafedb
+    volumes:
+      - ./data-transfer:/data-transfer
+    restart: unless-stopped
+  #  ================================== Focalboard ========================================== #
+  focalboard:
+    image: mattermost/focalboard:latest
+    container_name: focalboard
+    hostname: focalboard
+    labels:
+      com.platys.name: focalboard
+      com.platys.webui.title: Focalboard UI
+      com.platys.webui.url: http://dataplatform:28324
+    ports:
+      - 28324:8000
+    environment:
+      - VIRTUAL_HOST=focalboard.local
+      - VIRTUAL_PORT=8000
     volumes:
       - ./data-transfer:/data-transfer
     restart: unless-stopped

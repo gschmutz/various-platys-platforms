@@ -397,6 +397,10 @@
       # ===== KLAW ========
       #
       KLAW_enable: true
+      KLAW_quickstart_enable: true
+      KLAW_cluster_id: 'STG1'
+      KLAW_mail_host: 'maildev'
+      KLAW_logging_level: 'info'
       #
       # ===== kafka connector board ========
       #
@@ -1649,6 +1653,12 @@
       #
       TASKCAFE_enable: true
       TASKCAFE_volume_map_db_data: false
+      #
+      # ===== Focalboard ========
+      #
+      FOCALBOARD_enable: true
+      FOCALBOARD_volume_map_db_data: false
+
       #
       # ===== MockServer ========
       #
