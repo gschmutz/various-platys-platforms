@@ -326,6 +326,7 @@ services:
     environment:
       - KLAW_CLUSTERAPI_ACCESS_BASE64_SECRET=VGhpc0lzRXhhY3RseUEzMkNoYXJTdHJpbmdTZWNyZXQK
       - SPRING_DATASOURCE_URL=jdbc:h2:file:/klaw/klawprodb;DB_CLOSE_ON_EXIT=FALSE;DB_CLOSE_DELAY=-1;MODE=MySQL;CASE_INSENSITIVE_IDENTIFIERS=TRUE;
+      - KLAW_CLUSTERAPI_URL=http://klaw-cluster-api:9343
       - KLAW_QUICKSTART_ENABLED=True
       - KLAW_CORAL_ENABLED=true
       - KLAW_DOCKER_CLUSTERAPI_HOST=http://klaw-cluster-api:9343
@@ -352,6 +353,41 @@ services:
       - KLAW_CLUSTERAPI_ACCESS_BASE64_SECRET=VGhpc0lzRXhhY3RseUEzMkNoYXJTdHJpbmdTZWNyZXQK
       - _KAFKASASL_JAASCONFIG_PLAIN=org.apache.kafka.common.security.plain.PlainLoginModule required username='tool' password='tool-secret';
       - LOGGING_LEVEL_ROOT=info
+    volumes:
+      - ./data-transfer:/data-transfer
+    restart: unless-stopped
+  #  ================================== Taskcafe ========================================== #
+  taskcafe:
+    image: taskcafe/taskcafe:latest
+    container_name: taskcafe
+    hostname: taskcafe
+    labels:
+      com.platys.name: taskcafe
+      com.platys.webui.title: Taskcafe UI
+      com.platys.webui.url: http://dataplatform:3333
+    ports:
+      - 3333:3333
+    depends_on:
+      - taskcafe-db
+    environment:
+      TASKCAFE_DATABASE_HOST: taskcafe-db
+      TASKCAFE_DATABASE_USER: taskcafe
+      TASKCAFE_DATABASE_PASSWORD: abc123!
+      TASKCAFE_DATABASE_NAME: taskcafedb
+      TASKCAFE_MIGRATE: 'true'
+    volumes:
+      - ./data-transfer:/data-transfer
+    restart: unless-stopped
+  taskcafe-db:
+    image: postgres:12.3-alpine
+    container_name: taskcafe-db
+    hostname: taskcafe-db
+    labels:
+      com.platys.name: postgres
+    environment:
+      POSTGRES_USER: taskcafe
+      POSTGRES_PASSWORD: abc123!
+      POSTGRES_DB: taskcafedb
     volumes:
       - ./data-transfer:/data-transfer
     restart: unless-stopped

@@ -13,6 +13,6 @@ platys gen
 
 ## How to use it?
 
-Navigate to <http://dataplatform:28309> to use the Klaw UI.
+Navigate to <http://198.19.249.242:28309> to use the Klaw UI.
 
 Login with User: `superadmin`and Password: `kwsuperadmin123$$`.
