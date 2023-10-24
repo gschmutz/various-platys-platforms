@@ -121,7 +121,7 @@
       KAFKA_addl_users: 'app1:app1-secret,app2:app2-secret'
       KAFKA_authorizer_enable: true
       KAFKA_allow_everyone_if_no_acl_found: false
-      KAFKA_super_users: 'admin'
+      KAFKA_super_users: 'admin,schemaregistry'
       KAFKA_security_debug: false
       KAFKA_tools_username: 'tool'
       KAFKA_tools_password: 'tool-secret'
@@ -189,7 +189,7 @@
       #
       # ===== Schema Registry ========
       #
-      SCHEMA_REGISTRY_enable: false
+      SCHEMA_REGISTRY_enable: true
       # either "confluent", "apicurio"
       SCHEMA_REGISTRY_flavour: confluent
       SCHEMA_REGISTRY_nodes: 1
@@ -400,6 +400,7 @@
       KLAW_quickstart_enable: true
       KLAW_cluster_id: 'STG1'
       KLAW_mail_host: 'maildev'
+      KLAW_mail_port: 25
       KLAW_logging_level: 'info'
       #
       # ===== kafka connector board ========
@@ -1651,7 +1652,7 @@
       #
       # ===== Taskcafe ========
       #
-      TASKCAFE_enable: true
+      TASKCAFE_enable: false
       TASKCAFE_volume_map_db_data: false
       #
       # ===== Focalboard ========

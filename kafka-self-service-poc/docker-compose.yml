@@ -53,7 +53,7 @@ services:
       KAFKA_OPTS: -Djava.security.auth.login.config=/etc/kafka/kafka_server_jaas.conf
       KAFKA_ALLOW_EVERYONE_IF_NO_ACL_FOUND: 'false'
       KAFKA_AUTHORIZER_CLASS_NAME: org.apache.kafka.metadata.authorizer.StandardAuthorizer
-      KAFKA_SUPER_USERS: User:admin
+      KAFKA_SUPER_USERS: User:admin;User:schemaregistry
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 3
       KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
       KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 3
@@ -116,7 +116,7 @@ services:
       KAFKA_OPTS: -Djava.security.auth.login.config=/etc/kafka/kafka_server_jaas.conf
       KAFKA_ALLOW_EVERYONE_IF_NO_ACL_FOUND: 'false'
       KAFKA_AUTHORIZER_CLASS_NAME: org.apache.kafka.metadata.authorizer.StandardAuthorizer
-      KAFKA_SUPER_USERS: User:admin
+      KAFKA_SUPER_USERS: User:admin;User:schemaregistry
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 3
       KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
       KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 3
@@ -179,7 +179,7 @@ services:
       KAFKA_OPTS: -Djava.security.auth.login.config=/etc/kafka/kafka_server_jaas.conf
       KAFKA_ALLOW_EVERYONE_IF_NO_ACL_FOUND: 'false'
       KAFKA_AUTHORIZER_CLASS_NAME: org.apache.kafka.metadata.authorizer.StandardAuthorizer
-      KAFKA_SUPER_USERS: User:admin
+      KAFKA_SUPER_USERS: User:admin;User:schemaregistry
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 3
       KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
       KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 3
@@ -197,6 +197,37 @@ services:
       - ./data-transfer:/data-transfer
       - ./security/kafka/plain/kafka.jaas.conf:/etc/kafka/kafka_server_jaas.conf
       - ./security/kafka/plain/client.properties:/tmp/client.properties
+    restart: unless-stopped
+  #  ================================== Confluent Schema Registry ========================================== #
+  schema-registry-1:
+    image: confluentinc/cp-schema-registry:7.5.0
+    hostname: schema-registry-1
+    container_name: schema-registry-1
+    labels:
+      com.platys.name: schema-registry
+      com.platys.restapi.title: Schema Registry REST API
+      com.platys.restapi.url: http://dataplatform:8081
+    ports:
+      - 8081:8081
+    environment:
+      SCHEMA_REGISTRY_HOST_NAME: schema-registry-1
+      SCHEMA_REGISTRY_LISTENERS: http://0.0.0.0:8081
+      SCHEMA_REGISTRY_KAFKASTORE_BOOTSTRAP_SERVERS: kafka-1:19092,kafka-2:19093,kafka-3:19094
+      SCHEMA_REGISTRY_GROUP_ID: schema-registry
+      SCHEMA_REGISTRY_LEADER_ELIGIBILITY: 'True'
+      SCHEMA_REGISTRY_MODE_MUTABILITY: 'True'
+      SCHEMA_REGISTRY_SCHEMA_COMPATIBILITY_LEVEL: backward
+      SCHEMA_REGISTRY_KAFKASTORE_TOPIC_REPLICATION_FACTOR: 1
+      SCHEMA_REGISTRY_ACCESS_CONTROL_ALLOW_ORIGIN: '*'
+      SCHEMA_REGISTRY_ACCESS_CONTROL_ALLOW_METHODS: GET,POST,PUT,OPTIONS
+      SCHEMA_REGISTRY_LOG4J_ROOT_LOGLEVEL: info
+      SCHEMA_REGISTRY_DEBUG: 'False'
+      SCHEMA_REGISTRY_KAFKASTORE_SECURITY_PROTOCOL: SASL_PLAINTEXT
+      SCHEMA_REGISTRY_KAFKASTORE_SASL_MECHANISM: PLAIN
+      SCHEMA_REGISTRY_KAFKASTORE_SASL_JAAS_CONFIG: org.apache.kafka.common.security.plain.PlainLoginModule required username="schemaregistry" password="schemaregistry-secret";
+    volumes:
+      - ./data-transfer:/data-transfer
+      - ./plugins/opentelemetry/agents:/otel
     restart: unless-stopped
   #  ================================== Jikkou ========================================== #
   jikkou:
@@ -282,6 +313,9 @@ services:
                 security.protocol: "SASL_PLAINTEXT"
                 sasl.mechanism: "PLAIN"
                 sasl.jaas.config: "org.apache.kafka.common.security.plain.PlainLoginModule required username=\"tool\" password=\"tool-secret\";"
+              schema-registry:
+                url: "http://schema-registry-1:8081"
+                type: "confluent"
     volumes:
       - ./data-transfer:/data-transfer
     restart: unless-stopped
@@ -314,7 +348,7 @@ services:
     restart: unless-stopped
   #  ================================== Kafkistry ========================================== #
   klaw-core:
-    image: aivenoy/klaw-core:latest
+    image: trivadis/klaw-core:latest
     container_name: klaw-core
     hostname: klaw-core
     labels:
@@ -326,16 +360,21 @@ services:
     environment:
       - KLAW_CLUSTERAPI_ACCESS_BASE64_SECRET=VGhpc0lzRXhhY3RseUEzMkNoYXJTdHJpbmdTZWNyZXQK
       - SPRING_DATASOURCE_URL=jdbc:h2:file:/klaw/klawprodb;DB_CLOSE_ON_EXIT=FALSE;DB_CLOSE_DELAY=-1;MODE=MySQL;CASE_INSENSITIVE_IDENTIFIERS=TRUE;
-      - KLAW_CLUSTERAPI_URL=http://klaw-cluster-api:9343
-      - KLAW_QUICKSTART_ENABLED=True
       - KLAW_CORAL_ENABLED=true
+      - KLAW_UIAPI_SERVERS=http://klaw-core:9097
+      - KLAW_QUICKSTART_ENABLED=True
+      - KLAW_DOCKER_INTERNAL_HOST=host.docker.internal
       - KLAW_DOCKER_CLUSTERAPI_HOST=http://klaw-cluster-api:9343
       - KLAW_DOCKER_KAFKA_CLUSTER=kafka-1:19092,kafka-2:19093,kafka-3:19094
+      - KLAW_DOCKER_KAFKA_CLUSTER_SECURITYPROTOCOL=SASL_PLAIN
       - KLAW_DOCKER_SR_CLUSTER=schema-registry-1:8081
       - LOGGING_LEVEL_ROOT=info
       - KLAW_SUPERADMIN_DEFAULT_USERNAME=superadmin
       - KLAW_SUPERADMIN_DEFAULT_PASSWORD=abc123!
       - SPRING_MAIL_HOST=maildev
+      - SPRING_MAIL_PORT=25
+      - KLAW_MONITORING_METRICS_ENABLE=false
+      - KLAW_EXPORT_SCHEDULER_ENABLE=false
     volumes:
       - ./data-transfer:/data-transfer
     restart: unless-stopped
@@ -345,49 +384,12 @@ services:
     hostname: klaw-cluster-api
     labels:
       com.platys.name: klaw
-      com.platys.webui.title: Klaw API
-      com.platys.webui.url: http://dataplatform:28310
     ports:
-      - 28310:9343
+      - 9343:9343
     environment:
       - KLAW_CLUSTERAPI_ACCESS_BASE64_SECRET=VGhpc0lzRXhhY3RseUEzMkNoYXJTdHJpbmdTZWNyZXQK
       - STG1_KAFKASASL_JAASCONFIG_PLAIN=org.apache.kafka.common.security.plain.PlainLoginModule required username='tool' password='tool-secret';
       - LOGGING_LEVEL_ROOT=info
-    volumes:
-      - ./data-transfer:/data-transfer
-    restart: unless-stopped
-  #  ================================== Taskcafe ========================================== #
-  taskcafe:
-    image: taskcafe/taskcafe:latest
-    container_name: taskcafe
-    hostname: taskcafe
-    labels:
-      com.platys.name: taskcafe
-      com.platys.webui.title: Taskcafe UI
-      com.platys.webui.url: http://dataplatform:3333
-    ports:
-      - 3333:3333
-    depends_on:
-      - taskcafe-db
-    environment:
-      TASKCAFE_DATABASE_HOST: taskcafe-db
-      TASKCAFE_DATABASE_USER: taskcafe
-      TASKCAFE_DATABASE_PASSWORD: abc123!
-      TASKCAFE_DATABASE_NAME: taskcafedb
-      TASKCAFE_MIGRATE: 'true'
-    volumes:
-      - ./data-transfer:/data-transfer
-    restart: unless-stopped
-  taskcafe-db:
-    image: postgres:12.3-alpine
-    container_name: taskcafe-db
-    hostname: taskcafe-db
-    labels:
-      com.platys.name: postgres
-    environment:
-      POSTGRES_USER: taskcafe
-      POSTGRES_PASSWORD: abc123!
-      POSTGRES_DB: taskcafedb
     volumes:
       - ./data-transfer:/data-transfer
     restart: unless-stopped
@@ -405,6 +407,7 @@ services:
     environment:
       - VIRTUAL_HOST=focalboard.local
       - VIRTUAL_PORT=8000
+      - FOCALBOARD_SINGLE_USER_TOKEN=abc123!
     volumes:
       - ./data-transfer:/data-transfer
     restart: unless-stopped

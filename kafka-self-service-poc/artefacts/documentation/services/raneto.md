@@ -13,7 +13,7 @@ platys gen
 
 ### How to use it?
 
-Navigate to <http://198.19.249.242:28311> 
+Navigate to <http://dataplatform:28311> 
 
 Login with user `admin` and password `password`. 
 

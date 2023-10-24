@@ -1,6 +1,6 @@
 # Klaw
 
-Sreamline your Apache Kafka ecosystem, secure your data & simplify governance.
+Klaw, the latest OS tool by Aiven, helps enterprises cope with Apache Kafka(r) topics, schema registry and connectors governance by introducing roles/authorizations to users of various teams of an org. 
 
 **[Website](https://www.klaw-project.io/)** | **[Documentation](https://www.klaw-project.io/docs/getstarted)** | **[GitHub](https://github.com/Aiven-Open/klaw)**
 
@@ -13,6 +13,6 @@ platys gen
 
 ## How to use it?
 
-Navigate to <http://198.19.249.242:28309> to use the Klaw UI.
+Navigate to <http://dataplatform:28309> to use the Klaw UI.
 
-Login with User: `superadmin`and Password: `kwsuperadmin123$$`.
+Login with default User: `superadmin` and Password: `abc123!`.

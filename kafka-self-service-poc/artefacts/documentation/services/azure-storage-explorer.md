@@ -13,4 +13,4 @@ platys gen
 
 ## How to use it?
 
-Navigat to <http://198.19.249.242:28279>.
+Navigat to <http://dataplatform:28279>.

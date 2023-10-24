@@ -13,6 +13,7 @@
 |[klaw-core](./documentation/services/klaw )|<http://198.19.249.242:28309>
 |[markdown-renderer](./documentation/services/markdown-renderer )|
 |[markdown-viewer](./documentation/services/markdown-viewer )|<http://198.19.249.242:80>
+|[schema-registry-1](./documentation/services/schema-registry )|| <http://198.19.249.242:8081>
 |[taskcafe](./documentation/services/taskcafe )|<http://198.19.249.242:3333>
 |[taskcafe-db](./documentation/services/postgres )|
 |[wetty](./documentation/services/wetty )|<http://198.19.249.242:3001>|
