@@ -137,7 +137,7 @@
       #
       # ===== Kafka Connect ========
       #
-      KAFKA_CONNECT_enable: false
+      KAFKA_CONNECT_enable: true
       KAFKA_CONNECT_nodes: 1
       KAFKA_CONNECT_connectors:
       KAFKA_CONNECT_config_providers: 'file'
@@ -148,7 +148,7 @@
       #
       # ===== Confluent ksqlDB ========
       #
-      KSQLDB_enable: false
+      KSQLDB_enable: true
       # either 'cp' or 'oss'
       KSQLDB_edition: 'oss'
       KSQLDB_nodes: 1
