@@ -15,7 +15,7 @@ platys gen
 
 ### Web
 
-Navigate to <http://dataplatform:28367>.
+Navigate to <http://192.168.1.104:28367>.
 
 ### CLI
 

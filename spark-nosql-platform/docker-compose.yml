@@ -341,7 +341,7 @@ services:
       GRANT_SUDO: "'yes'"
       JUPYTER_TOKEN: abc123!
       DOCKER_STACKS_JUPYTER_CMD: lab
-      MAVEN_DOWNLOAD_JARS: com.amazonaws:aws-java-sdk-bundle:1.11.375,org.apache.hadoop:hadoop-aws:3.2.1,com.google.guava:guava:14.0.1
+      MAVEN_DOWNLOAD_JARS: com.amazonaws:aws-java-sdk-bundle:1.12.262,org.apache.hadoop:hadoop-aws:3.3.4,com.google.guava:guava:27.1-jre
       # remove some JARS if they are conflicting with the ones installed above
       REMOVE_JARS: guava-14.0.1.jar
       # for awscli & s3cmd
