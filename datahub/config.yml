@@ -265,8 +265,8 @@
       #
       # ===== Kafka Init for Topic Creation ========
       #
-      KAFKA_INIT_enable: false
-      KAFKA_INIT_topics: ''
+      KAFKA_INIT_enable: true
+      KAFKA_INIT_topics: 'MetadataChangeEvent_v4:1:3,DataHubUsageEvent_v1:1:3'
       
       #
       # ===== Kafka Console Utilities ========

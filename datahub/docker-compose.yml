@@ -153,6 +153,24 @@ services:
       timeout: 10s
       retries: 40
       start_period: 20s
+  #  ================================== Kafka Init ========================================== #
+  kafka-init:
+    image: trivadis/kafka-init:latest
+    container_name: kafka-init
+    hostname: kafka-init
+    depends_on:
+      kafka-1:
+        condition: service_started
+    environment:
+      BOOTSTRAP_SERVERS: kafka-1:19092,kafka-2:19093,kafka-3:19094
+      KAFKA_TIMEOUT: 120
+      KAFKA_EXPECTED_BROKERS: 3
+      KAFKA_DELETE_TOPIC_ENABLE: false
+      KAFKA_TOPIC_CONFIG: ''
+      KAFKA_CREATE_TOPICS: MetadataChangeEvent_v4
+    volumes:
+      - ./data-transfer:/data-transfer
+    init: true
   #  ================================== Confluent Schema Registry ========================================== #
   schema-registry-1:
     image: confluentinc/cp-schema-registry:8.1.3
@@ -435,7 +453,7 @@ services:
       retries: 5
       start_period: 20s
   datahub-neo4j:
-    image: neo4j:4.4.9-community
+    image: neo4j:4.4.28-community
     hostname: datahub-neo4j
     container_name: datahub-neo4j
     labels:
