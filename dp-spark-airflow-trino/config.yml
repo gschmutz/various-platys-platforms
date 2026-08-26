@@ -793,14 +793,14 @@
       #
       SPARK_CONNECT_enable: true
       SPARK_CONNECT_use_local_spark: false
-      SPARK_CONNECT_cores_max: 4
+      SPARK_CONNECT_cores_max: 2
       SPARK_CONNECT_executor_memory:  
       #
       # ===== Apache Spark Thriftserver ========
       #
       SPARK_THRIFTSERVER_enable: true
       SPARK_THRIFTSERVER_use_local_spark: false
-      SPARK_THRIFTSERVER_cores_max: 4
+      SPARK_THRIFTSERVER_cores_max: 2
       SPARK_THRIFTSERVER_executor_memory:
       SPARK_THRIFTSERVER_default_catalog: null
       
