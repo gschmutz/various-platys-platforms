@@ -807,7 +807,7 @@
       #
       # ===== Apache Kyuubi ========
       #
-      KYUUBI_enable: true
+      KYUUBI_enable: false
       KYUUBI_frontend_protocols: THRIFT_BINARY,THRIFT_HTTP,REST
       # either 'spark_sql' or 'trino' or 'jdbc' (no yet supported)
       KYUUBI_engine_type: spark_sql
