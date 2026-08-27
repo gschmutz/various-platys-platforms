@@ -1152,7 +1152,7 @@ services:
     restart: unless-stopped
   #  ================================== Wetty ========================================== #
   wetty:
-    image: wettyoss/wetty:3
+    image: wettyoss/wetty:2
     container_name: wetty
     hostname: wetty
     labels:
