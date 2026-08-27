@@ -37,7 +37,7 @@
       data_center_to_use: 0
       
       # either 'minio' or 'rustfs' or `seaweedfs`
-      s3_service_to_use: minio
+      s3_service_to_use: rustfs
       # a list of table formats to use, separated by comma, for example 'delta,iceberg,hudi'
       table_formats_to_use: 'iceberg'
       
@@ -3199,7 +3199,7 @@
       #
       #=====  MinIO Object Storage ========
       #
-      MINIO_enable: true
+      MINIO_enable: false
       # either "community" or "aistor"
       MINIO_edition: community
       # the Minio AIStor license if not specified in PLATYS_MINIO_AISTOR_LICENSE env variable
@@ -3262,7 +3262,7 @@
       #
       #=====  RustFS ========
       #
-      RUSTFS_enable: false
+      RUSTFS_enable: true
       RUSTFS_volume_map_data: false
       RUSTFS_volume_map_logs: false
       RUSTFS_access_key: admin
