@@ -1150,6 +1150,28 @@ services:
       - ./conf/awscli/s3cfg.template:/root/.s3cfg.template
     command: tail -f /dev/null
     restart: unless-stopped
+  #  ================================== Wetty ========================================== #
+  wetty:
+    image: wettyoss/wetty:latest
+    container_name: wetty
+    hostname: wetty
+    labels:
+      com.platys.name: wetty
+      com.platys.description: A terminal window in Web-Browser
+      com.platys.webui.title: WeTTY UI
+      com.platys.webui.url: http://dataplatform:3001
+    ports:
+      - 3001:3000
+    environment:
+      - SSHHOST=${DOCKER_HOST_IP:-localhost}
+      - SSHPORT=22
+      - SSHUSER=
+      - SSHAUTH=password
+      - PORT=3000
+      - BASE=/
+    volumes:
+      - ./data-transfer:/data-transfer
+    restart: unless-stopped
   #  ================================== markdown-viewer ========================================== #
   markdown-viewer:
     image: dannyben/madness:1.2.5

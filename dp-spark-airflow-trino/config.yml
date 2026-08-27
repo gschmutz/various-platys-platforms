@@ -3883,8 +3883,8 @@
       #
       # ===== Wetty ========
       #
-      WETTY_enable: false
-      
+      WETTY_enable: true
+
       #
       # ===== Raneto Knowledge Platform ========
       #
