@@ -2889,7 +2889,7 @@
       #
       # ===== Trino ========
       #
-      TRINO_enable: false
+      TRINO_enable: true
       TRINO_custom_image_name: ''
       # "single" or "cluster" install
       TRINO_install: single
