@@ -15,4 +15,4 @@ platys gen
 
 ## How to use it?
 
-Navigate to <http://dataplatform:1880>
+Navigate to <http://localhost:1880>

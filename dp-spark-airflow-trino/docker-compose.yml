@@ -1013,9 +1013,40 @@ services:
       timeout: 5s
       retries: 5
       start_period: 30s
+  #  ================================== PostgreSQL ========================================== #
+  postgresql:
+    image: postgres:18
+    container_name: postgresql
+    hostname: postgresql
+    labels:
+      com.platys.name: postgresql
+      com.platys.description: Open-Source object-relational database system
+      com.platys.password.envvars: PLATYS_POSTGRESQL_PASSWORD,PLATYS_POSTGRESQL_MULTIPLE_PASSWORD
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_PASSWORD=${PLATYS_POSTGRESQL_PASSWORD:-abc123!}
+      - POSTGRES_USER=postgres
+      - POSTGRES_DB=postgres
+#      - POSTGRES_INITDB_ARGS=--encoding=UTF8 --data-checksums      
+      - POSTGRES_MULTIPLE_DATABASES=demodb
+      - POSTGRES_MULTIPLE_USERS=demo
+      - POSTGRES_MULTIPLE_PASSWORDS=${PLATYS_POSTGRESQL_MULTIPLE_PASSWORD:-abc123!}
+      - POSTGRES_MULTIPLE_ADDL_ROLES=
+      - PGDATA=/var/lib/postgresql/data/pgdata
+      - DB_SCHEMA=demo
+    volumes:
+      - ./data-transfer:/data-transfer
+      - ./init/postgresql:/docker-entrypoint-initdb.d/
+    restart: unless-stopped
+    healthcheck:
+      test: [CMD-SHELL, pg_isready -U postgres]
+      interval: 10s
+      timeout: 5s
+      retries: 5
   #  ================================== Trino ========================================== #
   trino-1:
-    image: trinodb/trino:481
+    image: trinodb/trino:483
     hostname: trino-1
     container_name: trino-1
     labels:
@@ -1047,6 +1078,9 @@ services:
       HIVE_RUN_AS_INVOKER: 'false'
       HIVE_LEGACY_TRANSLATION: 'false'
       NESSIE_CATALOG_WAREHOUSE_DIR: s3a://admin-bucket/nessie/warehouse
+      POSTGRESQL_DATABASE: postgres
+      POSTGRESQL_USER: postgres
+      POSTGRESQL_PASSWORD: abc123!
       EVENT_LISTENER_CONFIG_FILES: ''
     volumes:
       - ./data-transfer:/data-transfer
@@ -1057,6 +1091,7 @@ services:
       - ./conf/trino/catalog/hive.properties:/catalog/hive.properties
       - ./conf/trino/catalog/iceberg-hive.properties:/catalog/iceberg_hive.properties
       - ./conf/trino/catalog/iceberg-hive-rest.properties:/catalog/iceberg_hive_rest.properties
+      - ./conf/trino/catalog/postgresql.properties:/catalog/postgresql.properties
       - ./custom-conf/trino/security:/etc/trino/security
     restart: unless-stopped
     healthcheck:

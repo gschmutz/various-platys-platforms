@@ -2723,7 +2723,7 @@
       # either oltp, datawarehouse or light
       SQLSERVER_provision_adventure_works_edition: oltp
       
-      POSTGRESQL_enable: false
+      POSTGRESQL_enable: true
       # either one of: postgis, pgvector, vchord, age, postgis_we, pgduckdb or empty if official image should be used
       POSTGRESQL_extension: ''
       POSTGRESQL_alternative_docker_image: ''
@@ -3662,7 +3662,17 @@
       BROWSERLESS_enable: false
       BROWSERLESS_browser_type: chromium
       BROWSERLESS_token: ''
-      
+
+      #
+      # ===== Coder ========
+      #
+      CODER_enable: false
+      CODER_mount_docker_socket: true
+      CODER_volume_mount_data: false
+      CODER_postgres_dbname: 'coderdb'
+      CODER_postgres_user: 'coder'
+      CODER_postgres_password: 'abc123!'
+
       #
       # ===== File Browser ========
       #

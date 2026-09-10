@@ -13,4 +13,4 @@ platys gen
 
 ## How to use it?
 
-Navigate to <http://dataplatform:9090/graph>
+Navigate to <http://localhost:9090/graph>

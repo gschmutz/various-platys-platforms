@@ -15,4 +15,4 @@ platys gen
 
 ### Web UI
 
-Navigate to <http://dataplatform:28446>.
+Navigate to <http://localhost:28446>.
