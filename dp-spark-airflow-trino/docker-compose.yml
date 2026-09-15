@@ -1073,7 +1073,7 @@ services:
       start_period: 40s
   #  ================================== RustFS MC ========================================== #
   rustfs-mc:
-    image: minio/mc:latest
+    image: quay.io/minio/mc:latest
     container_name: rustfs-mc
     hostname: rustfs-mc
     labels:
