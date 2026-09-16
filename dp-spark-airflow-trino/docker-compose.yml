@@ -51,12 +51,20 @@ services:
       SPARK_DEFAULTS_CONF_spark_sql_catalog_hive__iceberg: org.apache.iceberg.spark.SparkCatalog
       SPARK_DEFAULTS_CONF_spark_sql_catalog_hive__iceberg_uri: thrift://hive-metastore:9083
       SPARK_DEFAULTS_CONF_spark_sql_catalog_hive__iceberg_warehouse: s3a://admin-bucket/iceberg/warehouse
+      SPARK_DEFAULTS_CONF_spark_sql_catalog_polaris_type: rest
+      SPARK_DEFAULTS_CONF_spark_sql_catalog_polaris: org.apache.iceberg.spark.SparkCatalog
+      SPARK_DEFAULTS_CONF_spark_sql_catalog_polaris_uri: http://polaris:8181/api/catalog
+      SPARK_DEFAULTS_CONF_spark_sql_catalog_polaris_token___refresh___enabled: true
+      SPARK_DEFAULTS_CONF_spark_sql_catalog_polaris_credential: admin:abc123!
+      SPARK_DEFAULTS_CONF_spark_sql_catalog_polaris_warehouse: polaris_catalog
+      SPARK_DEFAULTS_CONF_spark_sql_catalog_polaris_scope: PRINCIPAL_ROLE:ALL
+      SPARK_DEFAULTS_CONF_spark_sql_catalog_polaris_header_X___Iceberg___Access___Delegation: vended-credentials
       SPARK_DEFAULTS_CONF_spark_sql_legacy_allowNonEmptyLocationInCTAS: 'true'
       SPARK_DEFAULTS_CONF_spark_jars_repositories:
       SPARK_DEFAULTS_CONF_spark_jars_packages: io.delta:delta-spark_2.13:4.1.0,io.delta:delta-storage:4.1.0
       SPARK_DEFAULTS_CONF_spark_jars_excludes:
       # specifies the JARs to be downloaded to the jars folder by maven-download-sh script
-      SPARK_INSTALL_JAVA_PACKAGES: ',software.amazon.awssdk:bundle:2.35.4,software.amazon.awssdk:s3-transfer-manager:2.35.4,software.amazon.awssdk.crt:aws-crt:0.39.4,org.apache.hadoop:hadoop-aws:3.4.2,io.delta:delta-spark_2.13:4.1.0,io.delta:delta-storage:4.1.0,org.apache.iceberg:iceberg-spark-runtime-4.1_2.13:1.11.0,org.apache.iceberg:iceberg-aws-bundle:1.11.0,org.apache.hudi:hudi-spark4.1-bundle_2.13:1.2.0'
+      SPARK_INSTALL_JAVA_PACKAGES: ',software.amazon.awssdk:bundle:2.35.4,software.amazon.awssdk:s3-transfer-manager:2.35.4,software.amazon.awssdk.crt:aws-crt:0.39.4,org.apache.hadoop:hadoop-aws:3.4.2,io.delta:delta-spark_2.13:4.1.0,io.delta:delta-storage:4.1.0,org.apache.iceberg:iceberg-spark-runtime-4.1_2.13:1.11.0,org.apache.iceberg:iceberg-aws-bundle:1.11.0,org.apache.polaris:polaris-spark-3.5_2.13:1.2.0-incubating,org.apache.hudi:hudi-spark4.1-bundle_2.13:1.2.0'
       SPARK_INSTALL_PYTHON_PACKAGES: ' delta-spark==4.1.0'
       SPARK_DEFAULTS_CONF_spark_jars: /opt/spark/jars/iceberg-spark-runtime-4.1_2.13-1.11.0.jar
       MAVEN_DOWNLOAD_REPO: central
@@ -122,12 +130,20 @@ services:
       SPARK_DEFAULTS_CONF_spark_sql_catalog_hive__iceberg: org.apache.iceberg.spark.SparkCatalog
       SPARK_DEFAULTS_CONF_spark_sql_catalog_hive__iceberg_uri: thrift://hive-metastore:9083
       SPARK_DEFAULTS_CONF_spark_sql_catalog_hive__iceberg_warehouse: s3a://admin-bucket/iceberg/warehouse
+      SPARK_DEFAULTS_CONF_spark_sql_catalog_polaris_type: rest
+      SPARK_DEFAULTS_CONF_spark_sql_catalog_polaris: org.apache.iceberg.spark.SparkCatalog
+      SPARK_DEFAULTS_CONF_spark_sql_catalog_polaris_uri: http://polaris:8181/api/catalog
+      SPARK_DEFAULTS_CONF_spark_sql_catalog_polaris_token___refresh___enabled: true
+      SPARK_DEFAULTS_CONF_spark_sql_catalog_polaris_credential: admin:abc123!
+      SPARK_DEFAULTS_CONF_spark_sql_catalog_polaris_warehouse: polaris_catalog
+      SPARK_DEFAULTS_CONF_spark_sql_catalog_polaris_scope: PRINCIPAL_ROLE:ALL
+      SPARK_DEFAULTS_CONF_spark_sql_catalog_polaris_header_X___Iceberg___Access___Delegation: vended-credentials
       SPARK_DEFAULTS_CONF_spark_sql_legacy_allowNonEmptyLocationInCTAS: 'true'
       SPARK_DEFAULTS_CONF_spark_jars_repositories:
       SPARK_DEFAULTS_CONF_spark_jars_packages: io.delta:delta-spark_2.13:4.1.0,io.delta:delta-storage:4.1.0
       SPARK_DEFAULTS_CONF_spark_jars_excludes:
       # specifies the JARs to be downloaded to the jars folder by maven-download-sh script
-      SPARK_INSTALL_JAVA_PACKAGES: ',software.amazon.awssdk:bundle:2.35.4,software.amazon.awssdk:s3-transfer-manager:2.35.4,software.amazon.awssdk.crt:aws-crt:0.39.4,org.apache.hadoop:hadoop-aws:3.4.2,io.delta:delta-spark_2.13:4.1.0,io.delta:delta-storage:4.1.0,org.apache.iceberg:iceberg-spark-runtime-4.1_2.13:1.11.0,org.apache.iceberg:iceberg-aws-bundle:1.11.0,org.apache.hudi:hudi-spark4.1-bundle_2.13:1.2.0'
+      SPARK_INSTALL_JAVA_PACKAGES: ',software.amazon.awssdk:bundle:2.35.4,software.amazon.awssdk:s3-transfer-manager:2.35.4,software.amazon.awssdk.crt:aws-crt:0.39.4,org.apache.hadoop:hadoop-aws:3.4.2,io.delta:delta-spark_2.13:4.1.0,io.delta:delta-storage:4.1.0,org.apache.iceberg:iceberg-spark-runtime-4.1_2.13:1.11.0,org.apache.iceberg:iceberg-aws-bundle:1.11.0,org.apache.polaris:polaris-spark-3.5_2.13:1.2.0-incubating,org.apache.hudi:hudi-spark4.1-bundle_2.13:1.2.0'
       SPARK_INSTALL_PYTHON_PACKAGES: ' delta-spark==4.1.0'
       SPARK_DEFAULTS_CONF_spark_jars: /opt/spark/jars/iceberg-spark-runtime-4.1_2.13-1.11.0.jar
       MAVEN_DOWNLOAD_REPO: central
@@ -188,12 +204,20 @@ services:
       SPARK_DEFAULTS_CONF_spark_sql_catalog_hive__iceberg: org.apache.iceberg.spark.SparkCatalog
       SPARK_DEFAULTS_CONF_spark_sql_catalog_hive__iceberg_uri: thrift://hive-metastore:9083
       SPARK_DEFAULTS_CONF_spark_sql_catalog_hive__iceberg_warehouse: s3a://admin-bucket/iceberg/warehouse
+      SPARK_DEFAULTS_CONF_spark_sql_catalog_polaris_type: rest
+      SPARK_DEFAULTS_CONF_spark_sql_catalog_polaris: org.apache.iceberg.spark.SparkCatalog
+      SPARK_DEFAULTS_CONF_spark_sql_catalog_polaris_uri: http://polaris:8181/api/catalog
+      SPARK_DEFAULTS_CONF_spark_sql_catalog_polaris_token___refresh___enabled: true
+      SPARK_DEFAULTS_CONF_spark_sql_catalog_polaris_credential: admin:abc123!
+      SPARK_DEFAULTS_CONF_spark_sql_catalog_polaris_warehouse: polaris_catalog
+      SPARK_DEFAULTS_CONF_spark_sql_catalog_polaris_scope: PRINCIPAL_ROLE:ALL
+      SPARK_DEFAULTS_CONF_spark_sql_catalog_polaris_header_X___Iceberg___Access___Delegation: vended-credentials
       SPARK_DEFAULTS_CONF_spark_sql_legacy_allowNonEmptyLocationInCTAS: 'true'
       SPARK_DEFAULTS_CONF_spark_jars_repositories:
       SPARK_DEFAULTS_CONF_spark_jars_packages: io.delta:delta-spark_2.13:4.1.0,io.delta:delta-storage:4.1.0
       SPARK_DEFAULTS_CONF_spark_jars_excludes:
       # specifies the JARs to be downloaded to the jars folder by maven-download-sh script
-      SPARK_INSTALL_JAVA_PACKAGES: ',software.amazon.awssdk:bundle:2.35.4,software.amazon.awssdk:s3-transfer-manager:2.35.4,software.amazon.awssdk.crt:aws-crt:0.39.4,org.apache.hadoop:hadoop-aws:3.4.2,io.delta:delta-spark_2.13:4.1.0,io.delta:delta-storage:4.1.0,org.apache.iceberg:iceberg-spark-runtime-4.1_2.13:1.11.0,org.apache.iceberg:iceberg-aws-bundle:1.11.0,org.apache.hudi:hudi-spark4.1-bundle_2.13:1.2.0'
+      SPARK_INSTALL_JAVA_PACKAGES: ',software.amazon.awssdk:bundle:2.35.4,software.amazon.awssdk:s3-transfer-manager:2.35.4,software.amazon.awssdk.crt:aws-crt:0.39.4,org.apache.hadoop:hadoop-aws:3.4.2,io.delta:delta-spark_2.13:4.1.0,io.delta:delta-storage:4.1.0,org.apache.iceberg:iceberg-spark-runtime-4.1_2.13:1.11.0,org.apache.iceberg:iceberg-aws-bundle:1.11.0,org.apache.polaris:polaris-spark-3.5_2.13:1.2.0-incubating,org.apache.hudi:hudi-spark4.1-bundle_2.13:1.2.0'
       SPARK_INSTALL_PYTHON_PACKAGES: ' delta-spark==4.1.0'
       SPARK_DEFAULTS_CONF_spark_jars: /opt/spark/jars/iceberg-spark-runtime-4.1_2.13-1.11.0.jar
       MAVEN_DOWNLOAD_REPO: central
@@ -256,12 +280,20 @@ services:
       SPARK_DEFAULTS_CONF_spark_sql_catalog_hive__iceberg: org.apache.iceberg.spark.SparkCatalog
       SPARK_DEFAULTS_CONF_spark_sql_catalog_hive__iceberg_uri: thrift://hive-metastore:9083
       SPARK_DEFAULTS_CONF_spark_sql_catalog_hive__iceberg_warehouse: s3a://admin-bucket/iceberg/warehouse
+      SPARK_DEFAULTS_CONF_spark_sql_catalog_polaris_type: rest
+      SPARK_DEFAULTS_CONF_spark_sql_catalog_polaris: org.apache.iceberg.spark.SparkCatalog
+      SPARK_DEFAULTS_CONF_spark_sql_catalog_polaris_uri: http://polaris:8181/api/catalog
+      SPARK_DEFAULTS_CONF_spark_sql_catalog_polaris_token___refresh___enabled: true
+      SPARK_DEFAULTS_CONF_spark_sql_catalog_polaris_credential: admin:abc123!
+      SPARK_DEFAULTS_CONF_spark_sql_catalog_polaris_warehouse: polaris_catalog
+      SPARK_DEFAULTS_CONF_spark_sql_catalog_polaris_scope: PRINCIPAL_ROLE:ALL
+      SPARK_DEFAULTS_CONF_spark_sql_catalog_polaris_header_X___Iceberg___Access___Delegation: vended-credentials
       SPARK_DEFAULTS_CONF_spark_sql_legacy_allowNonEmptyLocationInCTAS: 'true'
       SPARK_DEFAULTS_CONF_spark_jars_repositories:
       SPARK_DEFAULTS_CONF_spark_jars_packages: io.delta:delta-spark_2.13:4.1.0,io.delta:delta-storage:4.1.0
       SPARK_DEFAULTS_CONF_spark_jars_excludes:
       # specifies the JARs to be downloaded to the jars folder by maven-download-sh script
-      SPARK_INSTALL_JAVA_PACKAGES: ',software.amazon.awssdk:bundle:2.35.4,software.amazon.awssdk:s3-transfer-manager:2.35.4,software.amazon.awssdk.crt:aws-crt:0.39.4,org.apache.hadoop:hadoop-aws:3.4.2,io.delta:delta-spark_2.13:4.1.0,io.delta:delta-storage:4.1.0,org.apache.iceberg:iceberg-spark-runtime-4.1_2.13:1.11.0,org.apache.iceberg:iceberg-aws-bundle:1.11.0,org.apache.hudi:hudi-spark4.1-bundle_2.13:1.2.0'
+      SPARK_INSTALL_JAVA_PACKAGES: ',software.amazon.awssdk:bundle:2.35.4,software.amazon.awssdk:s3-transfer-manager:2.35.4,software.amazon.awssdk.crt:aws-crt:0.39.4,org.apache.hadoop:hadoop-aws:3.4.2,io.delta:delta-spark_2.13:4.1.0,io.delta:delta-storage:4.1.0,org.apache.iceberg:iceberg-spark-runtime-4.1_2.13:1.11.0,org.apache.iceberg:iceberg-aws-bundle:1.11.0,org.apache.polaris:polaris-spark-3.5_2.13:1.2.0-incubating,org.apache.hudi:hudi-spark4.1-bundle_2.13:1.2.0'
       SPARK_INSTALL_PYTHON_PACKAGES: ' delta-spark==4.1.0'
       SPARK_DEFAULTS_CONF_spark_jars: /opt/spark/jars/iceberg-spark-runtime-4.1_2.13-1.11.0.jar
       MAVEN_DOWNLOAD_REPO: central
@@ -319,12 +351,20 @@ services:
       SPARK_DEFAULTS_CONF_spark_sql_catalog_hive__iceberg: org.apache.iceberg.spark.SparkCatalog
       SPARK_DEFAULTS_CONF_spark_sql_catalog_hive__iceberg_uri: thrift://hive-metastore:9083
       SPARK_DEFAULTS_CONF_spark_sql_catalog_hive__iceberg_warehouse: s3a://admin-bucket/iceberg/warehouse
+      SPARK_DEFAULTS_CONF_spark_sql_catalog_polaris_type: rest
+      SPARK_DEFAULTS_CONF_spark_sql_catalog_polaris: org.apache.iceberg.spark.SparkCatalog
+      SPARK_DEFAULTS_CONF_spark_sql_catalog_polaris_uri: http://polaris:8181/api/catalog
+      SPARK_DEFAULTS_CONF_spark_sql_catalog_polaris_token___refresh___enabled: true
+      SPARK_DEFAULTS_CONF_spark_sql_catalog_polaris_credential: admin:abc123!
+      SPARK_DEFAULTS_CONF_spark_sql_catalog_polaris_warehouse: polaris_catalog
+      SPARK_DEFAULTS_CONF_spark_sql_catalog_polaris_scope: PRINCIPAL_ROLE:ALL
+      SPARK_DEFAULTS_CONF_spark_sql_catalog_polaris_header_X___Iceberg___Access___Delegation: vended-credentials
       SPARK_DEFAULTS_CONF_spark_sql_legacy_allowNonEmptyLocationInCTAS: 'true'
       SPARK_DEFAULTS_CONF_spark_jars_repositories:
       SPARK_DEFAULTS_CONF_spark_jars_packages: io.delta:delta-spark_2.13:4.1.0,io.delta:delta-storage:4.1.0
       SPARK_DEFAULTS_CONF_spark_jars_excludes:
       # specifies the JARs to be downloaded to the jars folder by maven-download-sh script
-      SPARK_INSTALL_JAVA_PACKAGES: ',software.amazon.awssdk:bundle:2.35.4,software.amazon.awssdk:s3-transfer-manager:2.35.4,software.amazon.awssdk.crt:aws-crt:0.39.4,org.apache.hadoop:hadoop-aws:3.4.2,io.delta:delta-spark_2.13:4.1.0,io.delta:delta-storage:4.1.0,org.apache.iceberg:iceberg-spark-runtime-4.1_2.13:1.11.0,org.apache.iceberg:iceberg-aws-bundle:1.11.0,org.apache.hudi:hudi-spark4.1-bundle_2.13:1.2.0'
+      SPARK_INSTALL_JAVA_PACKAGES: ',software.amazon.awssdk:bundle:2.35.4,software.amazon.awssdk:s3-transfer-manager:2.35.4,software.amazon.awssdk.crt:aws-crt:0.39.4,org.apache.hadoop:hadoop-aws:3.4.2,io.delta:delta-spark_2.13:4.1.0,io.delta:delta-storage:4.1.0,org.apache.iceberg:iceberg-spark-runtime-4.1_2.13:1.11.0,org.apache.iceberg:iceberg-aws-bundle:1.11.0,org.apache.polaris:polaris-spark-3.5_2.13:1.2.0-incubating,org.apache.hudi:hudi-spark4.1-bundle_2.13:1.2.0'
       SPARK_INSTALL_PYTHON_PACKAGES: ' delta-spark==4.1.0'
       SPARK_DEFAULTS_CONF_spark_jars: /opt/spark/jars/iceberg-spark-runtime-4.1_2.13-1.11.0.jar
       MAVEN_DOWNLOAD_REPO: central
@@ -386,12 +426,20 @@ services:
       SPARK_DEFAULTS_CONF_spark_sql_catalog_hive__iceberg: org.apache.iceberg.spark.SparkCatalog
       SPARK_DEFAULTS_CONF_spark_sql_catalog_hive__iceberg_uri: thrift://hive-metastore:9083
       SPARK_DEFAULTS_CONF_spark_sql_catalog_hive__iceberg_warehouse: s3a://admin-bucket/iceberg/warehouse
+      SPARK_DEFAULTS_CONF_spark_sql_catalog_polaris_type: rest
+      SPARK_DEFAULTS_CONF_spark_sql_catalog_polaris: org.apache.iceberg.spark.SparkCatalog
+      SPARK_DEFAULTS_CONF_spark_sql_catalog_polaris_uri: http://polaris:8181/api/catalog
+      SPARK_DEFAULTS_CONF_spark_sql_catalog_polaris_token___refresh___enabled: true
+      SPARK_DEFAULTS_CONF_spark_sql_catalog_polaris_credential: admin:abc123!
+      SPARK_DEFAULTS_CONF_spark_sql_catalog_polaris_warehouse: polaris_catalog
+      SPARK_DEFAULTS_CONF_spark_sql_catalog_polaris_scope: PRINCIPAL_ROLE:ALL
+      SPARK_DEFAULTS_CONF_spark_sql_catalog_polaris_header_X___Iceberg___Access___Delegation: vended-credentials
       SPARK_DEFAULTS_CONF_spark_sql_legacy_allowNonEmptyLocationInCTAS: 'true'
       SPARK_DEFAULTS_CONF_spark_jars_repositories:
       SPARK_DEFAULTS_CONF_spark_jars_packages: io.delta:delta-spark_2.13:4.1.0,io.delta:delta-storage:4.1.0
       SPARK_DEFAULTS_CONF_spark_jars_excludes:
       # specifies the JARs to be downloaded to the jars folder by maven-download-sh script
-      SPARK_INSTALL_JAVA_PACKAGES: ',software.amazon.awssdk:bundle:2.35.4,software.amazon.awssdk:s3-transfer-manager:2.35.4,software.amazon.awssdk.crt:aws-crt:0.39.4,org.apache.hadoop:hadoop-aws:3.4.2,io.delta:delta-spark_2.13:4.1.0,io.delta:delta-storage:4.1.0,org.apache.iceberg:iceberg-spark-runtime-4.1_2.13:1.11.0,org.apache.iceberg:iceberg-aws-bundle:1.11.0,org.apache.hudi:hudi-spark4.1-bundle_2.13:1.2.0'
+      SPARK_INSTALL_JAVA_PACKAGES: ',software.amazon.awssdk:bundle:2.35.4,software.amazon.awssdk:s3-transfer-manager:2.35.4,software.amazon.awssdk.crt:aws-crt:0.39.4,org.apache.hadoop:hadoop-aws:3.4.2,io.delta:delta-spark_2.13:4.1.0,io.delta:delta-storage:4.1.0,org.apache.iceberg:iceberg-spark-runtime-4.1_2.13:1.11.0,org.apache.iceberg:iceberg-aws-bundle:1.11.0,org.apache.polaris:polaris-spark-3.5_2.13:1.2.0-incubating,org.apache.hudi:hudi-spark4.1-bundle_2.13:1.2.0'
       SPARK_INSTALL_PYTHON_PACKAGES: ' delta-spark==4.1.0'
       SPARK_DEFAULTS_CONF_spark_jars: /opt/spark/jars/iceberg-spark-runtime-4.1_2.13-1.11.0.jar
       MAVEN_DOWNLOAD_REPO: central
@@ -963,9 +1011,9 @@ services:
       - POSTGRES_USER=postgres
       - POSTGRES_DB=postgres
 #      - POSTGRES_INITDB_ARGS=--encoding=UTF8 --data-checksums      
-      - POSTGRES_MULTIPLE_DATABASES=demodb
-      - POSTGRES_MULTIPLE_USERS=demo
-      - POSTGRES_MULTIPLE_PASSWORDS=${PLATYS_POSTGRESQL_MULTIPLE_PASSWORD:-abc123!}
+      - POSTGRES_MULTIPLE_DATABASES=demodb,POLARIS
+      - POSTGRES_MULTIPLE_USERS=demo,postgres
+      - POSTGRES_MULTIPLE_PASSWORDS=${PLATYS_POSTGRESQL_MULTIPLE_PASSWORD:-abc123!,abc123!}
       - POSTGRES_MULTIPLE_ADDL_ROLES=
       - PGDATA=/var/lib/postgresql/data/pgdata
       - DB_SCHEMA=demo
@@ -1012,6 +1060,10 @@ services:
       HIVE_RUN_AS_INVOKER: 'false'
       HIVE_LEGACY_TRANSLATION: 'false'
       NESSIE_CATALOG_WAREHOUSE_DIR: s3a://admin-bucket/nessie/warehouse
+      ICEBERG_POLARIS_CATALOG_URI: http://polaris:8181/api/catalog
+      ICEBERG_POLARIS_CATALOG_WAREHOUSE: polaris_catalog
+      CLIENT_ID: admin
+      CLIENT_SECRET: ${PLATYS_POLARIS_CLIENT_SECRET:-abc123!}
       POSTGRESQL_DATABASE: postgres
       POSTGRESQL_USER: postgres
       POSTGRESQL_PASSWORD: abc123!
@@ -1024,6 +1076,7 @@ services:
       - ./conf/trino/catalog/hive.properties:/catalog/minio.properties:z
       - ./conf/trino/catalog/hive.properties:/catalog/hive.properties:z
       - ./conf/trino/catalog/iceberg-hive.properties:/catalog/iceberg_hive.properties:z
+      - ./conf/trino/catalog/iceberg-polaris.properties:/catalog/iceberg_polaris.properties:z
       - ./conf/trino/catalog/postgresql.properties:/catalog/postgresql.properties:z
       - ./custom-conf/trino/security:/etc/trino/security:z
     restart: unless-stopped
@@ -1117,6 +1170,336 @@ services:
       - ./data-transfer:/data-transfer:z
       - ./conf/awscli/s3cfg.template:/root/.s3cfg.template:z
     command: tail -f /dev/null
+    restart: unless-stopped
+  #  ================================== Polaris ========================================== #
+  polaris:
+    image: docker.io/apache/polaris:latest
+    container_name: polaris
+    hostname: polaris
+    labels:
+      com.platys.name: polaris
+      com.platys.description: Secure, fast and easy to use Iceberg REST Catalog
+      com.platys.restapi.title: Polaris Web UI
+      com.platys.restapi.url: http://dataplatform:28467/api/management/v1/catalogs
+      com.platys.password.envvars: PLATYS_POLARIS_DB_PASSWORD,PLATYS_POLARIS_CLIENT_SECRET
+    ports:
+      - 28467:8181
+      - 28468:8182
+    depends_on:
+      postgresql:
+        condition: service_healthy
+    environment:
+      AWS_ACCESS_KEY_ID: ${PLATYS_AWS_ACCESS_KEY:-admin}
+      AWS_SECRET_ACCESS_KEY: ${PLATYS_AWS_SECRET_ACCESS_KEY:-abc123abc123!}
+      AWS_REGION: us-east-1
+      AWS_ENDPOINT_URL_S3: http://rustfs-1:9000
+      AWS_ENDPOINT_URL_STS: http://rustfs-1:9000
+      POLARIS_PERSISTENCE_TYPE: relational-jdbc
+      POLARIS_PERSISTENCE_RELATIONAL_JDBC_MAX_RETRIES: 5
+      POLARIS_PERSISTENCE_RELATIONAL_JDBC_INITIAL_DELAY_IN_MS: 100
+      POLARIS_PERSISTENCE_RELATIONAL_JDBC_MAX_DURATION_IN_MS: 5000
+      QUARKUS_DATASOURCE_JDBC_URL: jdbc:postgresql://postgresql:5432/polaris
+      QUARKUS_DATASOURCE_USERNAME: postgres
+      QUARKUS_DATASOURCE_PASSWORD: ${PLATYS_POLARIS_DB_PASSWORD:-abc123!}
+      POLARIS_BOOTSTRAP_CREDENTIALS: POLARIS,admin,${PLATYS_POLARIS_CLIENT_SECRET:-abc123!}
+      POLARIS_REALM_CONTEXT_REALMS: POLARIS
+      QUARKUS_OTEL_SDK_DISABLED: true
+      polaris.features."ALLOW_INSECURE_STORAGE_TYPES": 'true'
+      polaris.features."SUPPORTED_CATALOG_STORAGE_TYPES": '["FILE","S3","GCS","AZURE"]'
+      polaris.readiness.ignore-severe-issues: 'true'
+      QUARKUS_HTTP_CORS_ENABLED: true
+      QUARKUS_HTTP_CORS_ORIGINS: http://${PUBLIC_IP}:28494
+      QUARKUS_HTTP_CORS_METHODS: GET,POST,PUT,DELETE,PATCH,OPTIONS
+      QUARKUS_HTTP_CORS_HEADERS: Content-Type,Authorization,Polaris-Realm,X-Request-ID
+      QUARKUS_HTTP_CORS_EXPOSED_HEADERS: '*'
+      QUARKUS_HTTP_CORS_ACCESS_CONTROL_ALLOW_CREDENTIALS: true
+      QUARKUS_HTTP_CORS_ACCESS_CONTROL_MAX_AGE: PT10M
+    volumes:
+      - ./data-transfer:/data-transfer:z
+    restart: unless-stopped
+    healthcheck:
+      test: [CMD, curl, -f, http://localhost:8182/q/health]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+  polaris-db-setup:
+    image: docker.io/apache/polaris-admin-tool:latest
+    container_name: polaris-db-setup
+    hostname: polaris-db-setup
+    labels:
+      com.platys.name: polaris
+    depends_on:
+      postgresql:
+        condition: service_healthy
+    environment:
+      POLARIS_PERSISTENCE_TYPE: relational-jdbc
+      QUARKUS_DATASOURCE_JDBC_URL: jdbc:postgresql://postgresql:5432/polaris
+      QUARKUS_DATASOURCE_USERNAME: postgres
+      QUARKUS_DATASOURCE_PASSWORD: ${PLATYS_POLARIS_DB_PASSWORD:-abc123!}
+    volumes:
+      - ./data-transfer:/data-transfer:z
+    command:
+      - bootstrap
+      - --realm=POLARIS
+      - --credential=POLARIS,admin,${PLATYS_POLARIS_CLIENT_SECRET:-abc123!}
+    init: true
+    restart: no
+  polaris-catalog-setup:
+    image: docker.io/alpine/curl
+    container_name: polaris-catalog-setup
+    hostname: polaris-catalog-setup
+    depends_on:
+      polaris:
+        condition: service_healthy
+    environment:
+      - CLIENT_ID=admin
+      - CLIENT_SECRET=${PLATYS_POLARIS_CLIENT_SECRET:-abc123!}
+      - CATALOG_NAME=polaris_catalog
+      - REALM=POLARIS
+    volumes:
+      - ./init/polaris/:/polaris:z
+    entrypoint: /bin/sh
+    command:
+      - -c
+      - |
+        set -e
+        apk add --no-cache jq
+        echo "Obtaining root access token..."
+        TOKEN_RESPONSE=$$(curl --fail-with-body -s -S -X POST http://polaris:8181/api/catalog/v1/oauth/tokens \
+          -H 'Content-Type: application/x-www-form-urlencoded' \
+          -d "grant_type=client_credentials&client_id=$${CLIENT_ID}&client_secret=$${CLIENT_SECRET}&scope=PRINCIPAL_ROLE:ALL" 2>&1) || {
+          echo "❌ Failed to obtain access token"
+          echo "$$TOKEN_RESPONSE" >&2
+          exit 1
+        }
+        TOKEN=$$(echo $$TOKEN_RESPONSE | jq -r '.access_token')
+        if [ -z "$$TOKEN" ] || [ "$$TOKEN" = "null" ]; then
+          echo "❌ Failed to parse access token from response"
+          echo "$$TOKEN_RESPONSE"
+          exit 1
+        fi
+        echo "✅ Obtained access token"
+        echo "Creating catalog '$$CATALOG_NAME' in realm $$REALM..."
+        PAYLOAD='{
+          "catalog": {
+            "name": "'$$CATALOG_NAME'",
+            "type": "INTERNAL",
+            "readOnly": false,
+            "properties": {
+              "default-base-location": "s3://bucket123"
+            },
+            "storageConfigInfo": {
+              "storageType": "S3",
+              "allowedLocations": ["s3://bucket123"],
+              "endpoint": "http://localhost:9000",
+              "endpointInternal": "http://rustfs:9000",
+              "pathStyleAccess": true,
+              "region": "us-west-2"
+            }
+          }
+        }'
+        RESPONSE=$$(curl --fail-with-body -s -S -X POST http://polaris:8181/api/management/v1/catalogs \
+          -H "Authorization: Bearer $$TOKEN" \
+          -H "Accept: application/json" \
+          -H "Content-Type: application/json" \
+          -H "Polaris-Realm: $$REALM" \
+          -d "$$PAYLOAD" 2>&1) && echo -n "" || {
+          echo "❌ Failed to create catalog"
+          echo "$$RESPONSE" >&2
+          exit 1
+        }
+        echo "✅ Catalog created"
+        echo ""
+        echo "Creating principal 'quickstart_user'..."
+        PRINCIPAL_RESPONSE=$$(curl --fail-with-body -s -X POST http://polaris:8181/api/management/v1/principals \
+          -H "Authorization: Bearer $$TOKEN" \
+          -H "Polaris-Realm: $$REALM" \
+          -H "Content-Type: application/json" \
+          -d '{"principal": {"name": "quickstart_user", "properties": {}}}' 2>&1) || {
+          echo "❌ Failed to create principal"
+          echo "$$PRINCIPAL_RESPONSE" >&2
+          exit 1
+        }
+        USER_CLIENT_ID=$$(echo $$PRINCIPAL_RESPONSE | jq -r '.credentials.clientId')
+        USER_CLIENT_SECRET=$$(echo $$PRINCIPAL_RESPONSE | jq -r '.credentials.clientSecret')
+        if [ -z "$$USER_CLIENT_ID" ] || [ "$$USER_CLIENT_ID" = "null" ] || [ -z "$$USER_CLIENT_SECRET" ] || [ "$$USER_CLIENT_SECRET" = "null" ]; then
+          echo "❌ Failed to parse user credentials from response"
+          echo "$$PRINCIPAL_RESPONSE"
+          exit 1
+        fi
+        echo "✅ Principal created with clientId: $$USER_CLIENT_ID"
+        echo "Creating principal role 'quickstart_user_role'..."
+        RESPONSE=$$(curl --fail-with-body -s -S -X POST http://polaris:8181/api/management/v1/principal-roles \
+          -H "Authorization: Bearer $$TOKEN" \
+          -H "Polaris-Realm: $$REALM" \
+          -H "Content-Type: application/json" \
+          -d '{"principalRole": {"name": "quickstart_user_role", "properties": {}}}' 2>&1) && echo -n "" || {
+          echo "❌ Failed to create principal role"
+          echo "$$RESPONSE" >&2
+          exit 1
+        }
+        echo "✅ Principal role created"
+        echo "Creating catalog role 'polaris_catalog_role'..."
+        RESPONSE=$$(curl --fail-with-body -s -S -X POST http://polaris:8181/api/management/v1/catalogs/$$CATALOG_NAME/catalog-roles \
+          -H "Authorization: Bearer $$TOKEN" \
+          -H "Polaris-Realm: $$REALM" \
+          -H "Content-Type: application/json" \
+          -d '{"catalogRole": {"name": "polaris_catalog_role", "properties": {}}}' 2>&1) && echo -n "" || {
+          echo "❌ Failed to create catalog role"
+          echo "$$RESPONSE" >&2
+          exit 1
+        }
+        echo "✅ Catalog role created"
+        echo "Assigning principal role to principal..."
+        RESPONSE=$$(curl --fail-with-body -s -S -X PUT http://polaris:8181/api/management/v1/principals/quickstart_user/principal-roles \
+          -H "Authorization: Bearer $$TOKEN" \
+          -H "Polaris-Realm: $$REALM" \
+          -H "Content-Type: application/json" \
+          -d '{"principalRole": {"name": "quickstart_user_role"}}' 2>&1) && echo -n "" || {
+          echo "❌ Failed to assign principal role"
+          echo "$$RESPONSE" >&2
+          exit 1
+        }
+        echo "✅ Principal role assigned"
+        echo "Assigning catalog role to principal role..."
+        RESPONSE=$$(curl --fail-with-body -s -S -X PUT http://polaris:8181/api/management/v1/principal-roles/quickstart_user_role/catalog-roles/$$CATALOG_NAME \
+          -H "Authorization: Bearer $$TOKEN" \
+          -H "Polaris-Realm: $$REALM" \
+          -H "Content-Type: application/json" \
+          -d '{"catalogRole": {"name": "polaris_catalog_role"}}' 2>&1) && echo -n "" || {
+          echo "❌ Failed to assign catalog role"
+          echo "$$RESPONSE" >&2
+          exit 1
+        }
+        echo "✅ Catalog role assigned"
+        echo "Granting CATALOG_MANAGE_CONTENT privilege..."
+        RESPONSE=$$(curl --fail-with-body -s -S -X PUT http://polaris:8181/api/management/v1/catalogs/$$CATALOG_NAME/catalog-roles/polaris_catalog_role/grants \
+          -H "Authorization: Bearer $$TOKEN" \
+          -H "Polaris-Realm: $$REALM" \
+          -H "Content-Type: application/json" \
+          -d '{"type": "catalog", "privilege": "CATALOG_MANAGE_CONTENT"}' 2>&1) && echo -n "" || {
+          echo "❌ Failed to grant privileges"
+          echo "$$RESPONSE" >&2
+          exit 1
+        }
+        echo "✅ Privileges granted"
+        echo ""
+        echo "=========================================="
+        echo "🎉 Polaris Quickstart Setup Complete!"
+        echo "=========================================="
+        echo ""
+        echo "Catalog: $$CATALOG_NAME"
+        echo "  Storage: S3 (RustFS)"
+        echo "  Location: s3://bucket123"
+        echo "  RustFS UI: http://localhost:9001"
+        echo ""
+        echo "Root credentials:"
+        echo "  Client ID:     $$CLIENT_ID"
+        echo "  Client Secret: $$CLIENT_SECRET"
+        echo ""
+        echo "User credentials:"
+        echo "  Client ID:     $$USER_CLIENT_ID"
+        echo "  Client Secret: $$USER_CLIENT_SECRET"
+        echo ""
+        echo "Polaris main APIs:"
+        echo "  - Iceberg REST:   http://localhost:8181/api/catalog/v1"
+        echo "  - Management:     http://localhost:8181/api/management/v1"
+        echo "  - Generic Tables: http://localhost:8181/api/polaris/v1"
+        echo ""
+        echo "Polaris admin APIs:"
+        echo "  - Health check:   http://localhost:8182/q/health"
+        echo "  - Metrics:        http://localhost:8182/q/metrics"
+        echo ""
+        echo "To get started with Spark:"
+        echo "  spark-sql \\"
+        echo "    --packages org.apache.iceberg:iceberg-spark-runtime-3.5_2.12:1.10.1,org.apache.iceberg:iceberg-aws-bundle:1.10.1 \\"
+        echo "    --conf spark.sql.extensions=org.apache.iceberg.spark.extensions.IcebergSparkSessionExtensions \\"
+        echo "    --conf spark.sql.catalog.polaris=org.apache.iceberg.spark.SparkCatalog \\"
+        echo "    --conf spark.sql.catalog.polaris.type=rest \\"
+        echo "    --conf spark.sql.catalog.polaris.warehouse=$$CATALOG_NAME \\"
+        echo "    --conf spark.sql.catalog.polaris.uri=http://localhost:8181/api/catalog \\"
+        echo "    --conf spark.sql.catalog.polaris.credential=$$USER_CLIENT_ID:$$USER_CLIENT_SECRET \\"
+        echo "    --conf spark.sql.catalog.polaris.scope=PRINCIPAL_ROLE:ALL \\"
+        echo "    --conf spark.sql.catalog.polaris.header.X-Iceberg-Access-Delegation=vended-credentials \\"
+        echo "    --conf spark.sql.defaultCatalog=polaris"
+        echo ""
+        echo "Note: With credential vending enabled (X-Iceberg-Access-Delegation=vended-credentials),"
+        echo "      Polaris automatically provides temporary S3 credentials, endpoint, region, and"
+        echo "      other storage configuration. No explicit storage settings are needed."
+        echo ""
+        echo "To get started with REST API:"
+        echo "  # Get a token"
+        echo "  export TOKEN=\$$(curl -s -X POST http://localhost:8181/api/catalog/v1/oauth/tokens \\"
+        echo "    -d 'grant_type=client_credentials' \\"
+        echo "    -d 'client_id=$$USER_CLIENT_ID' \\"
+        echo "    -d 'client_secret=$$USER_CLIENT_SECRET' \\"
+        echo "    -d 'scope=PRINCIPAL_ROLE:ALL' \\"
+        echo "    | jq -r '.access_token')"
+        echo ""
+        echo "  # Create a namespace"
+        echo "  curl -X POST http://localhost:8181/api/catalog/v1/$$CATALOG_NAME/namespaces \\"
+        echo "    -H \"Authorization: Bearer \$$TOKEN\" \\"
+        echo "    -H 'Content-Type: application/json' \\"
+        echo "    -d '{\"namespace\": [\"my_namespace\"], \"properties\": {}}'"
+        echo ""
+        echo "  # List namespaces"
+        echo "  curl -X GET http://localhost:8181/api/catalog/v1/$$CATALOG_NAME/namespaces \\"
+        echo "    -H \"Authorization: Bearer \$$TOKEN\""
+        echo ""
+        echo "=========================================="
+        touch /tmp/polaris-setup-done
+        tail -f /dev/null
+    init: true
+    restart: no
+    healthcheck:
+      interval: 1s
+      timeout: 10s
+      retries: 240
+      test: [CMD, test, -f, /tmp/polaris-setup-done]
+  #  ================================== Polaris UI ========================================== #
+  polaris-ui:
+    image: docker.io/trivadis/polaris-console:latest
+    container_name: polaris-ui
+    hostname: polaris-ui
+    labels:
+      com.platys.name: polaris
+      com.platys.description: Web UI for Apache Polaris Iceberg REST Catalog
+      com.platys.webui.title: Polaris UI
+      com.platys.webui.url: http://dataplatform:28494
+    ports:
+      - 28494:8080
+    depends_on:
+      - polaris
+    environment:
+      VITE_POLARIS_API_URL: http://${PUBLIC_IP}:28467
+      VITE_OAUTH_TOKEN_URL: http://${PUBLIC_IP}:28467/api/catalog/v1/oauth/tokens
+      VITE_POLARIS_REALM: POLARIS
+      VITE_POLARIS_PRINCIPAL_SCOPE: PRINCIPAL_ROLE:ALL
+    volumes:
+      - ./data-transfer:/data-transfer:z
+    restart: unless-stopped
+  #  ================================== Coder ========================================== #
+  coder:
+    image: ghcr.io/coder/coder:v2.36.3
+    container_name: coder
+    hostname: coder
+    labels:
+      com.platys.name: coder
+      com.platys.description: Cloud development environments on your infrastructure
+      com.platys.webui.title: Coder UI
+      com.platys.webui.url: http://dataplatform:7080
+    user: root
+    depends_on:
+      - postgresql
+    ports:
+      - 7080:7080
+    environment:
+      CODER_PG_CONNECTION_URL: postgresql://postgres:abc123!@postgresql/postgres?sslmode=disable
+      CODER_HTTP_ADDRESS: 0.0.0.0:7080
+      CODER_ACCESS_URL: http://${PUBLIC_IP:-dataplatform}:7080
+    volumes:
+      - ./data-transfer:/data-transfer:z
+      - /var/run/docker.sock:/var/run/docker.sock:z
     restart: unless-stopped
   #  ================================== Wetty ========================================== #
   wetty:

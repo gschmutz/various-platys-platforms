@@ -2732,9 +2732,9 @@
       POSTGRESQL_user: postgres
       POSTGRESQL_password: abc123!
       POSTGRESQL_schema: demo
-      POSTGRESQL_multiple_databases: demodb
-      POSTGRESQL_multiple_users: demo
-      POSTGRESQL_multiple_passwords: abc123!
+      POSTGRESQL_multiple_databases: demodb,polaris
+      POSTGRESQL_multiple_users: demo,postgres
+      POSTGRESQL_multiple_passwords: abc123!,abc123!
       POSTGRESQL_multiple_addl_roles: ''
       # one of the valid Postgresql wal_levels: "replica", "minimal", "logical". Use logical if you want to work with Debezium.
       POSTGRESQL_wal_level: null
@@ -3437,9 +3437,9 @@
       #
       #===== Polaris ========
       #
-      POLARIS_enable: false
+      POLARIS_enable: true
       # either 'in-memory' or 'relational-jdbc'
-      POLARIS_persistence_type: in-memory
+      POLARIS_persistence_type: relational-jdbc
       # currently only 'postgresql' is supported
       POLARIS_db_type: postgresql
       #POLARIS_db_dbname: 'postgres'
@@ -3452,6 +3452,8 @@
       
       POLARIS_catalog_name: polaris_catalog
       POLARIS_storage_location: s3a://admin-bucket
+
+      POLARIS_ui_enabled: true
       
       #
       #===== Gravitino ========
@@ -3666,11 +3668,11 @@
       #
       # ===== Coder ========
       #
-      CODER_enable: false
+      CODER_enable: true
       CODER_mount_docker_socket: true
       CODER_volume_mount_data: false
-      CODER_postgres_dbname: 'coderdb'
-      CODER_postgres_user: 'coder'
+      CODER_postgres_dbname: 'postgres'
+      CODER_postgres_user: 'postgres'
       CODER_postgres_password: 'abc123!'
 
       #
