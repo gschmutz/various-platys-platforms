@@ -1011,7 +1011,7 @@ services:
       - POSTGRES_USER=postgres
       - POSTGRES_DB=postgres
 #      - POSTGRES_INITDB_ARGS=--encoding=UTF8 --data-checksums      
-      - POSTGRES_MULTIPLE_DATABASES=demodb,POLARIS
+      - POSTGRES_MULTIPLE_DATABASES=demodb,polaris
       - POSTGRES_MULTIPLE_USERS=demo,postgres
       - POSTGRES_MULTIPLE_PASSWORDS=${PLATYS_POSTGRESQL_MULTIPLE_PASSWORD:-abc123!,abc123!}
       - POSTGRES_MULTIPLE_ADDL_ROLES=
@@ -1286,11 +1286,11 @@ services:
             "type": "INTERNAL",
             "readOnly": false,
             "properties": {
-              "default-base-location": "s3://flight-bucket"
+              "default-base-location": "s3://bucket123"
             },
             "storageConfigInfo": {
               "storageType": "S3",
-              "allowedLocations": ["s3://flight-bucket"],
+              "allowedLocations": ["s3://bucket123"],
               "endpoint": "http://localhost:9000",
               "endpointInternal": "http://rustfs:9000",
               "pathStyleAccess": true,
@@ -1477,6 +1477,52 @@ services:
       VITE_POLARIS_PRINCIPAL_SCOPE: PRINCIPAL_ROLE:ALL
     volumes:
       - ./data-transfer:/data-transfer:z
+    restart: unless-stopped
+  #  ================================== Nimtabe ========================================== #
+  nimtable-web:
+    image: ghcr.io/nimtable/nimtable-web:nightly
+    container_name: nimtable-web
+    hostname: nimtable-web
+    labels:
+      com.platys.name: nimtable
+      com.platys.description: Control Plane for Iceberg
+      com.platys.webui.title: Nimtable Web UI
+      com.platys.webui.url: http://dataplatform:28463
+    depends_on:
+      - nimtable
+    ports:
+      - 28463:3000
+    environment:
+      - JAVA_API_URL=http://nimtable:8182
+      - DATABASE_URL=postgresql://postgres:abc123!@postgresql:5432/postgres
+      - JWT_SECRET=your-super-secret-jwt-key-change-this-in-production
+      - ADMIN_USERNAME=admin
+      - ADMIN_PASSWORD=admin
+    volumes:
+      - ./data-transfer:/data-transfer:z
+    restart: unless-stopped
+  nimtable:
+    image: ghcr.io/nimtable/nimtable:nightly
+    container_name: nimtable
+    hostname: nimtable
+    labels:
+      com.platys.name: nimtable
+      com.platys.description: Control Plane for Iceberg
+    depends_on:
+      postgresql:
+        condition: service_healthy
+    ports:
+      - 28464:8182
+    environment:
+      - JAVA_OPTS=-Xmx32g -Xms512m
+      - AWS_ACCESS_KEY_ID=${PLATYS_AWS_ACCESS_KEY:-admin}
+      - AWS_SECRET_ACCESS_KEY=${PLATYS_AWS_SECRET_ACCESS_KEY:-abc123abc123!}
+      - AWS_REGION=us-east-1
+      - AWS_ENDPOINT_URL_S3=http://rustfs-1:9000
+      - AWS_ENDPOINT_URL_STS=http://rustfs-1:9000
+    volumes:
+      - ./data-transfer:/data-transfer:z
+      - ./conf/nimtable/config.yaml:/nimtable/config.yaml:z
     restart: unless-stopped
   #  ================================== Coder ========================================== #
   coder:

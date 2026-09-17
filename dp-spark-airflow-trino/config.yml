@@ -3477,7 +3477,7 @@
       #
       #===== Nimtable ========
       #
-      NIMTABLE_enable: false
+      NIMTABLE_enable: true
       
       #
       #===== Lakevision ========
