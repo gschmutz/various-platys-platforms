@@ -1011,9 +1011,9 @@ services:
       - POSTGRES_USER=postgres
       - POSTGRES_DB=postgres
 #      - POSTGRES_INITDB_ARGS=--encoding=UTF8 --data-checksums      
-      - POSTGRES_MULTIPLE_DATABASES=demodb,polaris
-      - POSTGRES_MULTIPLE_USERS=demo,postgres
-      - POSTGRES_MULTIPLE_PASSWORDS=${PLATYS_POSTGRESQL_MULTIPLE_PASSWORD:-abc123!,abc123!}
+      - POSTGRES_MULTIPLE_DATABASES=demodb,polaris,nimtabledb
+      - POSTGRES_MULTIPLE_USERS=demo,postgres,nimtable
+      - POSTGRES_MULTIPLE_PASSWORDS=${PLATYS_POSTGRESQL_MULTIPLE_PASSWORD:-abc123!,abc123!,abc123!}
       - POSTGRES_MULTIPLE_ADDL_ROLES=
       - PGDATA=/var/lib/postgresql/data/pgdata
       - DB_SCHEMA=demo
@@ -1488,6 +1488,7 @@ services:
       com.platys.description: Control Plane for Iceberg
       com.platys.webui.title: Nimtable Web UI
       com.platys.webui.url: http://dataplatform:28463
+      com.platys.password.envvars: PLATYS_NIMTABLE_ADMIN_PASSWORD
     depends_on:
       - nimtable
     ports:
@@ -1497,7 +1498,7 @@ services:
       - DATABASE_URL=postgresql://postgres:abc123!@postgresql:5432/postgres
       - JWT_SECRET=your-super-secret-jwt-key-change-this-in-production
       - ADMIN_USERNAME=admin
-      - ADMIN_PASSWORD=admin
+      - ADMIN_PASSWORD=${PLATYS_NIMTABLE_ADMIN_PASSWORD:-abc123!}
     volumes:
       - ./data-transfer:/data-transfer:z
     restart: unless-stopped
@@ -1520,9 +1521,12 @@ services:
       - AWS_REGION=us-east-1
       - AWS_ENDPOINT_URL_S3=http://rustfs-1:9000
       - AWS_ENDPOINT_URL_STS=http://rustfs-1:9000
+    # Mount configuration files
+    configs:
+      - source: nimtable-config.yaml
+        target: /nimtable/config.yaml
     volumes:
       - ./data-transfer:/data-transfer:z
-      - ./conf/nimtable/config.yaml:/nimtable/config.yaml:z
     restart: unless-stopped
   #  ================================== Coder ========================================== #
   coder:
@@ -1636,3 +1640,16 @@ volumes:
     name: data_transfer_vol
   spark-4-1-1-python3-vol:
   spark-4-1-1-python3-java-vol:
+configs:
+  # Nimtable config file to be mounted into the Docker containers.
+  # See backend/config.yaml for more complete example
+  nimtable-config.yaml:
+    content: |-
+      server:
+        port: 8182
+        host: 0.0.0.0
+      database:
+        # You can also point to your own Postgres database, instead of using the one provided by docker-compose.
+        url: jdbc:postgresql://postgresql:5432/nimtabledb
+        username: nimtable
+        password: abc123!

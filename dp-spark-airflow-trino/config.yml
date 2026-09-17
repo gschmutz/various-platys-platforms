@@ -2732,9 +2732,9 @@
       POSTGRESQL_user: postgres
       POSTGRESQL_password: abc123!
       POSTGRESQL_schema: demo
-      POSTGRESQL_multiple_databases: demodb,polaris
-      POSTGRESQL_multiple_users: demo,postgres
-      POSTGRESQL_multiple_passwords: abc123!,abc123!
+      POSTGRESQL_multiple_databases: demodb,polaris,nimtabledb
+      POSTGRESQL_multiple_users: demo,postgres,nimtable
+      POSTGRESQL_multiple_passwords: abc123!,abc123!,abc123!
       POSTGRESQL_multiple_addl_roles: ''
       # one of the valid Postgresql wal_levels: "replica", "minimal", "logical". Use logical if you want to work with Debezium.
       POSTGRESQL_wal_level: null
@@ -3478,6 +3478,7 @@
       #===== Nimtable ========
       #
       NIMTABLE_enable: true
+      NIMTABLE_admin_password: abc123!      
       
       #
       #===== Lakevision ========
