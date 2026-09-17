@@ -24,7 +24,7 @@ CODER_postgres_password: abc123!
 
 ## Accessing the UI
 
-Navigate to <http://localhost:7080>.
+Navigate to <http://dataplatform:7080>.
 
 On first access you will be prompted to create an admin account. After that you can define workspace templates (using the Coder CLI or the web UI) and spin up developer workspaces.
 
@@ -39,7 +39,7 @@ curl -L https://coder.com/install.sh | sh
 Authenticate against the platform:
 
 ```bash
-coder login http://localhost:28494
+coder login http://dataplatform:28494
 ```
 
 List available templates and create a workspace:

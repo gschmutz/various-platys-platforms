@@ -13,5 +13,5 @@ platys gen
 
 ## How to use it?
 
-Navigate to <http://localhost:
+Navigate to <http://dataplatform:
 
