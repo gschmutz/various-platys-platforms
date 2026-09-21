@@ -18,6 +18,9 @@ services:
       com.platys.webui.title: Spark UI
       com.platys.webui.url: http://dataplatform:28304
     user: root
+    depends_on:
+      nexus:
+        condition: service_healthy
     ports:
       - 28304:28304
       - 6066:6066
@@ -67,13 +70,21 @@ services:
       SPARK_INSTALL_JAVA_PACKAGES: ',software.amazon.awssdk:bundle:2.35.4,software.amazon.awssdk:s3-transfer-manager:2.35.4,software.amazon.awssdk.crt:aws-crt:0.39.4,org.apache.hadoop:hadoop-aws:3.4.2,io.delta:delta-spark_2.13:4.1.0,io.delta:delta-storage:4.1.0,org.apache.iceberg:iceberg-spark-runtime-4.1_2.13:1.11.0,org.apache.iceberg:iceberg-aws-bundle:1.11.0,org.apache.polaris:polaris-spark-3.5_2.13:1.2.0-incubating,org.apache.hudi:hudi-spark4.1-bundle_2.13:1.2.0'
       SPARK_INSTALL_PYTHON_PACKAGES: ' delta-spark==4.1.0'
       SPARK_DEFAULTS_CONF_spark_jars: /opt/spark/jars/iceberg-spark-runtime-4.1_2.13-1.11.0.jar
-      MAVEN_DOWNLOAD_REPO: central
+      MAVEN_DOWNLOAD_REPO: nexus
+      MAVEN_DOWNLOAD_REPO_NEXUS: http://nexus:8081/repository/maven-public
+      MAVEN_DOWNLOAD_REPO_NEXUS_USER: admin
+      MAVEN_DOWNLOAD_REPO_NEXUS_PASSWORD: ${PLATYS_NEXUS_ADMIN_PASSWORD:-abc123!abc123!}
+      PIP_INDEX_URL: http://nexus:8081/repository/pypi-proxy/simple/
+      PIP_TRUSTED_HOST: nexus
+      SPARK_DEFAULTS_CONF_spark_jars_ivySettings: /opt/spark/conf/ivy-settings.xml
+      SPARK_DEFAULTS_CONF_spark_jars_ivy: /opt/ivy-cache
     volumes:
       - ./data-transfer:/data-transfer:z
       # the 3 conf files are mapped to conf.default folder, they are copied with env variable interpolation into conf upon start of container
       - ./conf/spark/hive-site.xml:/opt/spark/conf.default/hive-site.xml:z
       - ./conf/spark/spark-defaults.conf:/opt/spark/conf.default/spark-defaults.conf:z
       - ./init/spark:/docker-entrypoint-initdb.d:z
+      - ./conf/spark/ivy-settings.xml:/opt/spark/conf/ivy-settings.xml:z
       - ./scripts/docker/maven-download.sh:/maven-download.sh:z
       - ./scripts/spark/pyspark:/opt/spark/bin/pyspark:z
       - ./container-volume/spark/logs/:/var/log/spark/logs:z
@@ -146,12 +157,20 @@ services:
       SPARK_INSTALL_JAVA_PACKAGES: ',software.amazon.awssdk:bundle:2.35.4,software.amazon.awssdk:s3-transfer-manager:2.35.4,software.amazon.awssdk.crt:aws-crt:0.39.4,org.apache.hadoop:hadoop-aws:3.4.2,io.delta:delta-spark_2.13:4.1.0,io.delta:delta-storage:4.1.0,org.apache.iceberg:iceberg-spark-runtime-4.1_2.13:1.11.0,org.apache.iceberg:iceberg-aws-bundle:1.11.0,org.apache.polaris:polaris-spark-3.5_2.13:1.2.0-incubating,org.apache.hudi:hudi-spark4.1-bundle_2.13:1.2.0'
       SPARK_INSTALL_PYTHON_PACKAGES: ' delta-spark==4.1.0'
       SPARK_DEFAULTS_CONF_spark_jars: /opt/spark/jars/iceberg-spark-runtime-4.1_2.13-1.11.0.jar
-      MAVEN_DOWNLOAD_REPO: central
+      MAVEN_DOWNLOAD_REPO: nexus
+      MAVEN_DOWNLOAD_REPO_NEXUS: http://nexus:8081/repository/maven-public
+      MAVEN_DOWNLOAD_REPO_NEXUS_USER: admin
+      MAVEN_DOWNLOAD_REPO_NEXUS_PASSWORD: ${PLATYS_NEXUS_ADMIN_PASSWORD:-abc123!abc123!}
+      PIP_INDEX_URL: http://nexus:8081/repository/pypi-proxy/simple/
+      PIP_TRUSTED_HOST: nexus
+      SPARK_DEFAULTS_CONF_spark_jars_ivySettings: /opt/spark/conf/ivy-settings.xml
+      SPARK_DEFAULTS_CONF_spark_jars_ivy: /opt/ivy-cache
     volumes:
       - ./data-transfer:/data-transfer:z
       - ./conf/spark/hive-site.xml:/opt/spark/conf.default/hive-site.xml:z
       - ./conf/spark/spark-defaults.conf:/opt/spark/conf.default/spark-defaults.conf:z
       - ./init/spark:/docker-entrypoint-initdb.d:z
+      - ./conf/spark/ivy-settings.xml:/opt/spark/conf/ivy-settings.xml:z
       - ./scripts/docker/maven-download.sh:/maven-download.sh:z
       - ./container-volume/spark/logs/:/var/log/spark/logs:z
     entrypoint: [/docker-entrypoint-initdb.d/spark-init.sh]
@@ -220,12 +239,20 @@ services:
       SPARK_INSTALL_JAVA_PACKAGES: ',software.amazon.awssdk:bundle:2.35.4,software.amazon.awssdk:s3-transfer-manager:2.35.4,software.amazon.awssdk.crt:aws-crt:0.39.4,org.apache.hadoop:hadoop-aws:3.4.2,io.delta:delta-spark_2.13:4.1.0,io.delta:delta-storage:4.1.0,org.apache.iceberg:iceberg-spark-runtime-4.1_2.13:1.11.0,org.apache.iceberg:iceberg-aws-bundle:1.11.0,org.apache.polaris:polaris-spark-3.5_2.13:1.2.0-incubating,org.apache.hudi:hudi-spark4.1-bundle_2.13:1.2.0'
       SPARK_INSTALL_PYTHON_PACKAGES: ' delta-spark==4.1.0'
       SPARK_DEFAULTS_CONF_spark_jars: /opt/spark/jars/iceberg-spark-runtime-4.1_2.13-1.11.0.jar
-      MAVEN_DOWNLOAD_REPO: central
+      MAVEN_DOWNLOAD_REPO: nexus
+      MAVEN_DOWNLOAD_REPO_NEXUS: http://nexus:8081/repository/maven-public
+      MAVEN_DOWNLOAD_REPO_NEXUS_USER: admin
+      MAVEN_DOWNLOAD_REPO_NEXUS_PASSWORD: ${PLATYS_NEXUS_ADMIN_PASSWORD:-abc123!abc123!}
+      PIP_INDEX_URL: http://nexus:8081/repository/pypi-proxy/simple/
+      PIP_TRUSTED_HOST: nexus
+      SPARK_DEFAULTS_CONF_spark_jars_ivySettings: /opt/spark/conf/ivy-settings.xml
+      SPARK_DEFAULTS_CONF_spark_jars_ivy: /opt/ivy-cache
     volumes:
       - ./data-transfer:/data-transfer:z
       - ./conf/spark/hive-site.xml:/opt/spark/conf.default/hive-site.xml:z
       - ./conf/spark/spark-defaults.conf:/opt/spark/conf.default/spark-defaults.conf:z
       - ./init/spark:/docker-entrypoint-initdb.d:z
+      - ./conf/spark/ivy-settings.xml:/opt/spark/conf/ivy-settings.xml:z
       - ./scripts/docker/maven-download.sh:/maven-download.sh:z
       - ./container-volume/spark/logs/:/var/log/spark/logs:z
     entrypoint: [/docker-entrypoint-initdb.d/spark-init.sh]
@@ -296,13 +323,21 @@ services:
       SPARK_INSTALL_JAVA_PACKAGES: ',software.amazon.awssdk:bundle:2.35.4,software.amazon.awssdk:s3-transfer-manager:2.35.4,software.amazon.awssdk.crt:aws-crt:0.39.4,org.apache.hadoop:hadoop-aws:3.4.2,io.delta:delta-spark_2.13:4.1.0,io.delta:delta-storage:4.1.0,org.apache.iceberg:iceberg-spark-runtime-4.1_2.13:1.11.0,org.apache.iceberg:iceberg-aws-bundle:1.11.0,org.apache.polaris:polaris-spark-3.5_2.13:1.2.0-incubating,org.apache.hudi:hudi-spark4.1-bundle_2.13:1.2.0'
       SPARK_INSTALL_PYTHON_PACKAGES: ' delta-spark==4.1.0'
       SPARK_DEFAULTS_CONF_spark_jars: /opt/spark/jars/iceberg-spark-runtime-4.1_2.13-1.11.0.jar
-      MAVEN_DOWNLOAD_REPO: central
+      MAVEN_DOWNLOAD_REPO: nexus
+      MAVEN_DOWNLOAD_REPO_NEXUS: http://nexus:8081/repository/maven-public
+      MAVEN_DOWNLOAD_REPO_NEXUS_USER: admin
+      MAVEN_DOWNLOAD_REPO_NEXUS_PASSWORD: ${PLATYS_NEXUS_ADMIN_PASSWORD:-abc123!abc123!}
+      PIP_INDEX_URL: http://nexus:8081/repository/pypi-proxy/simple/
+      PIP_TRUSTED_HOST: nexus
+      SPARK_DEFAULTS_CONF_spark_jars_ivySettings: /opt/spark/conf/ivy-settings.xml
+      SPARK_DEFAULTS_CONF_spark_jars_ivy: /opt/ivy-cache
     volumes:
       - ./data-transfer:/data-transfer:z
       # the 3 conf files are mapped to conf.default folder, they are copied with env variable interpolation into conf upon start of container
       - ./conf/spark/hive-site.xml:/opt/spark/conf/hive-site.xml:z
       - ./conf/spark/spark-defaults.conf:/opt/spark/conf/spark-defaults.conf:z
       - ./init/spark:/docker-entrypoint-initdb.d:z
+      - ./conf/spark/ivy-settings.xml:/opt/spark/conf/ivy-settings.xml:z
       - ./scripts/docker/maven-download.sh:/maven-download.sh:z
       - ./container-volume/spark/logs/:/var/log/spark/logs:z
     entrypoint: [/docker-entrypoint-initdb.d/spark-init.sh]
@@ -367,23 +402,32 @@ services:
       SPARK_INSTALL_JAVA_PACKAGES: ',software.amazon.awssdk:bundle:2.35.4,software.amazon.awssdk:s3-transfer-manager:2.35.4,software.amazon.awssdk.crt:aws-crt:0.39.4,org.apache.hadoop:hadoop-aws:3.4.2,io.delta:delta-spark_2.13:4.1.0,io.delta:delta-storage:4.1.0,org.apache.iceberg:iceberg-spark-runtime-4.1_2.13:1.11.0,org.apache.iceberg:iceberg-aws-bundle:1.11.0,org.apache.polaris:polaris-spark-3.5_2.13:1.2.0-incubating,org.apache.hudi:hudi-spark4.1-bundle_2.13:1.2.0'
       SPARK_INSTALL_PYTHON_PACKAGES: ' delta-spark==4.1.0'
       SPARK_DEFAULTS_CONF_spark_jars: /opt/spark/jars/iceberg-spark-runtime-4.1_2.13-1.11.0.jar
-      MAVEN_DOWNLOAD_REPO: central
+      MAVEN_DOWNLOAD_REPO: nexus
+      MAVEN_DOWNLOAD_REPO_NEXUS: http://nexus:8081/repository/maven-public
+      MAVEN_DOWNLOAD_REPO_NEXUS_USER: admin
+      MAVEN_DOWNLOAD_REPO_NEXUS_PASSWORD: ${PLATYS_NEXUS_ADMIN_PASSWORD:-abc123!abc123!}
+      PIP_INDEX_URL: http://nexus:8081/repository/pypi-proxy/simple/
+      PIP_TRUSTED_HOST: nexus
+      SPARK_DEFAULTS_CONF_spark_jars_ivySettings: /opt/spark/conf/ivy-settings.xml
+      SPARK_DEFAULTS_CONF_spark_jars_ivy: /opt/ivy-cache
     volumes:
       - ./data-transfer:/data-transfer:z
       # the 3 conf files are mapped to conf.default folder, they are copied with env variable interpolation into conf upon start of container
       - ./conf/spark/hive-site.xml:/opt/spark/conf.default/hive-site.xml:z
       - ./conf/spark/spark-defaults.conf:/opt/spark/conf.default/spark-defaults.conf:z
       - ./init/spark:/docker-entrypoint-initdb.d:z
-      # we override the run.sh script to start thriftserver instead of master/worker
-      # - ./scripts/spark/run-thriftserver.sh:/opt/bitnami/scripts/spark/run.sh
+      - ./conf/spark/ivy-settings.xml:/opt/spark/conf/ivy-settings.xml:z
       - ./scripts/docker/maven-download.sh:/maven-download.sh:z
       - ./container-volume/spark/logs/:/var/log/spark/logs:z
       - ./scripts/docker/wait-for-it.sh:/usr/src/app/wait-for-it.sh:z
     entrypoint: [/docker-entrypoint-initdb.d/spark-init.sh]
+    # we override the run.sh script to start spark connect instead of master/worker
     command:
       - /opt/spark/bin/spark-submit
       - --class
       - org.apache.spark.sql.connect.service.SparkConnectServer
+      - --conf
+      - spark.jars.ivySettings=/opt/spark/conf/ivy-settings.xml
     restart: unless-stopped
   spark-thriftserver:
     image: docker.io/apache/spark:4.1.1-python3
@@ -442,13 +486,21 @@ services:
       SPARK_INSTALL_JAVA_PACKAGES: ',software.amazon.awssdk:bundle:2.35.4,software.amazon.awssdk:s3-transfer-manager:2.35.4,software.amazon.awssdk.crt:aws-crt:0.39.4,org.apache.hadoop:hadoop-aws:3.4.2,io.delta:delta-spark_2.13:4.1.0,io.delta:delta-storage:4.1.0,org.apache.iceberg:iceberg-spark-runtime-4.1_2.13:1.11.0,org.apache.iceberg:iceberg-aws-bundle:1.11.0,org.apache.polaris:polaris-spark-3.5_2.13:1.2.0-incubating,org.apache.hudi:hudi-spark4.1-bundle_2.13:1.2.0'
       SPARK_INSTALL_PYTHON_PACKAGES: ' delta-spark==4.1.0'
       SPARK_DEFAULTS_CONF_spark_jars: /opt/spark/jars/iceberg-spark-runtime-4.1_2.13-1.11.0.jar
-      MAVEN_DOWNLOAD_REPO: central
+      MAVEN_DOWNLOAD_REPO: nexus
+      MAVEN_DOWNLOAD_REPO_NEXUS: http://nexus:8081/repository/maven-public
+      MAVEN_DOWNLOAD_REPO_NEXUS_USER: admin
+      MAVEN_DOWNLOAD_REPO_NEXUS_PASSWORD: ${PLATYS_NEXUS_ADMIN_PASSWORD:-abc123!abc123!}
+      PIP_INDEX_URL: http://nexus:8081/repository/pypi-proxy/simple/
+      PIP_TRUSTED_HOST: nexus
+      SPARK_DEFAULTS_CONF_spark_jars_ivySettings: /opt/spark/conf/ivy-settings.xml
+      SPARK_DEFAULTS_CONF_spark_jars_ivy: /opt/ivy-cache
     volumes:
       - ./data-transfer:/data-transfer:z
       # the 3 conf files are mapped to conf.default folder, they are copied with env variable interpolation into conf upon start of container
       - ./conf/spark/hive-site.xml:/opt/spark/conf.default/hive-site.xml:z
       - ./conf/spark/spark-defaults.conf:/opt/spark/conf.default/spark-defaults.conf:z
       - ./init/spark:/docker-entrypoint-initdb.d:z
+      - ./conf/spark/ivy-settings.xml:/opt/spark/conf/ivy-settings.xml:z
       # we override the run.sh script to start thriftserver instead of master/worker
       # - ./scripts/spark/run-thriftserver.sh:/opt/bitnami/scripts/spark/run.sh
       - ./scripts/docker/maven-download.sh:/maven-download.sh:z
@@ -461,6 +513,8 @@ services:
       - org.apache.spark.sql.hive.thriftserver.HiveThriftServer2
       - --master
       - spark://spark-master:7077
+      - --conf
+      - spark.jars.ivySettings=/opt/spark/conf/ivy-settings.xml
     restart: unless-stopped
   #  ================================== Apache Hive Metastore ========================================== #
   hive-metastore:
@@ -593,6 +647,8 @@ services:
       AWS_ACCESS_KEY_ID: ${PLATYS_AWS_ACCESS_KEY:-admin}
       AWS_SECRET_ACCESS_KEY: ${PLATYS_AWS_SECRET_ACCESS_KEY:-abc123abc123!}
       AIRFLOW__OPENLINEAGE__DISABLED: true
+      PIP_INDEX_URL: http://nexus:8081/repository/pypi-proxy/simple/
+      PIP_TRUSTED_HOST: nexus
     volumes:
       - ./data-transfer:/data-transfer:z
       - ./scripts/airflow/dags:/opt/airflow/dags:Z
@@ -668,6 +724,8 @@ services:
       AWS_ACCESS_KEY_ID: ${PLATYS_AWS_ACCESS_KEY:-admin}
       AWS_SECRET_ACCESS_KEY: ${PLATYS_AWS_SECRET_ACCESS_KEY:-abc123abc123!}
       AIRFLOW__OPENLINEAGE__DISABLED: true
+      PIP_INDEX_URL: http://nexus:8081/repository/pypi-proxy/simple/
+      PIP_TRUSTED_HOST: nexus
     volumes:
       - ./data-transfer:/data-transfer:z
       - ./scripts/airflow/dags:/opt/airflow/dags:Z
@@ -743,6 +801,8 @@ services:
       AWS_ACCESS_KEY_ID: ${PLATYS_AWS_ACCESS_KEY:-admin}
       AWS_SECRET_ACCESS_KEY: ${PLATYS_AWS_SECRET_ACCESS_KEY:-abc123abc123!}
       AIRFLOW__OPENLINEAGE__DISABLED: true
+      PIP_INDEX_URL: http://nexus:8081/repository/pypi-proxy/simple/
+      PIP_TRUSTED_HOST: nexus
     volumes:
       - ./data-transfer:/data-transfer:z
       - ./scripts/airflow/dags:/opt/airflow/dags:Z
@@ -928,6 +988,8 @@ services:
       AWS_ACCESS_KEY_ID: ${PLATYS_AWS_ACCESS_KEY:-admin}
       AWS_SECRET_ACCESS_KEY: ${PLATYS_AWS_SECRET_ACCESS_KEY:-abc123abc123!}
       AIRFLOW__OPENLINEAGE__DISABLED: true
+      PIP_INDEX_URL: http://nexus:8081/repository/pypi-proxy/simple/
+      PIP_TRUSTED_HOST: nexus
     volumes:
       - ./data-transfer:/data-transfer:z
     user: 0:0
@@ -954,7 +1016,7 @@ services:
       GRANT_SUDO: "'yes'"
       JUPYTER_TOKEN: ${PLATYS_JUPYTER_TOKEN:-abc123!}
       DOCKER_STACKS_JUPYTER_CMD: lab
-      MAVEN_DOWNLOAD_REPO: central
+      MAVEN_DOWNLOAD_REPO: nexus
       MAVEN_DOWNLOAD_REPO_NEXUS: http://nexus:8081/repository/maven-public
       MAVEN_DOWNLOAD_REPO_NEXUS_USER: admin
       MAVEN_DOWNLOAD_REPO_NEXUS_PASSWORD: ${PLATYS_NEXUS_ADMIN_PASSWORD:-abc123!abc123!}
@@ -969,6 +1031,9 @@ services:
       AWS_DEFAULT_REGION: us-east-1
       #PYSPARK_PYTHON: /opt/bitnami/python/bin/python3.12
       #PYSPARK_DRIVER_PYTHON: /usr/bin/python3.12   
+    depends_on:
+      nexus:
+        condition: service_healthy
     volumes:
       - ./data-transfer:/data-transfer:z
       - ./init/jupyter/on-startup-jupyter/:/usr/local/bin/start-notebook.d/:z
@@ -984,7 +1049,9 @@ services:
         conda create -y --name py310 python=3.10.12
         source /opt/conda/etc/profile.d/conda.sh
         conda activate py310
-        pip install ipykernel    
+        pip install ipykernel
+        pip config set global.index-url http://nexus:28426/repository/pypi-proxy/simple/
+        pip config set global.trusted-host nexus
         python -m ipykernel install --user --name py310 --display-name "Python 3.10.12 (ipykernel)"
         conda run -n py310 pip install pyspark==4.1.1 numpy graphframes-py typing_extensions jupysql "zstandard>=0.25.0" pandas arrow pyarrow grpcio-status boto3
         start-notebook.sh
@@ -1180,11 +1247,11 @@ services:
       com.platys.name: polaris
       com.platys.description: Secure, fast and easy to use Iceberg REST Catalog
       com.platys.restapi.title: Polaris Web UI
-      com.platys.restapi.url: http://dataplatform:28467/api/management/v1/catalogs
+      com.platys.restapi.url: http://dataplatform:8181/api/management/v1/catalogs
       com.platys.password.envvars: PLATYS_POLARIS_DB_PASSWORD,PLATYS_POLARIS_CLIENT_SECRET
     ports:
-      - 28467:8181
-      - 28468:8182
+      - 8181:8181
+      - 8182:8182
     depends_on:
       postgresql:
         condition: service_healthy
@@ -1219,9 +1286,9 @@ services:
     restart: unless-stopped
     healthcheck:
       test: [CMD, curl, -f, http://localhost:8182/q/health]
-      interval: 5s
+      interval: 10s
       timeout: 5s
-      retries: 5
+      retries: 15
   polaris-db-setup:
     image: docker.io/apache/polaris-admin-tool:latest
     container_name: polaris-db-setup
@@ -1254,6 +1321,8 @@ services:
     environment:
       - CLIENT_ID=admin
       - CLIENT_SECRET=${PLATYS_POLARIS_CLIENT_SECRET:-abc123!}
+      - S3_ENDPOINT=http://rustfs-1:9000
+      - STORAGE_LOCATION=s3a://admin-bucket
       - CATALOG_NAME=polaris_catalog
       - REALM=POLARIS
     volumes:
@@ -1261,150 +1330,44 @@ services:
     entrypoint: /bin/sh
     command:
       - -c
-      - |
-        set -e
-        apk add --no-cache jq
-        echo "Obtaining root access token..."
-        TOKEN_RESPONSE=$$(curl --fail-with-body -s -S -X POST http://polaris:8181/api/catalog/v1/oauth/tokens \
-          -H 'Content-Type: application/x-www-form-urlencoded' \
-          -d "grant_type=client_credentials&client_id=$${CLIENT_ID}&client_secret=$${CLIENT_SECRET}&scope=PRINCIPAL_ROLE:ALL" 2>&1) || {
-          echo "❌ Failed to obtain access token"
-          echo "$$TOKEN_RESPONSE" >&2
-          exit 1
-        }
-        TOKEN=$$(echo $$TOKEN_RESPONSE | jq -r '.access_token')
-        if [ -z "$$TOKEN" ] || [ "$$TOKEN" = "null" ]; then
-          echo "❌ Failed to parse access token from response"
-          echo "$$TOKEN_RESPONSE"
-          exit 1
-        fi
-        echo "✅ Obtained access token"
-        echo "Creating catalog '$$CATALOG_NAME' in realm $$REALM..."
-        PAYLOAD='{
-          "catalog": {
-            "name": "'$$CATALOG_NAME'",
-            "type": "INTERNAL",
-            "readOnly": false,
-            "properties": {
-              "default-base-location": "s3://bucket123"
-            },
-            "storageConfigInfo": {
-              "storageType": "S3",
-              "allowedLocations": ["s3://bucket123"],
-              "endpoint": "http://localhost:9000",
-              "endpointInternal": "http://rustfs:9000",
-              "pathStyleAccess": true,
-              "region": "us-west-2"
-            }
-          }
-        }'
-        RESPONSE=$$(curl --fail-with-body -s -S -X POST http://polaris:8181/api/management/v1/catalogs \
+      - >-
+        source /polaris/obtain-token.sh &&
+        echo Creating catalog... &&
+        export STORAGE_CONFIG_INFO='{"storageType":"S3",
+          "endpoint":"'$$S3_ENDPOINT'",
+          "endpointInternal":"'$$S3_ENDPOINT'",
+          "pathStyleAccess":true,
+          "region":"us-east-1"}' &&
+        export STORAGE_LOCATION='s3a://admin-bucket' &&
+        export CATALOG_NAME='polaris_catalog' &&
+        /polaris/create-catalog.sh POLARIS $$TOKEN &&
+        echo Extra grants... &&
+        curl \
+          --fail-with-body \
           -H "Authorization: Bearer $$TOKEN" \
-          -H "Accept: application/json" \
-          -H "Content-Type: application/json" \
-          -H "Polaris-Realm: $$REALM" \
-          -d "$$PAYLOAD" 2>&1) && echo -n "" || {
-          echo "❌ Failed to create catalog"
-          echo "$$RESPONSE" >&2
-          exit 1
-        }
-        echo "✅ Catalog created"
-        echo ""
-        echo "Creating principal 'quickstart_user'..."
-        PRINCIPAL_RESPONSE=$$(curl --fail-with-body -s -X POST http://polaris:8181/api/management/v1/principals \
-          -H "Authorization: Bearer $$TOKEN" \
-          -H "Polaris-Realm: $$REALM" \
-          -H "Content-Type: application/json" \
-          -d '{"principal": {"name": "quickstart_user", "properties": {}}}' 2>&1) || {
-          echo "❌ Failed to create principal"
-          echo "$$PRINCIPAL_RESPONSE" >&2
-          exit 1
-        }
-        USER_CLIENT_ID=$$(echo $$PRINCIPAL_RESPONSE | jq -r '.credentials.clientId')
-        USER_CLIENT_SECRET=$$(echo $$PRINCIPAL_RESPONSE | jq -r '.credentials.clientSecret')
-        if [ -z "$$USER_CLIENT_ID" ] || [ "$$USER_CLIENT_ID" = "null" ] || [ -z "$$USER_CLIENT_SECRET" ] || [ "$$USER_CLIENT_SECRET" = "null" ]; then
-          echo "❌ Failed to parse user credentials from response"
-          echo "$$PRINCIPAL_RESPONSE"
-          exit 1
-        fi
-        echo "✅ Principal created with clientId: $$USER_CLIENT_ID"
-        echo "Creating principal role 'quickstart_user_role'..."
-        RESPONSE=$$(curl --fail-with-body -s -S -X POST http://polaris:8181/api/management/v1/principal-roles \
-          -H "Authorization: Bearer $$TOKEN" \
-          -H "Polaris-Realm: $$REALM" \
-          -H "Content-Type: application/json" \
-          -d '{"principalRole": {"name": "quickstart_user_role", "properties": {}}}' 2>&1) && echo -n "" || {
-          echo "❌ Failed to create principal role"
-          echo "$$RESPONSE" >&2
-          exit 1
-        }
-        echo "✅ Principal role created"
-        echo "Creating catalog role 'polaris_catalog_role'..."
-        RESPONSE=$$(curl --fail-with-body -s -S -X POST http://polaris:8181/api/management/v1/catalogs/$$CATALOG_NAME/catalog-roles \
-          -H "Authorization: Bearer $$TOKEN" \
-          -H "Polaris-Realm: $$REALM" \
-          -H "Content-Type: application/json" \
-          -d '{"catalogRole": {"name": "polaris_catalog_role", "properties": {}}}' 2>&1) && echo -n "" || {
-          echo "❌ Failed to create catalog role"
-          echo "$$RESPONSE" >&2
-          exit 1
-        }
-        echo "✅ Catalog role created"
-        echo "Assigning principal role to principal..."
-        RESPONSE=$$(curl --fail-with-body -s -S -X PUT http://polaris:8181/api/management/v1/principals/quickstart_user/principal-roles \
-          -H "Authorization: Bearer $$TOKEN" \
-          -H "Polaris-Realm: $$REALM" \
-          -H "Content-Type: application/json" \
-          -d '{"principalRole": {"name": "quickstart_user_role"}}' 2>&1) && echo -n "" || {
-          echo "❌ Failed to assign principal role"
-          echo "$$RESPONSE" >&2
-          exit 1
-        }
-        echo "✅ Principal role assigned"
-        echo "Assigning catalog role to principal role..."
-        RESPONSE=$$(curl --fail-with-body -s -S -X PUT http://polaris:8181/api/management/v1/principal-roles/quickstart_user_role/catalog-roles/$$CATALOG_NAME \
-          -H "Authorization: Bearer $$TOKEN" \
-          -H "Polaris-Realm: $$REALM" \
-          -H "Content-Type: application/json" \
-          -d '{"catalogRole": {"name": "polaris_catalog_role"}}' 2>&1) && echo -n "" || {
-          echo "❌ Failed to assign catalog role"
-          echo "$$RESPONSE" >&2
-          exit 1
-        }
-        echo "✅ Catalog role assigned"
-        echo "Granting CATALOG_MANAGE_CONTENT privilege..."
-        RESPONSE=$$(curl --fail-with-body -s -S -X PUT http://polaris:8181/api/management/v1/catalogs/$$CATALOG_NAME/catalog-roles/polaris_catalog_role/grants \
-          -H "Authorization: Bearer $$TOKEN" \
-          -H "Polaris-Realm: $$REALM" \
-          -H "Content-Type: application/json" \
-          -d '{"type": "catalog", "privilege": "CATALOG_MANAGE_CONTENT"}' 2>&1) && echo -n "" || {
-          echo "❌ Failed to grant privileges"
-          echo "$$RESPONSE" >&2
-          exit 1
-        }
-        echo "✅ Privileges granted"
+          -H 'Content-Type: application/json' \
+          -X PUT \
+          http://polaris:8181/api/management/v1/catalogs/polaris_catalog/catalog-roles/catalog_admin/grants \
+          -d '{"type":"catalog", "privilege":"CATALOG_MANAGE_CONTENT"}' &&
+        echo Done. &&
         echo ""
         echo "=========================================="
         echo "🎉 Polaris Quickstart Setup Complete!"
         echo "=========================================="
         echo ""
         echo "Catalog: $$CATALOG_NAME"
-        echo "  Storage: S3 (RustFS)"
-        echo "  Location: s3://bucket123"
-        echo "  RustFS UI: http://localhost:9001"
+        echo "  Storage: S3"
+        echo "  Location: s3a://admin-bucket"
+        echo "  S3 UI: http://rustfs-1:9000"
         echo ""
         echo "Root credentials:"
         echo "  Client ID:     $$CLIENT_ID"
         echo "  Client Secret: $$CLIENT_SECRET"
         echo ""
-        echo "User credentials:"
-        echo "  Client ID:     $$USER_CLIENT_ID"
-        echo "  Client Secret: $$USER_CLIENT_SECRET"
-        echo ""
         echo "Polaris main APIs:"
-        echo "  - Iceberg REST:   http://localhost:8181/api/catalog/v1"
-        echo "  - Management:     http://localhost:8181/api/management/v1"
-        echo "  - Generic Tables: http://localhost:8181/api/polaris/v1"
+        echo "  - Iceberg REST:   http://${PUBLIC_IP:-localhost}:8181/api/catalog/v1"
+        echo "  - Management:     http://${PUBLIC_IP:-localhost}:8181/api/management/v1"
+        echo "  - Generic Tables: http://${PUBLIC_IP:-localhost}:8181/api/polaris/v1"
         echo ""
         echo "Polaris admin APIs:"
         echo "  - Health check:   http://localhost:8182/q/health"
@@ -1417,8 +1380,8 @@ services:
         echo "    --conf spark.sql.catalog.polaris=org.apache.iceberg.spark.SparkCatalog \\"
         echo "    --conf spark.sql.catalog.polaris.type=rest \\"
         echo "    --conf spark.sql.catalog.polaris.warehouse=$$CATALOG_NAME \\"
-        echo "    --conf spark.sql.catalog.polaris.uri=http://localhost:8181/api/catalog \\"
-        echo "    --conf spark.sql.catalog.polaris.credential=$$USER_CLIENT_ID:$$USER_CLIENT_SECRET \\"
+        echo "    --conf spark.sql.catalog.polaris.uri=http://${PUBLIC_IP:-localhost}:8181/api/catalog \\"
+        echo "    --conf spark.sql.catalog.polaris.credential=$$CLIENT_ID:$$CLIENT_SECRET \\"
         echo "    --conf spark.sql.catalog.polaris.scope=PRINCIPAL_ROLE:ALL \\"
         echo "    --conf spark.sql.catalog.polaris.header.X-Iceberg-Access-Delegation=vended-credentials \\"
         echo "    --conf spark.sql.defaultCatalog=polaris"
@@ -1429,21 +1392,21 @@ services:
         echo ""
         echo "To get started with REST API:"
         echo "  # Get a token"
-        echo "  export TOKEN=\$$(curl -s -X POST http://localhost:8181/api/catalog/v1/oauth/tokens \\"
+        echo "  export TOKEN=\$$(curl -s -X POST http://${PUBLIC_IP:-localhost}:8181/api/catalog/v1/oauth/tokens \\"
         echo "    -d 'grant_type=client_credentials' \\"
-        echo "    -d 'client_id=$$USER_CLIENT_ID' \\"
-        echo "    -d 'client_secret=$$USER_CLIENT_SECRET' \\"
+        echo "    -d 'client_id=$$CLIENT_ID' \\"
+        echo "    -d 'client_secret=$$CLIENT_SECRET' \\"
         echo "    -d 'scope=PRINCIPAL_ROLE:ALL' \\"
         echo "    | jq -r '.access_token')"
         echo ""
         echo "  # Create a namespace"
-        echo "  curl -X POST http://localhost:8181/api/catalog/v1/$$CATALOG_NAME/namespaces \\"
+        echo "  curl -X POST http://${PUBLIC_IP:-localhost}:8181/api/catalog/v1/$$CATALOG_NAME/namespaces \\"
         echo "    -H \"Authorization: Bearer \$$TOKEN\" \\"
         echo "    -H 'Content-Type: application/json' \\"
         echo "    -d '{\"namespace\": [\"my_namespace\"], \"properties\": {}}'"
         echo ""
         echo "  # List namespaces"
-        echo "  curl -X GET http://localhost:8181/api/catalog/v1/$$CATALOG_NAME/namespaces \\"
+        echo "  curl -X GET http://${PUBLIC_IP:-localhost}:8181/api/catalog/v1/$$CATALOG_NAME/namespaces \\"
         echo "    -H \"Authorization: Bearer \$$TOKEN\""
         echo ""
         echo "=========================================="
@@ -1469,10 +1432,11 @@ services:
     ports:
       - 28494:8080
     depends_on:
-      - polaris
+      polaris:
+        condition: service_healthy
     environment:
-      VITE_POLARIS_API_URL: http://${PUBLIC_IP}:28467
-      VITE_OAUTH_TOKEN_URL: http://${PUBLIC_IP}:28467/api/catalog/v1/oauth/tokens
+      VITE_POLARIS_API_URL: http://${PUBLIC_IP}:8181
+      VITE_OAUTH_TOKEN_URL: http://${PUBLIC_IP}:8181/api/catalog/v1/oauth/tokens
       VITE_POLARIS_REALM: POLARIS
       VITE_POLARIS_PRINCIPAL_SCOPE: PRINCIPAL_ROLE:ALL
     volumes:
@@ -1495,7 +1459,7 @@ services:
       - 28463:3000
     environment:
       - JAVA_API_URL=http://nimtable:8182
-      - DATABASE_URL=postgresql://postgres:abc123!@postgresql:5432/postgres
+      - DATABASE_URL=postgresql://nimtable:abc123!@postgresql:5432/nimtabledb
       - JWT_SECRET=your-super-secret-jwt-key-change-this-in-production
       - ADMIN_USERNAME=admin
       - ADMIN_PASSWORD=${PLATYS_NIMTABLE_ADMIN_PASSWORD:-abc123!}
@@ -1551,6 +1515,33 @@ services:
       - ./data-transfer:/data-transfer:z
       - /var/run/docker.sock:/var/run/docker.sock:z
     restart: unless-stopped
+  #  ================================== Sonatype Nexus ========================================== #
+  nexus:
+    image: docker.io/sonatype/nexus3:3.90.5
+    container_name: nexus
+    hostname: nexus
+    labels:
+      com.platys.name: nexus
+      com.platys.description: Sonatype Nexus Repository Manager
+      com.platys.webui.title: Nexus UI
+      com.platys.webui.url: http://dataplatform:28426
+      com.platys.password.envvars: PLATYS_NEXUS_ADMIN_PASSWORD
+    ports:
+      - 28426:8081
+    environment:
+      INSTALL4J_ADD_JVM_PARAMS: -Xms512m -Xmx2g -XX:MaxDirectMemorySize=2g
+      NEXUS_ADMIN_PASSWORD: ${PLATYS_NEXUS_ADMIN_PASSWORD:-abc123!abc123!}
+    volumes:
+      - ./data-transfer:/data-transfer:z
+      - ./init/nexus:/nexus-init:ro
+      - ./container-volume/nexus/data:/nexus-data:z
+    entrypoint: [/bin/sh, /nexus-init/entrypoint.sh]
+    restart: unless-stopped
+    healthcheck:
+      interval: 1s
+      timeout: 10s
+      retries: 240
+      test: [CMD, test, -f, /nexus-data/.setup-complete]
   #  ================================== Wetty ========================================== #
   wetty:
     image: docker.io/wettyoss/wetty:2
@@ -1571,6 +1562,26 @@ services:
       - PORT=3000
       - BASE=/
     volumes:
+      - ./data-transfer:/data-transfer:z
+    restart: unless-stopped
+  #  ================================== Forgejo ========================================== #
+  forgejo:
+    image: codeberg.org/forgejo/forgejo:9
+    container_name: forgejo
+    hostname: forgejo
+    labels:
+      com.platys.name: forgejo
+      com.platys.description: Lightweight self-hosted Git service
+      com.platys.webui.title: Forgejo UI
+      com.platys.webui.url: http://dataplatform:3004
+    ports:
+      - 3004:3000
+      - 2223:22
+    environment:
+      - USER_UID=1000
+      - USER_GID=1000
+    volumes:
+      - ./container-volume/forgejo:/data:z
       - ./data-transfer:/data-transfer:z
     restart: unless-stopped
   #  ================================== markdown-viewer ========================================== #
