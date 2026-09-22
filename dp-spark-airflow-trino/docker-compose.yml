@@ -449,6 +449,7 @@ services:
       SPARK_DEFAULTS_CONF_spark_sql_catalog_polaris_warehouse: polaris_catalog
       SPARK_DEFAULTS_CONF_spark_sql_catalog_polaris_scope: PRINCIPAL_ROLE:ALL
       SPARK_DEFAULTS_CONF_spark_sql_catalog_polaris_header_X___Iceberg___Access___Delegation: vended-credentials
+      SPARK_DEFAULTS_CONF_spark_sql_catalog_polaris_default___namespace: flight_db
       SPARK_DEFAULTS_CONF_spark_sql_legacy_allowNonEmptyLocationInCTAS: 'true'
       SPARK_DEFAULTS_CONF_spark_jars_repositories:
       SPARK_DEFAULTS_CONF_spark_jars_packages: io.delta:delta-spark_2.13:4.1.0,io.delta:delta-storage:4.1.0
