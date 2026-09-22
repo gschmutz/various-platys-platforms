@@ -393,8 +393,6 @@ services:
       - /opt/spark/bin/spark-submit
       - --class
       - org.apache.spark.sql.connect.service.SparkConnectServer
-      - --conf
-      - spark.jars.ivySettings=/opt/spark/conf/ivy-settings.xml
     restart: unless-stopped
   spark-thriftserver:
     image: docker.io/apache/spark:4.1.1-python3
@@ -474,8 +472,6 @@ services:
       - org.apache.spark.sql.hive.thriftserver.HiveThriftServer2
       - --master
       - spark://spark-master:7077
-      - --conf
-      - spark.jars.ivySettings=/opt/spark/conf/ivy-settings.xml
     restart: unless-stopped
   #  ================================== Apache Hive Metastore ========================================== #
   hive-metastore:
