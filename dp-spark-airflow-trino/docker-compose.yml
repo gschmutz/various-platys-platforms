@@ -76,7 +76,6 @@ services:
       - ./conf/spark/hive-site.xml:/opt/spark/conf.default/hive-site.xml:z
       - ./conf/spark/spark-defaults.conf:/opt/spark/conf.default/spark-defaults.conf:z
       - ./init/spark:/docker-entrypoint-initdb.d:z
-      - ./conf/spark/ivy-settings.xml:/opt/spark/conf/ivy-settings.xml:z
       - ./scripts/docker/maven-download.sh:/maven-download.sh:z
       - ./scripts/spark/pyspark:/opt/spark/bin/pyspark:z
       - ./container-volume/spark/logs/:/var/log/spark/logs:z
@@ -157,7 +156,6 @@ services:
       - ./conf/spark/hive-site.xml:/opt/spark/conf.default/hive-site.xml:z
       - ./conf/spark/spark-defaults.conf:/opt/spark/conf.default/spark-defaults.conf:z
       - ./init/spark:/docker-entrypoint-initdb.d:z
-      - ./conf/spark/ivy-settings.xml:/opt/spark/conf/ivy-settings.xml:z
       - ./scripts/docker/maven-download.sh:/maven-download.sh:z
       - ./container-volume/spark/logs/:/var/log/spark/logs:z
     entrypoint: [/docker-entrypoint-initdb.d/spark-init.sh]
@@ -234,7 +232,6 @@ services:
       - ./conf/spark/hive-site.xml:/opt/spark/conf.default/hive-site.xml:z
       - ./conf/spark/spark-defaults.conf:/opt/spark/conf.default/spark-defaults.conf:z
       - ./init/spark:/docker-entrypoint-initdb.d:z
-      - ./conf/spark/ivy-settings.xml:/opt/spark/conf/ivy-settings.xml:z
       - ./scripts/docker/maven-download.sh:/maven-download.sh:z
       - ./container-volume/spark/logs/:/var/log/spark/logs:z
     entrypoint: [/docker-entrypoint-initdb.d/spark-init.sh]
@@ -314,7 +311,6 @@ services:
       - ./conf/spark/hive-site.xml:/opt/spark/conf/hive-site.xml:z
       - ./conf/spark/spark-defaults.conf:/opt/spark/conf/spark-defaults.conf:z
       - ./init/spark:/docker-entrypoint-initdb.d:z
-      - ./conf/spark/ivy-settings.xml:/opt/spark/conf/ivy-settings.xml:z
       - ./scripts/docker/maven-download.sh:/maven-download.sh:z
       - ./container-volume/spark/logs/:/var/log/spark/logs:z
     entrypoint: [/docker-entrypoint-initdb.d/spark-init.sh]
@@ -388,7 +384,6 @@ services:
       - ./conf/spark/hive-site.xml:/opt/spark/conf.default/hive-site.xml:z
       - ./conf/spark/spark-defaults.conf:/opt/spark/conf.default/spark-defaults.conf:z
       - ./init/spark:/docker-entrypoint-initdb.d:z
-      - ./conf/spark/ivy-settings.xml:/opt/spark/conf/ivy-settings.xml:z
       - ./scripts/docker/maven-download.sh:/maven-download.sh:z
       - ./container-volume/spark/logs/:/var/log/spark/logs:z
       - ./scripts/docker/wait-for-it.sh:/usr/src/app/wait-for-it.sh:z
@@ -467,7 +462,6 @@ services:
       - ./conf/spark/hive-site.xml:/opt/spark/conf.default/hive-site.xml:z
       - ./conf/spark/spark-defaults.conf:/opt/spark/conf.default/spark-defaults.conf:z
       - ./init/spark:/docker-entrypoint-initdb.d:z
-      - ./conf/spark/ivy-settings.xml:/opt/spark/conf/ivy-settings.xml:z
       # we override the run.sh script to start thriftserver instead of master/worker
       # - ./scripts/spark/run-thriftserver.sh:/opt/bitnami/scripts/spark/run.sh
       - ./scripts/docker/maven-download.sh:/maven-download.sh:z
