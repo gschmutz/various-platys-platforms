@@ -56,9 +56,9 @@
         # ===== Apache Kafka ========
         #
         KAFKA_enable: false
-        KAFKA_bootstrap_servers: null
+        KAFKA_bootstrap_servers: 
         # either 'PLAINTEXT', 'SASL_PLAINTEXT', 'SSL' ('SASL_SSL' not yet supported)
-        KAFKA_security_protocol: null
+        KAFKA_security_protocol: 
         # either 'PLAIN', 'SCRAM-SHA-256' or 'SCRAM-SHA-512'
         KAFKA_sasl_mechanism: null
         KAFKA_login_module: null
@@ -150,6 +150,9 @@
         
         SEARXNG_enable: false
         SEARXNG_url: null
+
+        NEXUS_enable: false
+        NEXUS_endpoint: http://192.168.1.112:28426
       
       
       # ========================================================================
@@ -1070,13 +1073,13 @@
       DATAHUB_graph_service_impl: neo4j
       DATAHUB_graph_service_diff_mode_enabled: true
       # one of "elasticsearch" or "opensearch"
-      DATAHUB_search_service_impl: elasticsearch
+      DATAHUB_search_service_impl: opensearch
       DATAHUB_use_kibana: false
       DATAHUB_provision_sample_data: false
       DATAHUB_secret: abc123!abc123!
       DATAHUB_map_user_props: false
       
-      DATAHUB_actions_enabled: false
+      DATAHUB_actions_enabled: true
       DATAHUB_ACTIONS_custom_actions_enabled: false
       
       #
@@ -2732,9 +2735,9 @@
       POSTGRESQL_user: postgres
       POSTGRESQL_password: abc123!
       POSTGRESQL_schema: demo
-      POSTGRESQL_multiple_databases: demodb,polaris,nimtabledb
-      POSTGRESQL_multiple_users: demo,postgres,nimtable
-      POSTGRESQL_multiple_passwords: abc123!,abc123!,abc123!
+      POSTGRESQL_multiple_databases: demodb,polaris,nimtabledb,dbt_workbench
+      POSTGRESQL_multiple_users: demo,postgres,nimtable,dbt_workbench
+      POSTGRESQL_multiple_passwords: abc123!,abc123!,abc123!,abc123!
       POSTGRESQL_multiple_addl_roles: ''
       # one of the valid Postgresql wal_levels: "replica", "minimal", "logical". Use logical if you want to work with Debezium.
       POSTGRESQL_wal_level: null
@@ -3846,8 +3849,8 @@
       #
       # ===== Sonatype Nexus ========
       #
-      NEXUS_enable: false
-      NEXUS_volume_map_data: false
+      NEXUS_enable: true
+      NEXUS_volume_map_data: true
       NEXUS_jvm_min_heap: 512m
       NEXUS_jvm_max_heap: 2g
       NEXUS_admin_password: abc123!abc123!
@@ -3899,6 +3902,25 @@
       WETTY_enable: true
       WETTY_version: 2
 
+      #
+      # ===== mitmproxy ========
+      #
+      MITMPROXY_enable: false
+
+      #
+      # ===== Forgejo ========
+      #
+      FORGEJO_enable: true
+
+      #
+      # ===== dbt Workbench ========
+      #
+      DBT_WORKBENCH_enable: true
+      DBT_WORKBENCH_volume_map_data: false
+      DBT_WORKBENCH_db_user: dbt_workbench
+      DBT_WORKBENCH_db_password: abc123!
+      DBT_WORKBENCH_db_name: dbt_workbench
+      DBT_WORKBENCH_ai_enabled: false      
       #
       # ===== Raneto Knowledge Platform ========
       #

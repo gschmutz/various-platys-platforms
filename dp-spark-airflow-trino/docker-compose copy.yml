@@ -18,9 +18,6 @@ services:
       com.platys.webui.title: Spark UI
       com.platys.webui.url: http://dataplatform:28304
     user: root
-    depends_on:
-      nexus:
-        condition: service_healthy
     ports:
       - 28304:28304
       - 6066:6066
@@ -74,17 +71,16 @@ services:
       MAVEN_DOWNLOAD_REPO_NEXUS: http://nexus:8081/repository/maven-public
       MAVEN_DOWNLOAD_REPO_NEXUS_USER: admin
       MAVEN_DOWNLOAD_REPO_NEXUS_PASSWORD: ${PLATYS_NEXUS_ADMIN_PASSWORD:-abc123!abc123!}
-      PIP_INDEX_URL: http://nexus:8081/repository/pypi-proxy/simple/
-      PIP_TRUSTED_HOST: nexus
-      SPARK_DEFAULTS_CONF_spark_jars_ivySettings: /opt/spark/conf/ivy-settings.xml
       SPARK_DEFAULTS_CONF_spark_jars_ivy: /opt/ivy-cache
+      SPARK_DEFAULTS_CONF_spark_jars_ivySettings:
+      PIP_INDEX_URL: http://admin:${PLATYS_NEXUS_ADMIN_PASSWORD:-abc123!abc123!}@nexus:8081/repository/pypi-proxy/simple/
+      PIP_TRUSTED_HOST: nexus
     volumes:
       - ./data-transfer:/data-transfer:z
       # the 3 conf files are mapped to conf.default folder, they are copied with env variable interpolation into conf upon start of container
       - ./conf/spark/hive-site.xml:/opt/spark/conf.default/hive-site.xml:z
       - ./conf/spark/spark-defaults.conf:/opt/spark/conf.default/spark-defaults.conf:z
       - ./init/spark:/docker-entrypoint-initdb.d:z
-      - ./conf/spark/ivy-settings.xml:/opt/spark/conf/ivy-settings.xml:z
       - ./scripts/docker/maven-download.sh:/maven-download.sh:z
       - ./scripts/spark/pyspark:/opt/spark/bin/pyspark:z
       - ./container-volume/spark/logs/:/var/log/spark/logs:z
@@ -161,16 +157,15 @@ services:
       MAVEN_DOWNLOAD_REPO_NEXUS: http://nexus:8081/repository/maven-public
       MAVEN_DOWNLOAD_REPO_NEXUS_USER: admin
       MAVEN_DOWNLOAD_REPO_NEXUS_PASSWORD: ${PLATYS_NEXUS_ADMIN_PASSWORD:-abc123!abc123!}
-      PIP_INDEX_URL: http://nexus:8081/repository/pypi-proxy/simple/
-      PIP_TRUSTED_HOST: nexus
-      SPARK_DEFAULTS_CONF_spark_jars_ivySettings: /opt/spark/conf/ivy-settings.xml
       SPARK_DEFAULTS_CONF_spark_jars_ivy: /opt/ivy-cache
+      SPARK_DEFAULTS_CONF_spark_jars_ivySettings:
+      PIP_INDEX_URL: http://admin:${PLATYS_NEXUS_ADMIN_PASSWORD:-abc123!abc123!}@nexus:8081/repository/pypi-proxy/simple/
+      PIP_TRUSTED_HOST: nexus
     volumes:
       - ./data-transfer:/data-transfer:z
       - ./conf/spark/hive-site.xml:/opt/spark/conf.default/hive-site.xml:z
       - ./conf/spark/spark-defaults.conf:/opt/spark/conf.default/spark-defaults.conf:z
       - ./init/spark:/docker-entrypoint-initdb.d:z
-      - ./conf/spark/ivy-settings.xml:/opt/spark/conf/ivy-settings.xml:z
       - ./scripts/docker/maven-download.sh:/maven-download.sh:z
       - ./container-volume/spark/logs/:/var/log/spark/logs:z
     entrypoint: [/docker-entrypoint-initdb.d/spark-init.sh]
@@ -243,16 +238,15 @@ services:
       MAVEN_DOWNLOAD_REPO_NEXUS: http://nexus:8081/repository/maven-public
       MAVEN_DOWNLOAD_REPO_NEXUS_USER: admin
       MAVEN_DOWNLOAD_REPO_NEXUS_PASSWORD: ${PLATYS_NEXUS_ADMIN_PASSWORD:-abc123!abc123!}
-      PIP_INDEX_URL: http://nexus:8081/repository/pypi-proxy/simple/
-      PIP_TRUSTED_HOST: nexus
-      SPARK_DEFAULTS_CONF_spark_jars_ivySettings: /opt/spark/conf/ivy-settings.xml
       SPARK_DEFAULTS_CONF_spark_jars_ivy: /opt/ivy-cache
+      SPARK_DEFAULTS_CONF_spark_jars_ivySettings:
+      PIP_INDEX_URL: http://admin:${PLATYS_NEXUS_ADMIN_PASSWORD:-abc123!abc123!}@nexus:8081/repository/pypi-proxy/simple/
+      PIP_TRUSTED_HOST: nexus
     volumes:
       - ./data-transfer:/data-transfer:z
       - ./conf/spark/hive-site.xml:/opt/spark/conf.default/hive-site.xml:z
       - ./conf/spark/spark-defaults.conf:/opt/spark/conf.default/spark-defaults.conf:z
       - ./init/spark:/docker-entrypoint-initdb.d:z
-      - ./conf/spark/ivy-settings.xml:/opt/spark/conf/ivy-settings.xml:z
       - ./scripts/docker/maven-download.sh:/maven-download.sh:z
       - ./container-volume/spark/logs/:/var/log/spark/logs:z
     entrypoint: [/docker-entrypoint-initdb.d/spark-init.sh]
@@ -327,17 +321,16 @@ services:
       MAVEN_DOWNLOAD_REPO_NEXUS: http://nexus:8081/repository/maven-public
       MAVEN_DOWNLOAD_REPO_NEXUS_USER: admin
       MAVEN_DOWNLOAD_REPO_NEXUS_PASSWORD: ${PLATYS_NEXUS_ADMIN_PASSWORD:-abc123!abc123!}
-      PIP_INDEX_URL: http://nexus:8081/repository/pypi-proxy/simple/
-      PIP_TRUSTED_HOST: nexus
-      SPARK_DEFAULTS_CONF_spark_jars_ivySettings: /opt/spark/conf/ivy-settings.xml
       SPARK_DEFAULTS_CONF_spark_jars_ivy: /opt/ivy-cache
+      SPARK_DEFAULTS_CONF_spark_jars_ivySettings:
+      PIP_INDEX_URL: http://admin:${PLATYS_NEXUS_ADMIN_PASSWORD:-abc123!abc123!}@nexus:8081/repository/pypi-proxy/simple/
+      PIP_TRUSTED_HOST: nexus
     volumes:
       - ./data-transfer:/data-transfer:z
       # the 3 conf files are mapped to conf.default folder, they are copied with env variable interpolation into conf upon start of container
       - ./conf/spark/hive-site.xml:/opt/spark/conf/hive-site.xml:z
       - ./conf/spark/spark-defaults.conf:/opt/spark/conf/spark-defaults.conf:z
       - ./init/spark:/docker-entrypoint-initdb.d:z
-      - ./conf/spark/ivy-settings.xml:/opt/spark/conf/ivy-settings.xml:z
       - ./scripts/docker/maven-download.sh:/maven-download.sh:z
       - ./container-volume/spark/logs/:/var/log/spark/logs:z
     entrypoint: [/docker-entrypoint-initdb.d/spark-init.sh]
@@ -406,28 +399,26 @@ services:
       MAVEN_DOWNLOAD_REPO_NEXUS: http://nexus:8081/repository/maven-public
       MAVEN_DOWNLOAD_REPO_NEXUS_USER: admin
       MAVEN_DOWNLOAD_REPO_NEXUS_PASSWORD: ${PLATYS_NEXUS_ADMIN_PASSWORD:-abc123!abc123!}
-      PIP_INDEX_URL: http://nexus:8081/repository/pypi-proxy/simple/
-      PIP_TRUSTED_HOST: nexus
-      SPARK_DEFAULTS_CONF_spark_jars_ivySettings: /opt/spark/conf/ivy-settings.xml
       SPARK_DEFAULTS_CONF_spark_jars_ivy: /opt/ivy-cache
+      SPARK_DEFAULTS_CONF_spark_jars_ivySettings:
+      PIP_INDEX_URL: http://admin:${PLATYS_NEXUS_ADMIN_PASSWORD:-abc123!abc123!}@nexus:8081/repository/pypi-proxy/simple/
+      PIP_TRUSTED_HOST: nexus
     volumes:
       - ./data-transfer:/data-transfer:z
       # the 3 conf files are mapped to conf.default folder, they are copied with env variable interpolation into conf upon start of container
       - ./conf/spark/hive-site.xml:/opt/spark/conf.default/hive-site.xml:z
       - ./conf/spark/spark-defaults.conf:/opt/spark/conf.default/spark-defaults.conf:z
       - ./init/spark:/docker-entrypoint-initdb.d:z
-      - ./conf/spark/ivy-settings.xml:/opt/spark/conf/ivy-settings.xml:z
+      # we override the run.sh script to start thriftserver instead of master/worker
+      # - ./scripts/spark/run-thriftserver.sh:/opt/bitnami/scripts/spark/run.sh
       - ./scripts/docker/maven-download.sh:/maven-download.sh:z
       - ./container-volume/spark/logs/:/var/log/spark/logs:z
       - ./scripts/docker/wait-for-it.sh:/usr/src/app/wait-for-it.sh:z
     entrypoint: [/docker-entrypoint-initdb.d/spark-init.sh]
-    # we override the run.sh script to start spark connect instead of master/worker
     command:
       - /opt/spark/bin/spark-submit
       - --class
       - org.apache.spark.sql.connect.service.SparkConnectServer
-      - --conf
-      - spark.jars.ivySettings=/opt/spark/conf/ivy-settings.xml
     restart: unless-stopped
   spark-thriftserver:
     image: docker.io/apache/spark:4.1.1-python3
@@ -490,22 +481,22 @@ services:
       MAVEN_DOWNLOAD_REPO_NEXUS: http://nexus:8081/repository/maven-public
       MAVEN_DOWNLOAD_REPO_NEXUS_USER: admin
       MAVEN_DOWNLOAD_REPO_NEXUS_PASSWORD: ${PLATYS_NEXUS_ADMIN_PASSWORD:-abc123!abc123!}
-      PIP_INDEX_URL: http://nexus:8081/repository/pypi-proxy/simple/
-      PIP_TRUSTED_HOST: nexus
-      SPARK_DEFAULTS_CONF_spark_jars_ivySettings: /opt/spark/conf/ivy-settings.xml
       SPARK_DEFAULTS_CONF_spark_jars_ivy: /opt/ivy-cache
+      SPARK_DEFAULTS_CONF_spark_jars_ivySettings: /opt/spark/conf/ivy-settings.xml
+      PIP_INDEX_URL: http://admin:${PLATYS_NEXUS_ADMIN_PASSWORD:-abc123!abc123!}@nexus:8081/repository/pypi-proxy/simple/
+      PIP_TRUSTED_HOST: nexus
     volumes:
       - ./data-transfer:/data-transfer:z
       # the 3 conf files are mapped to conf.default folder, they are copied with env variable interpolation into conf upon start of container
       - ./conf/spark/hive-site.xml:/opt/spark/conf.default/hive-site.xml:z
       - ./conf/spark/spark-defaults.conf:/opt/spark/conf.default/spark-defaults.conf:z
       - ./init/spark:/docker-entrypoint-initdb.d:z
-      - ./conf/spark/ivy-settings.xml:/opt/spark/conf/ivy-settings.xml:z
       # we override the run.sh script to start thriftserver instead of master/worker
       # - ./scripts/spark/run-thriftserver.sh:/opt/bitnami/scripts/spark/run.sh
       - ./scripts/docker/maven-download.sh:/maven-download.sh:z
       - ./container-volume/spark/logs/:/var/log/spark/logs:z
       - ./scripts/docker/wait-for-it.sh:/usr/src/app/wait-for-it.sh:z
+      - ./data-transfer/ivy-settings.xml:/opt/spark/conf/ivy-settings.xml
     entrypoint: [/docker-entrypoint-initdb.d/spark-init.sh]
     command:
       - /opt/spark/bin/spark-submit
@@ -513,8 +504,6 @@ services:
       - org.apache.spark.sql.hive.thriftserver.HiveThriftServer2
       - --master
       - spark://spark-master:7077
-      - --conf
-      - spark.jars.ivySettings=/opt/spark/conf/ivy-settings.xml
     restart: unless-stopped
   #  ================================== Apache Hive Metastore ========================================== #
   hive-metastore:
@@ -647,8 +636,6 @@ services:
       AWS_ACCESS_KEY_ID: ${PLATYS_AWS_ACCESS_KEY:-admin}
       AWS_SECRET_ACCESS_KEY: ${PLATYS_AWS_SECRET_ACCESS_KEY:-abc123abc123!}
       AIRFLOW__OPENLINEAGE__DISABLED: true
-      PIP_INDEX_URL: http://nexus:8081/repository/pypi-proxy/simple/
-      PIP_TRUSTED_HOST: nexus
     volumes:
       - ./data-transfer:/data-transfer:z
       - ./scripts/airflow/dags:/opt/airflow/dags:Z
@@ -724,8 +711,6 @@ services:
       AWS_ACCESS_KEY_ID: ${PLATYS_AWS_ACCESS_KEY:-admin}
       AWS_SECRET_ACCESS_KEY: ${PLATYS_AWS_SECRET_ACCESS_KEY:-abc123abc123!}
       AIRFLOW__OPENLINEAGE__DISABLED: true
-      PIP_INDEX_URL: http://nexus:8081/repository/pypi-proxy/simple/
-      PIP_TRUSTED_HOST: nexus
     volumes:
       - ./data-transfer:/data-transfer:z
       - ./scripts/airflow/dags:/opt/airflow/dags:Z
@@ -801,8 +786,6 @@ services:
       AWS_ACCESS_KEY_ID: ${PLATYS_AWS_ACCESS_KEY:-admin}
       AWS_SECRET_ACCESS_KEY: ${PLATYS_AWS_SECRET_ACCESS_KEY:-abc123abc123!}
       AIRFLOW__OPENLINEAGE__DISABLED: true
-      PIP_INDEX_URL: http://nexus:8081/repository/pypi-proxy/simple/
-      PIP_TRUSTED_HOST: nexus
     volumes:
       - ./data-transfer:/data-transfer:z
       - ./scripts/airflow/dags:/opt/airflow/dags:Z
@@ -988,8 +971,6 @@ services:
       AWS_ACCESS_KEY_ID: ${PLATYS_AWS_ACCESS_KEY:-admin}
       AWS_SECRET_ACCESS_KEY: ${PLATYS_AWS_SECRET_ACCESS_KEY:-abc123abc123!}
       AIRFLOW__OPENLINEAGE__DISABLED: true
-      PIP_INDEX_URL: http://nexus:8081/repository/pypi-proxy/simple/
-      PIP_TRUSTED_HOST: nexus
     volumes:
       - ./data-transfer:/data-transfer:z
     user: 0:0
@@ -1003,10 +984,10 @@ services:
       com.platys.name: jupyter
       com.platys.description: Web-based interactive development environment for notebooks, code, and data
       com.platys.webui.title: Jupyter UI
-      com.platys.webui.url: http://dataplatform:38888
+      com.platys.webui.url: http://dataplatform:28888
       com.platys.password.envvars: PLATYS_JUPYTER_TOKEN,PLATYS_AWS_SECRET_ACCESS_KEY
     ports:
-      - 38888:8888
+      - 28888:8888
       - 28376-28380:4040-4044
     user: root
     extra_hosts:
@@ -1049,9 +1030,7 @@ services:
         conda create -y --name py310 python=3.10.12
         source /opt/conda/etc/profile.d/conda.sh
         conda activate py310
-        pip install ipykernel
-        pip config set global.index-url http://nexus:28426/repository/pypi-proxy/simple/
-        pip config set global.trusted-host nexus
+        pip install ipykernel    
         python -m ipykernel install --user --name py310 --display-name "Python 3.10.12 (ipykernel)"
         conda run -n py310 pip install pyspark==4.1.1 numpy graphframes-py typing_extensions jupysql "zstandard>=0.25.0" pandas arrow pyarrow grpcio-status boto3
         start-notebook.sh
@@ -1078,9 +1057,9 @@ services:
       - POSTGRES_USER=postgres
       - POSTGRES_DB=postgres
 #      - POSTGRES_INITDB_ARGS=--encoding=UTF8 --data-checksums      
-      - POSTGRES_MULTIPLE_DATABASES=demodb,polaris,nimtabledb,dbt_workbench
-      - POSTGRES_MULTIPLE_USERS=demo,postgres,nimtable,dbt_workbench
-      - POSTGRES_MULTIPLE_PASSWORDS=${PLATYS_POSTGRESQL_MULTIPLE_PASSWORD:-abc123!,abc123!,abc123!,abc123!}
+      - POSTGRES_MULTIPLE_DATABASES=demodb,polaris,nimtabledb
+      - POSTGRES_MULTIPLE_USERS=demo,postgres,nimtable
+      - POSTGRES_MULTIPLE_PASSWORDS=${PLATYS_POSTGRESQL_MULTIPLE_PASSWORD:-abc123!,abc123!,abc123!}
       - POSTGRES_MULTIPLE_ADDL_ROLES=
       - PGDATA=/var/lib/postgresql/data/pgdata
       - DB_SCHEMA=demo
@@ -1534,14 +1513,15 @@ services:
     volumes:
       - ./data-transfer:/data-transfer:z
       - ./init/nexus:/nexus-init:ro
-      - ./container-volume/nexus/data:/nexus-data:z
+#      - ./conf/nexus/nexus.properties:/nexus-data/etc/nexus.properties:z
     entrypoint: [/bin/sh, /nexus-init/entrypoint.sh]
     restart: unless-stopped
     healthcheck:
-      interval: 1s
-      timeout: 10s
-      retries: 240
-      test: [CMD, test, -f, /tmp/.setup-complete]
+      test: [CMD, curl, -sf, http://localhost:8081/service/rest/v1/status]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 120s
   #  ================================== Wetty ========================================== #
   wetty:
     image: docker.io/wettyoss/wetty:2
@@ -1576,69 +1556,12 @@ services:
       com.platys.webui.url: http://dataplatform:3004
     ports:
       - 3004:3000
-      - 222:22
+      - 2223:22
     environment:
       - USER_UID=1000
       - USER_GID=1000
     volumes:
       - ./container-volume/forgejo:/data:z
-      - ./data-transfer:/data-transfer:z
-    restart: unless-stopped
-  #  ================================== dbt Workbench ========================================== #
-  dbt-workbench-backend:
-    image: ghcr.io/rezer-bleede/dbt-workbench-backend:latest
-    container_name: dbt-workbench-backend
-    hostname: dbt-workbench-backend
-    platform: linux/amd64
-    labels:
-      com.platys.name: dbt-workbench
-      com.platys.description: dbt Workbench backend
-    depends_on:
-      postgresql:
-        condition: service_healthy
-    ports:
-      - 28496:8000
-    environment:
-      - POSTGRES_HOST=postgresql
-      - POSTGRES_USER=dbt_workbench
-      - POSTGRES_PASSWORD=${PLATYS_DBT_WORKBENCH_DB_PASSWORD:-abc123!}
-      - POSTGRES_DB=dbt_workbench
-      - DBT_ARTIFACTS_PATH=/app/data/artifacts
-      - DBT_PROJECT_PATH=/app/data/repos/default
-      - BACKEND_PORT=8000
-      - SQL_WORKSPACE_DEFAULT_CONNECTION_URL=postgresql://dbt_workbench:${PLATYS_DBT_WORKBENCH_DB_PASSWORD:-abc123!}@postgresql:5432/dbt_workbench
-      - AI_ENABLED=false
-      - AI_DEFAULT_MODE=direct
-      - AI_DEFAULT_DIRECT_PROVIDER=openai
-      - AI_DEFAULT_DIRECT_MODEL_OPENAI=
-      - AI_DEFAULT_DIRECT_MODEL_ANTHROPIC
-      - AI_ALLOW_SESSION_PROVIDER_OVERRIDE=true
-      - AI_MCP_LOCAL_ALLOWLIST_JSON={}
-    volumes:
-      - ./data-transfer:/data-transfer:z
-    restart: unless-stopped
-    healthcheck:
-      test: [CMD, curl, -f, http://localhost:8000/health]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-      start_period: 30s
-  dbt-workbench-frontend:
-    image: ghcr.io/rezer-bleede/dbt-workbench-frontend:latest
-    container_name: dbt-workbench-frontend
-    hostname: dbt-workbench-frontend
-    platform: linux/amd64
-    labels:
-      com.platys.name: dbt-workbench
-      com.platys.description: dbt Workbench — web-based IDE for dbt projects
-      com.platys.webui.title: dbt Workbench UI
-      com.platys.webui.url: http://dataplatform:28497
-    depends_on:
-      dbt-workbench-backend:
-        condition: service_healthy
-    ports:
-      - 28497:3000
-    volumes:
       - ./data-transfer:/data-transfer:z
     restart: unless-stopped
   #  ================================== markdown-viewer ========================================== #

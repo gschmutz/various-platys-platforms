@@ -64,6 +64,7 @@ Container Port(s) | Internal Port(s)           | Service (alternatives) |
 2185 | 2185 | zookeeper-5 |
 2186 | 2186 | zookeeper-6 |
 2222 | 22 | sftp |
+2223 | 22 | forgejo (SSH) |
 2376 | 2376 | docker-dind |
 2379 | 2379 | etcd-1 (client req) |
 2380 | 2380 | etcd-1 (peer comm) |
@@ -77,6 +78,7 @@ Container Port(s) | Internal Port(s)           | Service (alternatives) |
 3001 | 3000 | wetty (dc1) |
 3002 | 3000 | wetty (dc2 |
 3003 | 3003 | opik-backend |
+3004 | 3000 | forgejo (web UI) |
 3005 | 3000 | marquez-web |
 3010 | 3000 | postman |
 3006 | 3000 | retool-api |
@@ -262,7 +264,8 @@ Container Port(s) | Internal Port(s)           | Service (alternatives) |
 8123 | 8123 | proton-server (HTTP batch) |
 8124 | 8124 | axon-server |
 8161 | 8161 | activemq |
-8182 | 8182 | janusgraph |
+8181 | 8181 | polaris |
+8182 | 8182 | polaris |
 8200 | 8200 | vault |
 8222 | 8222 | nats-1 |
 8288 | 8288 | vector-admin |
@@ -475,7 +478,7 @@ Container Port(s) | Internal Port(s)           | Service (alternatives) |
 28087 | 8443 | trino-1 (tls) |
 28088 | 8443 | trino-2 (tls) |
 28089 | 8443 | trino-3 (tls) |
-28888 | 8888 | jupyter |
+38888 | 8888 | jupyter |
 28889 | 8888 | anaconda |
 29042 | 9042 | cassandra-1 |
 29043 | 9042 | cassandra-2 |
@@ -854,8 +857,8 @@ Container Port(s) | Internal Port(s)           | Service (alternatives) |
 28464 | 8182 | nimtable |
 28465 | 8080 | ehrbase |
 28466 | 9000 | openehr-tool |
-28467 | 8081 | polaris |
-28468 | 8082 | polaris |
+28467 | 8182 | janusgraph |
+28468 |  |  |
 28469 | 8090 | gravitino |
 28470 | 9001 | gravitino-iceberg-rest |
 28471 | 8000 | gravitino-mcp-server |
@@ -883,15 +886,17 @@ Container Port(s) | Internal Port(s)           | Service (alternatives) |
 28493 | 9097 | mcp-trino |
 28494 | 8080 | polaris-ui |
 28495 | 3002 | cosmo-router |
+28496 | 8000 | dbt-workbench (backend API) |
+28497 | 3000 | dbt-workbench (frontend UI) |
 
 
-## Ports > 28500
+## Ports > 28700
 
 Container Port(s) | Internal Port(s)           | Service (alternatives) |
 --------------------|------------------|-----------------------|
-28500 - 28510 | 28500 - 28510 | streamsets-1 (additional ports) |
-28510 - 28520 | 28510 - 28520 | nifi-1 (additional ports |
-28520 - 28530 | 28520 - 28530 | nifi2-1 (additional ports |
-28530 - 28600 | any | reserved for applications |
+28700 - 28710 | 28700 - 28710 | streamsets-1 (additional ports) |
+28710 - 28720 | 28710 - 28720 | nifi-1 (additional ports |
+28720 - 28730 | 28720 - 28730 | nifi2-1 (additional ports |
+28730 - 28800 | any | reserved for applications |
 
 An overview of the URL for the various web-based UIs can be found [here](./environment/README).
