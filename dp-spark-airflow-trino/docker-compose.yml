@@ -1534,7 +1534,6 @@ services:
     volumes:
       - ./data-transfer:/data-transfer:z
       - ./init/nexus:/nexus-init:ro
-      - ./container-volume/nexus/data:/nexus-data:z
     entrypoint: [/bin/sh, /nexus-init/entrypoint.sh]
     restart: unless-stopped
     healthcheck:
