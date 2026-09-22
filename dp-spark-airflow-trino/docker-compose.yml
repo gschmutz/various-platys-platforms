@@ -1046,7 +1046,7 @@ services:
       com.platys.name: trino
       com.platys.description: SQL Virtualization Engine
       com.platys.webui.title: Trino UI
-      com.platys.webui.url: http://dataplatform:28082/ui/preview
+      com.platys.webui.url: http://dataplatform:28082/ui
       com.platys.password.envvars: PLATYS_GSHEET_CREDENTIALS_KEY
     ports:
       - 28082:8080
