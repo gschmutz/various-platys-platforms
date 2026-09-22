@@ -47,6 +47,7 @@ services:
       SPARK_DEFAULTS_CONF_spark_sql_catalog_spark__catalog_type: hive
       SPARK_DEFAULTS_CONF_spark_hadoop_hive_metastore_uris: thrift://hive-metastore:9083
 #      SPARK_DEFAULTS_CONF_spark_sql_catalog_spark__catalog: org.apache.iceberg.spark.SparkCatalog
+      SPARK_DEFAULTS_CONF_spark_sql_defaultCatalog: polaris
       SPARK_DEFAULTS_CONF_spark_sql_extensions: org.apache.iceberg.spark.extensions.IcebergSparkSessionExtensions,
       SPARK_DEFAULTS_CONF_spark_sql_catalog_hive__iceberg: org.apache.iceberg.spark.SparkCatalog
       SPARK_DEFAULTS_CONF_spark_sql_catalog_hive__iceberg_uri: thrift://hive-metastore:9083
@@ -128,6 +129,7 @@ services:
       SPARK_DEFAULTS_CONF_spark_sql_catalog_spark__catalog_type: hive
       SPARK_DEFAULTS_CONF_spark_hadoop_hive_metastore_uris: thrift://hive-metastore:9083
 #      SPARK_DEFAULTS_CONF_spark_sql_catalog_spark__catalog: org.apache.iceberg.spark.SparkCatalog
+      SPARK_DEFAULTS_CONF_spark_sql_defaultCatalog: polaris
       SPARK_DEFAULTS_CONF_spark_sql_extensions: org.apache.iceberg.spark.extensions.IcebergSparkSessionExtensions,
       SPARK_DEFAULTS_CONF_spark_sql_catalog_hive__iceberg: org.apache.iceberg.spark.SparkCatalog
       SPARK_DEFAULTS_CONF_spark_sql_catalog_hive__iceberg_uri: thrift://hive-metastore:9083
@@ -204,6 +206,7 @@ services:
       SPARK_DEFAULTS_CONF_spark_sql_catalog_spark__catalog_type: hive
       SPARK_DEFAULTS_CONF_spark_hadoop_hive_metastore_uris: thrift://hive-metastore:9083
 #      SPARK_DEFAULTS_CONF_spark_sql_catalog_spark__catalog: org.apache.iceberg.spark.SparkCatalog
+      SPARK_DEFAULTS_CONF_spark_sql_defaultCatalog: polaris
       SPARK_DEFAULTS_CONF_spark_sql_extensions: org.apache.iceberg.spark.extensions.IcebergSparkSessionExtensions,
       SPARK_DEFAULTS_CONF_spark_sql_catalog_hive__iceberg: org.apache.iceberg.spark.SparkCatalog
       SPARK_DEFAULTS_CONF_spark_sql_catalog_hive__iceberg_uri: thrift://hive-metastore:9083
@@ -282,6 +285,7 @@ services:
       SPARK_DEFAULTS_CONF_spark_sql_catalog_spark__catalog_type: hive
       SPARK_DEFAULTS_CONF_spark_hadoop_hive_metastore_uris: thrift://hive-metastore:9083
 #      SPARK_DEFAULTS_CONF_spark_sql_catalog_spark__catalog: org.apache.iceberg.spark.SparkCatalog
+      SPARK_DEFAULTS_CONF_spark_sql_defaultCatalog: polaris
       SPARK_DEFAULTS_CONF_spark_sql_extensions: org.apache.iceberg.spark.extensions.IcebergSparkSessionExtensions,
       SPARK_DEFAULTS_CONF_spark_sql_catalog_hive__iceberg: org.apache.iceberg.spark.SparkCatalog
       SPARK_DEFAULTS_CONF_spark_sql_catalog_hive__iceberg_uri: thrift://hive-metastore:9083
@@ -355,6 +359,7 @@ services:
       SPARK_DEFAULTS_CONF_spark_sql_catalog_spark__catalog_type: hive
       SPARK_DEFAULTS_CONF_spark_hadoop_hive_metastore_uris: thrift://hive-metastore:9083
 #      SPARK_DEFAULTS_CONF_spark_sql_catalog_spark__catalog: org.apache.iceberg.spark.SparkCatalog
+      SPARK_DEFAULTS_CONF_spark_sql_defaultCatalog: polaris
       SPARK_DEFAULTS_CONF_spark_sql_extensions: org.apache.iceberg.spark.extensions.IcebergSparkSessionExtensions,
       SPARK_DEFAULTS_CONF_spark_sql_catalog_hive__iceberg: org.apache.iceberg.spark.SparkCatalog
       SPARK_DEFAULTS_CONF_spark_sql_catalog_hive__iceberg_uri: thrift://hive-metastore:9083
@@ -431,6 +436,7 @@ services:
       SPARK_DEFAULTS_CONF_spark_sql_catalog_spark__catalog_type: hive
       SPARK_DEFAULTS_CONF_spark_hadoop_hive_metastore_uris: thrift://hive-metastore:9083
 #      SPARK_DEFAULTS_CONF_spark_sql_catalog_spark__catalog: org.apache.iceberg.spark.SparkCatalog
+      SPARK_DEFAULTS_CONF_spark_sql_defaultCatalog: polaris
       SPARK_DEFAULTS_CONF_spark_sql_extensions: org.apache.iceberg.spark.extensions.IcebergSparkSessionExtensions,
       SPARK_DEFAULTS_CONF_spark_sql_catalog_hive__iceberg: org.apache.iceberg.spark.SparkCatalog
       SPARK_DEFAULTS_CONF_spark_sql_catalog_hive__iceberg_uri: thrift://hive-metastore:9083
@@ -1266,7 +1272,8 @@ services:
       - CLIENT_ID=admin
       - CLIENT_SECRET=${PLATYS_POLARIS_CLIENT_SECRET:-abc123!}
       - S3_ENDPOINT=http://rustfs-1:9000
-      - STORAGE_LOCATION=s3a://admin-bucket
+      - DEFAULT_STORAGE_LOCATION=s3a://admin-bucket
+      - ALLOWED_STORAGE_LOCATIONS=s3a://admin-bucket,s3a://iceberg-bucket
       - CATALOG_NAME=polaris_catalog
       - REALM=POLARIS
     volumes:
@@ -1277,12 +1284,14 @@ services:
       - >-
         source /polaris/obtain-token.sh &&
         echo Creating catalog... &&
+        ALLOWED_LOCS=$$([ -n "$$ALLOWED_STORAGE_LOCATIONS" ] && echo "$$ALLOWED_STORAGE_LOCATIONS" | sed 's/,/","/g; s/^/"/; s/$/"/' || echo "\"$$DEFAULT_STORAGE_LOCATION\"") &&
         export STORAGE_CONFIG_INFO='{"storageType":"S3",
           "endpoint":"'$$S3_ENDPOINT'",
           "endpointInternal":"'$$S3_ENDPOINT'",
+          "allowedLocations":['$$ALLOWED_LOCS'],
           "pathStyleAccess":true,
           "region":"us-east-1"}' &&
-        export STORAGE_LOCATION='s3a://admin-bucket' &&
+        export DEFAULT_STORAGE_LOCATION='s3a://admin-bucket' &&
         export CATALOG_NAME='polaris_catalog' &&
         /polaris/create-catalog.sh POLARIS $$TOKEN &&
         echo Extra grants... &&
@@ -1517,6 +1526,7 @@ services:
     ports:
       - 28496:8000
     environment:
+      - AUTH_ENABLED=false
       - POSTGRES_HOST=postgresql
       - POSTGRES_USER=dbt_workbench
       - POSTGRES_PASSWORD=${PLATYS_DBT_WORKBENCH_DB_PASSWORD:-abc123!}
@@ -1567,6 +1577,12 @@ services:
     volumes:
       - ./data-transfer:/data-transfer:z
     restart: unless-stopped
+    healthcheck:
+      test: [CMD, wget, --no-verbose, --tries=1, --spider, http://localhost:3000]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
   #  ================================== markdown-viewer ========================================== #
   markdown-viewer:
     image: docker.io/dannyben/madness:1.2.5
