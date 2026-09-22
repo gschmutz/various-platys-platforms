@@ -18,7 +18,6 @@ services:
       com.platys.webui.title: Spark UI
       com.platys.webui.url: http://dataplatform:28304
     user: root
-    depends_on:
     ports:
       - 28304:28304
       - 6066:6066
