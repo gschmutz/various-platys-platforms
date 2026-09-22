@@ -19,8 +19,6 @@ services:
       com.platys.webui.url: http://dataplatform:28304
     user: root
     depends_on:
-      nexus:
-        condition: service_healthy
     ports:
       - 28304:28304
       - 6066:6066
@@ -70,13 +68,8 @@ services:
       SPARK_INSTALL_JAVA_PACKAGES: ',software.amazon.awssdk:bundle:2.35.4,software.amazon.awssdk:s3-transfer-manager:2.35.4,software.amazon.awssdk.crt:aws-crt:0.39.4,org.apache.hadoop:hadoop-aws:3.4.2,io.delta:delta-spark_2.13:4.1.0,io.delta:delta-storage:4.1.0,org.apache.iceberg:iceberg-spark-runtime-4.1_2.13:1.11.0,org.apache.iceberg:iceberg-aws-bundle:1.11.0,org.apache.polaris:polaris-spark-3.5_2.13:1.2.0-incubating,org.apache.hudi:hudi-spark4.1-bundle_2.13:1.2.0'
       SPARK_INSTALL_PYTHON_PACKAGES: ' delta-spark==4.1.0'
       SPARK_DEFAULTS_CONF_spark_jars: /opt/spark/jars/iceberg-spark-runtime-4.1_2.13-1.11.0.jar
-      MAVEN_DOWNLOAD_REPO: nexus
-      MAVEN_DOWNLOAD_REPO_NEXUS: http://nexus:8081/repository/maven-public
-      MAVEN_DOWNLOAD_REPO_NEXUS_USER: admin
-      MAVEN_DOWNLOAD_REPO_NEXUS_PASSWORD: ${PLATYS_NEXUS_ADMIN_PASSWORD:-abc123!abc123!}
-      PIP_INDEX_URL: http://nexus:8081/repository/pypi-proxy/simple/
-      PIP_TRUSTED_HOST: nexus
-      SPARK_DEFAULTS_CONF_spark_jars_ivySettings: /opt/spark/conf/ivy-settings.xml
+      MAVEN_DOWNLOAD_REPO: central
+      SPARK_DEFAULTS_CONF_spark_jars_ivySettings:
       SPARK_DEFAULTS_CONF_spark_jars_ivy: /opt/ivy-cache
     volumes:
       - ./data-transfer:/data-transfer:z
@@ -157,13 +150,8 @@ services:
       SPARK_INSTALL_JAVA_PACKAGES: ',software.amazon.awssdk:bundle:2.35.4,software.amazon.awssdk:s3-transfer-manager:2.35.4,software.amazon.awssdk.crt:aws-crt:0.39.4,org.apache.hadoop:hadoop-aws:3.4.2,io.delta:delta-spark_2.13:4.1.0,io.delta:delta-storage:4.1.0,org.apache.iceberg:iceberg-spark-runtime-4.1_2.13:1.11.0,org.apache.iceberg:iceberg-aws-bundle:1.11.0,org.apache.polaris:polaris-spark-3.5_2.13:1.2.0-incubating,org.apache.hudi:hudi-spark4.1-bundle_2.13:1.2.0'
       SPARK_INSTALL_PYTHON_PACKAGES: ' delta-spark==4.1.0'
       SPARK_DEFAULTS_CONF_spark_jars: /opt/spark/jars/iceberg-spark-runtime-4.1_2.13-1.11.0.jar
-      MAVEN_DOWNLOAD_REPO: nexus
-      MAVEN_DOWNLOAD_REPO_NEXUS: http://nexus:8081/repository/maven-public
-      MAVEN_DOWNLOAD_REPO_NEXUS_USER: admin
-      MAVEN_DOWNLOAD_REPO_NEXUS_PASSWORD: ${PLATYS_NEXUS_ADMIN_PASSWORD:-abc123!abc123!}
-      PIP_INDEX_URL: http://nexus:8081/repository/pypi-proxy/simple/
-      PIP_TRUSTED_HOST: nexus
-      SPARK_DEFAULTS_CONF_spark_jars_ivySettings: /opt/spark/conf/ivy-settings.xml
+      MAVEN_DOWNLOAD_REPO: central
+      SPARK_DEFAULTS_CONF_spark_jars_ivySettings:
       SPARK_DEFAULTS_CONF_spark_jars_ivy: /opt/ivy-cache
     volumes:
       - ./data-transfer:/data-transfer:z
@@ -239,13 +227,8 @@ services:
       SPARK_INSTALL_JAVA_PACKAGES: ',software.amazon.awssdk:bundle:2.35.4,software.amazon.awssdk:s3-transfer-manager:2.35.4,software.amazon.awssdk.crt:aws-crt:0.39.4,org.apache.hadoop:hadoop-aws:3.4.2,io.delta:delta-spark_2.13:4.1.0,io.delta:delta-storage:4.1.0,org.apache.iceberg:iceberg-spark-runtime-4.1_2.13:1.11.0,org.apache.iceberg:iceberg-aws-bundle:1.11.0,org.apache.polaris:polaris-spark-3.5_2.13:1.2.0-incubating,org.apache.hudi:hudi-spark4.1-bundle_2.13:1.2.0'
       SPARK_INSTALL_PYTHON_PACKAGES: ' delta-spark==4.1.0'
       SPARK_DEFAULTS_CONF_spark_jars: /opt/spark/jars/iceberg-spark-runtime-4.1_2.13-1.11.0.jar
-      MAVEN_DOWNLOAD_REPO: nexus
-      MAVEN_DOWNLOAD_REPO_NEXUS: http://nexus:8081/repository/maven-public
-      MAVEN_DOWNLOAD_REPO_NEXUS_USER: admin
-      MAVEN_DOWNLOAD_REPO_NEXUS_PASSWORD: ${PLATYS_NEXUS_ADMIN_PASSWORD:-abc123!abc123!}
-      PIP_INDEX_URL: http://nexus:8081/repository/pypi-proxy/simple/
-      PIP_TRUSTED_HOST: nexus
-      SPARK_DEFAULTS_CONF_spark_jars_ivySettings: /opt/spark/conf/ivy-settings.xml
+      MAVEN_DOWNLOAD_REPO: central
+      SPARK_DEFAULTS_CONF_spark_jars_ivySettings:
       SPARK_DEFAULTS_CONF_spark_jars_ivy: /opt/ivy-cache
     volumes:
       - ./data-transfer:/data-transfer:z
@@ -323,13 +306,8 @@ services:
       SPARK_INSTALL_JAVA_PACKAGES: ',software.amazon.awssdk:bundle:2.35.4,software.amazon.awssdk:s3-transfer-manager:2.35.4,software.amazon.awssdk.crt:aws-crt:0.39.4,org.apache.hadoop:hadoop-aws:3.4.2,io.delta:delta-spark_2.13:4.1.0,io.delta:delta-storage:4.1.0,org.apache.iceberg:iceberg-spark-runtime-4.1_2.13:1.11.0,org.apache.iceberg:iceberg-aws-bundle:1.11.0,org.apache.polaris:polaris-spark-3.5_2.13:1.2.0-incubating,org.apache.hudi:hudi-spark4.1-bundle_2.13:1.2.0'
       SPARK_INSTALL_PYTHON_PACKAGES: ' delta-spark==4.1.0'
       SPARK_DEFAULTS_CONF_spark_jars: /opt/spark/jars/iceberg-spark-runtime-4.1_2.13-1.11.0.jar
-      MAVEN_DOWNLOAD_REPO: nexus
-      MAVEN_DOWNLOAD_REPO_NEXUS: http://nexus:8081/repository/maven-public
-      MAVEN_DOWNLOAD_REPO_NEXUS_USER: admin
-      MAVEN_DOWNLOAD_REPO_NEXUS_PASSWORD: ${PLATYS_NEXUS_ADMIN_PASSWORD:-abc123!abc123!}
-      PIP_INDEX_URL: http://nexus:8081/repository/pypi-proxy/simple/
-      PIP_TRUSTED_HOST: nexus
-      SPARK_DEFAULTS_CONF_spark_jars_ivySettings: /opt/spark/conf/ivy-settings.xml
+      MAVEN_DOWNLOAD_REPO: central
+      SPARK_DEFAULTS_CONF_spark_jars_ivySettings:
       SPARK_DEFAULTS_CONF_spark_jars_ivy: /opt/ivy-cache
     volumes:
       - ./data-transfer:/data-transfer:z
@@ -402,13 +380,8 @@ services:
       SPARK_INSTALL_JAVA_PACKAGES: ',software.amazon.awssdk:bundle:2.35.4,software.amazon.awssdk:s3-transfer-manager:2.35.4,software.amazon.awssdk.crt:aws-crt:0.39.4,org.apache.hadoop:hadoop-aws:3.4.2,io.delta:delta-spark_2.13:4.1.0,io.delta:delta-storage:4.1.0,org.apache.iceberg:iceberg-spark-runtime-4.1_2.13:1.11.0,org.apache.iceberg:iceberg-aws-bundle:1.11.0,org.apache.polaris:polaris-spark-3.5_2.13:1.2.0-incubating,org.apache.hudi:hudi-spark4.1-bundle_2.13:1.2.0'
       SPARK_INSTALL_PYTHON_PACKAGES: ' delta-spark==4.1.0'
       SPARK_DEFAULTS_CONF_spark_jars: /opt/spark/jars/iceberg-spark-runtime-4.1_2.13-1.11.0.jar
-      MAVEN_DOWNLOAD_REPO: nexus
-      MAVEN_DOWNLOAD_REPO_NEXUS: http://nexus:8081/repository/maven-public
-      MAVEN_DOWNLOAD_REPO_NEXUS_USER: admin
-      MAVEN_DOWNLOAD_REPO_NEXUS_PASSWORD: ${PLATYS_NEXUS_ADMIN_PASSWORD:-abc123!abc123!}
-      PIP_INDEX_URL: http://nexus:8081/repository/pypi-proxy/simple/
-      PIP_TRUSTED_HOST: nexus
-      SPARK_DEFAULTS_CONF_spark_jars_ivySettings: /opt/spark/conf/ivy-settings.xml
+      MAVEN_DOWNLOAD_REPO: central
+      SPARK_DEFAULTS_CONF_spark_jars_ivySettings:
       SPARK_DEFAULTS_CONF_spark_jars_ivy: /opt/ivy-cache
     volumes:
       - ./data-transfer:/data-transfer:z
@@ -486,13 +459,8 @@ services:
       SPARK_INSTALL_JAVA_PACKAGES: ',software.amazon.awssdk:bundle:2.35.4,software.amazon.awssdk:s3-transfer-manager:2.35.4,software.amazon.awssdk.crt:aws-crt:0.39.4,org.apache.hadoop:hadoop-aws:3.4.2,io.delta:delta-spark_2.13:4.1.0,io.delta:delta-storage:4.1.0,org.apache.iceberg:iceberg-spark-runtime-4.1_2.13:1.11.0,org.apache.iceberg:iceberg-aws-bundle:1.11.0,org.apache.polaris:polaris-spark-3.5_2.13:1.2.0-incubating,org.apache.hudi:hudi-spark4.1-bundle_2.13:1.2.0'
       SPARK_INSTALL_PYTHON_PACKAGES: ' delta-spark==4.1.0'
       SPARK_DEFAULTS_CONF_spark_jars: /opt/spark/jars/iceberg-spark-runtime-4.1_2.13-1.11.0.jar
-      MAVEN_DOWNLOAD_REPO: nexus
-      MAVEN_DOWNLOAD_REPO_NEXUS: http://nexus:8081/repository/maven-public
-      MAVEN_DOWNLOAD_REPO_NEXUS_USER: admin
-      MAVEN_DOWNLOAD_REPO_NEXUS_PASSWORD: ${PLATYS_NEXUS_ADMIN_PASSWORD:-abc123!abc123!}
-      PIP_INDEX_URL: http://nexus:8081/repository/pypi-proxy/simple/
-      PIP_TRUSTED_HOST: nexus
-      SPARK_DEFAULTS_CONF_spark_jars_ivySettings: /opt/spark/conf/ivy-settings.xml
+      MAVEN_DOWNLOAD_REPO: central
+      SPARK_DEFAULTS_CONF_spark_jars_ivySettings:
       SPARK_DEFAULTS_CONF_spark_jars_ivy: /opt/ivy-cache
     volumes:
       - ./data-transfer:/data-transfer:z
@@ -647,8 +615,6 @@ services:
       AWS_ACCESS_KEY_ID: ${PLATYS_AWS_ACCESS_KEY:-admin}
       AWS_SECRET_ACCESS_KEY: ${PLATYS_AWS_SECRET_ACCESS_KEY:-abc123abc123!}
       AIRFLOW__OPENLINEAGE__DISABLED: true
-      PIP_INDEX_URL: http://nexus:8081/repository/pypi-proxy/simple/
-      PIP_TRUSTED_HOST: nexus
     volumes:
       - ./data-transfer:/data-transfer:z
       - ./scripts/airflow/dags:/opt/airflow/dags:Z
@@ -724,8 +690,6 @@ services:
       AWS_ACCESS_KEY_ID: ${PLATYS_AWS_ACCESS_KEY:-admin}
       AWS_SECRET_ACCESS_KEY: ${PLATYS_AWS_SECRET_ACCESS_KEY:-abc123abc123!}
       AIRFLOW__OPENLINEAGE__DISABLED: true
-      PIP_INDEX_URL: http://nexus:8081/repository/pypi-proxy/simple/
-      PIP_TRUSTED_HOST: nexus
     volumes:
       - ./data-transfer:/data-transfer:z
       - ./scripts/airflow/dags:/opt/airflow/dags:Z
@@ -801,8 +765,6 @@ services:
       AWS_ACCESS_KEY_ID: ${PLATYS_AWS_ACCESS_KEY:-admin}
       AWS_SECRET_ACCESS_KEY: ${PLATYS_AWS_SECRET_ACCESS_KEY:-abc123abc123!}
       AIRFLOW__OPENLINEAGE__DISABLED: true
-      PIP_INDEX_URL: http://nexus:8081/repository/pypi-proxy/simple/
-      PIP_TRUSTED_HOST: nexus
     volumes:
       - ./data-transfer:/data-transfer:z
       - ./scripts/airflow/dags:/opt/airflow/dags:Z
@@ -988,8 +950,6 @@ services:
       AWS_ACCESS_KEY_ID: ${PLATYS_AWS_ACCESS_KEY:-admin}
       AWS_SECRET_ACCESS_KEY: ${PLATYS_AWS_SECRET_ACCESS_KEY:-abc123abc123!}
       AIRFLOW__OPENLINEAGE__DISABLED: true
-      PIP_INDEX_URL: http://nexus:8081/repository/pypi-proxy/simple/
-      PIP_TRUSTED_HOST: nexus
     volumes:
       - ./data-transfer:/data-transfer:z
     user: 0:0
@@ -1016,7 +976,7 @@ services:
       GRANT_SUDO: "'yes'"
       JUPYTER_TOKEN: ${PLATYS_JUPYTER_TOKEN:-abc123!}
       DOCKER_STACKS_JUPYTER_CMD: lab
-      MAVEN_DOWNLOAD_REPO: nexus
+      MAVEN_DOWNLOAD_REPO: central
       MAVEN_DOWNLOAD_REPO_NEXUS: http://nexus:8081/repository/maven-public
       MAVEN_DOWNLOAD_REPO_NEXUS_USER: admin
       MAVEN_DOWNLOAD_REPO_NEXUS_PASSWORD: ${PLATYS_NEXUS_ADMIN_PASSWORD:-abc123!abc123!}
@@ -1031,9 +991,6 @@ services:
       AWS_DEFAULT_REGION: us-east-1
       #PYSPARK_PYTHON: /opt/bitnami/python/bin/python3.12
       #PYSPARK_DRIVER_PYTHON: /usr/bin/python3.12   
-    depends_on:
-      nexus:
-        condition: service_healthy
     volumes:
       - ./data-transfer:/data-transfer:z
       - ./init/jupyter/on-startup-jupyter/:/usr/local/bin/start-notebook.d/:z
@@ -1050,8 +1007,6 @@ services:
         source /opt/conda/etc/profile.d/conda.sh
         conda activate py310
         pip install ipykernel
-        pip config set global.index-url http://nexus:28426/repository/pypi-proxy/simple/
-        pip config set global.trusted-host nexus
         python -m ipykernel install --user --name py310 --display-name "Python 3.10.12 (ipykernel)"
         conda run -n py310 pip install pyspark==4.1.1 numpy graphframes-py typing_extensions jupysql "zstandard>=0.25.0" pandas arrow pyarrow grpcio-status boto3
         start-notebook.sh
@@ -1515,32 +1470,6 @@ services:
       - ./data-transfer:/data-transfer:z
       - /var/run/docker.sock:/var/run/docker.sock:z
     restart: unless-stopped
-  #  ================================== Sonatype Nexus ========================================== #
-  nexus:
-    image: docker.io/sonatype/nexus3:3.90.5
-    container_name: nexus
-    hostname: nexus
-    labels:
-      com.platys.name: nexus
-      com.platys.description: Sonatype Nexus Repository Manager
-      com.platys.webui.title: Nexus UI
-      com.platys.webui.url: http://dataplatform:28426
-      com.platys.password.envvars: PLATYS_NEXUS_ADMIN_PASSWORD
-    ports:
-      - 28426:8081
-    environment:
-      INSTALL4J_ADD_JVM_PARAMS: -Xms512m -Xmx2g -XX:MaxDirectMemorySize=2g
-      NEXUS_ADMIN_PASSWORD: ${PLATYS_NEXUS_ADMIN_PASSWORD:-abc123!abc123!}
-    volumes:
-      - ./data-transfer:/data-transfer:z
-      - ./init/nexus:/nexus-init:ro
-    entrypoint: [/bin/sh, /nexus-init/entrypoint.sh]
-    restart: unless-stopped
-    healthcheck:
-      interval: 1s
-      timeout: 10s
-      retries: 240
-      test: [CMD, test, -f, /tmp/.setup-complete]
   #  ================================== Wetty ========================================== #
   wetty:
     image: docker.io/wettyoss/wetty:2
