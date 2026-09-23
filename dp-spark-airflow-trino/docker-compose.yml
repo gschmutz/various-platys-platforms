@@ -60,6 +60,7 @@ services:
       SPARK_DEFAULTS_CONF_spark_sql_catalog_polaris_warehouse: polaris_catalog
       SPARK_DEFAULTS_CONF_spark_sql_catalog_polaris_scope: PRINCIPAL_ROLE:ALL
       SPARK_DEFAULTS_CONF_spark_sql_catalog_polaris_header_X___Iceberg___Access___Delegation: vended-credentials
+      SPARK_DEFAULTS_CONF_spark_sql_catalog_polaris_default___namespace: default
       SPARK_DEFAULTS_CONF_spark_sql_legacy_allowNonEmptyLocationInCTAS: 'true'
       SPARK_DEFAULTS_CONF_spark_jars_repositories:
       SPARK_DEFAULTS_CONF_spark_jars_packages: io.delta:delta-spark_2.13:4.1.0,io.delta:delta-storage:4.1.0
@@ -142,6 +143,7 @@ services:
       SPARK_DEFAULTS_CONF_spark_sql_catalog_polaris_warehouse: polaris_catalog
       SPARK_DEFAULTS_CONF_spark_sql_catalog_polaris_scope: PRINCIPAL_ROLE:ALL
       SPARK_DEFAULTS_CONF_spark_sql_catalog_polaris_header_X___Iceberg___Access___Delegation: vended-credentials
+      SPARK_DEFAULTS_CONF_spark_sql_catalog_polaris_default___namespace: default
       SPARK_DEFAULTS_CONF_spark_sql_legacy_allowNonEmptyLocationInCTAS: 'true'
       SPARK_DEFAULTS_CONF_spark_jars_repositories:
       SPARK_DEFAULTS_CONF_spark_jars_packages: io.delta:delta-spark_2.13:4.1.0,io.delta:delta-storage:4.1.0
@@ -219,6 +221,7 @@ services:
       SPARK_DEFAULTS_CONF_spark_sql_catalog_polaris_warehouse: polaris_catalog
       SPARK_DEFAULTS_CONF_spark_sql_catalog_polaris_scope: PRINCIPAL_ROLE:ALL
       SPARK_DEFAULTS_CONF_spark_sql_catalog_polaris_header_X___Iceberg___Access___Delegation: vended-credentials
+      SPARK_DEFAULTS_CONF_spark_sql_catalog_polaris_default___namespace: default
       SPARK_DEFAULTS_CONF_spark_sql_legacy_allowNonEmptyLocationInCTAS: 'true'
       SPARK_DEFAULTS_CONF_spark_jars_repositories:
       SPARK_DEFAULTS_CONF_spark_jars_packages: io.delta:delta-spark_2.13:4.1.0,io.delta:delta-storage:4.1.0
@@ -298,6 +301,7 @@ services:
       SPARK_DEFAULTS_CONF_spark_sql_catalog_polaris_warehouse: polaris_catalog
       SPARK_DEFAULTS_CONF_spark_sql_catalog_polaris_scope: PRINCIPAL_ROLE:ALL
       SPARK_DEFAULTS_CONF_spark_sql_catalog_polaris_header_X___Iceberg___Access___Delegation: vended-credentials
+      SPARK_DEFAULTS_CONF_spark_sql_catalog_polaris_default___namespace: default
       SPARK_DEFAULTS_CONF_spark_sql_legacy_allowNonEmptyLocationInCTAS: 'true'
       SPARK_DEFAULTS_CONF_spark_jars_repositories:
       SPARK_DEFAULTS_CONF_spark_jars_packages: io.delta:delta-spark_2.13:4.1.0,io.delta:delta-storage:4.1.0
@@ -372,6 +376,7 @@ services:
       SPARK_DEFAULTS_CONF_spark_sql_catalog_polaris_warehouse: polaris_catalog
       SPARK_DEFAULTS_CONF_spark_sql_catalog_polaris_scope: PRINCIPAL_ROLE:ALL
       SPARK_DEFAULTS_CONF_spark_sql_catalog_polaris_header_X___Iceberg___Access___Delegation: vended-credentials
+      SPARK_DEFAULTS_CONF_spark_sql_catalog_polaris_default___namespace: default
       SPARK_DEFAULTS_CONF_spark_sql_legacy_allowNonEmptyLocationInCTAS: 'true'
       SPARK_DEFAULTS_CONF_spark_jars_repositories:
       SPARK_DEFAULTS_CONF_spark_jars_packages: io.delta:delta-spark_2.13:4.1.0,io.delta:delta-storage:4.1.0
@@ -449,7 +454,7 @@ services:
       SPARK_DEFAULTS_CONF_spark_sql_catalog_polaris_warehouse: polaris_catalog
       SPARK_DEFAULTS_CONF_spark_sql_catalog_polaris_scope: PRINCIPAL_ROLE:ALL
       SPARK_DEFAULTS_CONF_spark_sql_catalog_polaris_header_X___Iceberg___Access___Delegation: vended-credentials
-      SPARK_DEFAULTS_CONF_spark_sql_catalog_polaris_default___namespace: flight_db
+      SPARK_DEFAULTS_CONF_spark_sql_catalog_polaris_default___namespace: default
       SPARK_DEFAULTS_CONF_spark_sql_legacy_allowNonEmptyLocationInCTAS: 'true'
       SPARK_DEFAULTS_CONF_spark_jars_repositories:
       SPARK_DEFAULTS_CONF_spark_jars_packages: io.delta:delta-spark_2.13:4.1.0,io.delta:delta-storage:4.1.0
@@ -1275,6 +1280,8 @@ services:
       - S3_ENDPOINT=http://rustfs-1:9000
       - DEFAULT_STORAGE_LOCATION=s3a://admin-bucket
       - ALLOWED_STORAGE_LOCATIONS=s3a://admin-bucket,s3a://iceberg-bucket
+      - NAMESPACE=default
+      - NAMESPACE_STORAGE_LOCATION=s3a://admin-bucket
       - CATALOG_NAME=polaris_catalog
       - REALM=POLARIS
     volumes:
@@ -1294,6 +1301,8 @@ services:
           "region":"us-east-1"}' &&
         export DEFAULT_STORAGE_LOCATION='s3a://admin-bucket' &&
         export CATALOG_NAME='polaris_catalog' &&
+        export NAMESPACE=default &&
+        export NAMESPACE_STORAGE_LOCATION=s3a://admin-bucket &&
         /polaris/create-catalog.sh POLARIS $$TOKEN &&
         echo Extra grants... &&
         curl \
@@ -1306,7 +1315,7 @@ services:
         echo Done. &&
         echo ""
         echo "=========================================="
-        echo "🎉 Polaris Quickstart Setup Complete!"
+        echo "🎉 Polaris Setup Complete!"
         echo "=========================================="
         echo ""
         echo "Catalog: $$CATALOG_NAME"
