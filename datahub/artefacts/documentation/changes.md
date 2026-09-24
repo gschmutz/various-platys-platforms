@@ -11,6 +11,12 @@ See [Upgrade to a new platform stack version](https://github.com/TrivadisPF/plat
  * Apache MiNiFi C++
  * SeaweedFS
  * Nexus
+ * Coder
+ * Polaris Console (UI)
+ * Wundergraph Cosmo Platform
+ * mitmproxy
+ * Forgejo
+ * dbt Workbench
  
 ### Version upgrades
  
@@ -20,6 +26,9 @@ See [Upgrade to a new platform stack version](https://github.com/TrivadisPF/plat
  * Update `datahub` to `v1.7.0`
  * Update `ollama` to `0.32.12`
  * Update `kyuubi` to `1.12.0-all`
+ * Update `hasura` to `v2.50.3-ce`
+ * Update `trino` to `483`
+ * Update `hive-metastore` to `4.2.1`
 
 ### Enhancements
 
@@ -42,6 +51,7 @@ See [Upgrade to a new platform stack version](https://github.com/TrivadisPF/plat
  * rename `KAFKA_REPLICATOR_xxxx` to `CONFLUENT_REPLICATOR_xxxx`
  * changed default for search service in DataHub to OpenSearch
  * changed docker image for Apache Spark to `apache/spark`
+ * Jupyter external port changed to `38888` (used to be `28888`)
 
 ## What's new in 1.20.0
 
