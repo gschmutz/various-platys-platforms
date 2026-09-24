@@ -1,0 +1,2215 @@
+# =======================================================================
+# Platform Name            platys-platform
+# Platform Stack:          trivadis/platys-modern-data-platform
+# Platform Stack Version:  develop
+# =======================================================================
+networks:
+  default:
+    name: platys-platform
+# enforce some dependencies
+services:
+#  ================================== Kafka ========================================== #
+  kafka-1:
+    image: docker.io/confluentinc/cp-kafka:8.1.3
+    container_name: kafka-1
+    hostname: kafka-1
+    labels:
+      com.platys.name: kafka
+      com.platys.description: Kafka Broker 1
+    ports:
+      - 9092:9092
+      - 19092:19092
+      - 29092:29092
+      - 39092:39092
+      - 9992:9992
+      - 1234:1234
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_BROKER_RACK: rack1
+      KAFKA_INTER_BROKER_LISTENER_NAME: BROKER
+      KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
+      KAFKA_CONTROLLER_QUORUM_VOTERS: 1@kafka-1:49092,2@kafka-2:49093,3@kafka-3:49094
+      KAFKA_PROCESS_ROLES: broker,controller
+      KAFKA_NODE_ID: 1
+      CLUSTER_ID: y4vRIwfDT0SkZ65tD7Ey2A
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: CONTROLLER:PLAINTEXT,BROKER:PLAINTEXT,LOCAL:PLAINTEXT,DOCKERHOST:PLAINTEXT,EXTERNAL:PLAINTEXT
+      KAFKA_LISTENERS: CONTROLLER://kafka-1:49092,BROKER://kafka-1:19092,LOCAL://kafka-1:39092,DOCKERHOST://kafka-1:29092,EXTERNAL://kafka-1:9092
+      KAFKA_ADVERTISED_LISTENERS: BROKER://kafka-1:19092,LOCAL://localhost:39092,DOCKERHOST://${DOCKER_HOST_IP:-127.0.0.1}:29092,EXTERNAL://${PUBLIC_IP:-127.0.0.1}:9092
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 3
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 3
+      KAFKA_MESSAGE_TIMESTAMP_TYPE: CreateTime
+      KAFKA_MIN_INSYNC_REPLICAS: 1
+      KAFKA_DELETE_TOPIC_ENABLE: 'True'
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: 'False'
+      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 100
+      KAFKA_JMX_PORT: 9992
+      KAFKA_JMX_OPTS: -Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -Dcom.sun.management.jmxremote.local.only=false -Dcom.sun.management.jmxremote.rmi.port=9992
+      KAFKA_JMX_HOSTNAME: kafka-1 #'${PUBLIC_IP:-127.0.0.1}'
+      KAFKA_LOG4J_ROOT_LOGLEVEL: INFO
+      KAFKA_TOOLS_LOG4J_LOGLEVEL: INFO
+    volumes:
+      - ./data-transfer:/data-transfer:z
+    restart: unless-stopped
+    healthcheck:
+      test: kafka-topics --bootstrap-server kafka-1:19092 --list
+      interval: 30s
+      timeout: 10s
+      retries: 40
+      start_period: 20s
+  kafka-2:
+    image: docker.io/confluentinc/cp-kafka:8.1.3
+    container_name: kafka-2
+    hostname: kafka-2
+    labels:
+      com.platys.name: kafka
+      com.platys.description: Kafka Broker 2
+    ports:
+      - 9093:9093
+      - 19093:19093
+      - 29093:29093
+      - 39093:39093
+      - 9993:9992
+      - 1235:1234
+    environment:
+      KAFKA_BROKER_ID: 2
+      KAFKA_BROKER_RACK: rack1
+      KAFKA_INTER_BROKER_LISTENER_NAME: BROKER
+      KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
+      KAFKA_CONTROLLER_QUORUM_VOTERS: 1@kafka-1:49092,2@kafka-2:49093,3@kafka-3:49094
+      KAFKA_PROCESS_ROLES: broker,controller
+      KAFKA_NODE_ID: 2
+      CLUSTER_ID: y4vRIwfDT0SkZ65tD7Ey2A
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: CONTROLLER:PLAINTEXT,BROKER:PLAINTEXT,LOCAL:PLAINTEXT,DOCKERHOST:PLAINTEXT,EXTERNAL:PLAINTEXT
+      KAFKA_LISTENERS: CONTROLLER://kafka-2:49093,BROKER://kafka-2:19093,LOCAL://kafka-2:39093,DOCKERHOST://kafka-2:29093,EXTERNAL://kafka-2:9093
+      KAFKA_ADVERTISED_LISTENERS: BROKER://kafka-2:19093,LOCAL://localhost:39093,DOCKERHOST://${DOCKER_HOST_IP:-127.0.0.1}:29093,EXTERNAL://${PUBLIC_IP:-127.0.0.1}:9093
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 3
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 3
+      KAFKA_MESSAGE_TIMESTAMP_TYPE: CreateTime
+      KAFKA_MIN_INSYNC_REPLICAS: 1
+      KAFKA_DELETE_TOPIC_ENABLE: 'True'
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: 'False'
+      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 100
+      KAFKA_JMX_PORT: 9992
+      KAFKA_JMX_OPTS: -Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -Dcom.sun.management.jmxremote.local.only=false -Dcom.sun.management.jmxremote.rmi.port=9992
+      KAFKA_JMX_HOSTNAME: kafka-2 #'${PUBLIC_IP:-127.0.0.1}'
+      KAFKA_LOG4J_ROOT_LOGLEVEL: INFO
+      KAFKA_TOOLS_LOG4J_LOGLEVEL: INFO
+    volumes:
+      - ./data-transfer:/data-transfer:z
+    restart: unless-stopped
+    healthcheck:
+      test: kafka-topics --bootstrap-server kafka-1:19092 --list
+      interval: 30s
+      timeout: 10s
+      retries: 40
+      start_period: 20s
+  kafka-3:
+    image: docker.io/confluentinc/cp-kafka:8.1.3
+    container_name: kafka-3
+    hostname: kafka-3
+    labels:
+      com.platys.name: kafka
+      com.platys.description: Kafka Broker 3
+    ports:
+      - 9094:9094
+      - 19094:19094
+      - 29094:29094
+      - 39094:39094
+      - 9994:9992
+      - 1236:1234
+    environment:
+      KAFKA_BROKER_ID: 3
+      KAFKA_BROKER_RACK: rack1
+      KAFKA_INTER_BROKER_LISTENER_NAME: BROKER
+      KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
+      KAFKA_CONTROLLER_QUORUM_VOTERS: 1@kafka-1:49092,2@kafka-2:49093,3@kafka-3:49094
+      KAFKA_PROCESS_ROLES: broker,controller
+      KAFKA_NODE_ID: 3
+      CLUSTER_ID: y4vRIwfDT0SkZ65tD7Ey2A
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: CONTROLLER:PLAINTEXT,BROKER:PLAINTEXT,LOCAL:PLAINTEXT,DOCKERHOST:PLAINTEXT,EXTERNAL:PLAINTEXT
+      KAFKA_LISTENERS: CONTROLLER://kafka-3:49094,BROKER://kafka-3:19094,LOCAL://kafka-3:39094,DOCKERHOST://kafka-3:29094,EXTERNAL://kafka-3:9094
+      KAFKA_ADVERTISED_LISTENERS: BROKER://kafka-3:19094,LOCAL://localhost:39094,DOCKERHOST://${DOCKER_HOST_IP:-127.0.0.1}:29094,EXTERNAL://${PUBLIC_IP:-127.0.0.1}:9094
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 3
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 3
+      KAFKA_MESSAGE_TIMESTAMP_TYPE: CreateTime
+      KAFKA_MIN_INSYNC_REPLICAS: 1
+      KAFKA_DELETE_TOPIC_ENABLE: 'True'
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: 'False'
+      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 100
+      KAFKA_JMX_PORT: 9992
+      KAFKA_JMX_OPTS: -Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -Dcom.sun.management.jmxremote.local.only=false -Dcom.sun.management.jmxremote.rmi.port=9992
+      KAFKA_JMX_HOSTNAME: kafka-3 #'${PUBLIC_IP:-127.0.0.1}'
+      KAFKA_LOG4J_ROOT_LOGLEVEL: INFO
+      KAFKA_TOOLS_LOG4J_LOGLEVEL: INFO
+    volumes:
+      - ./data-transfer:/data-transfer:z
+    restart: unless-stopped
+    healthcheck:
+      test: kafka-topics --bootstrap-server kafka-1:19092 --list
+      interval: 30s
+      timeout: 10s
+      retries: 40
+      start_period: 20s
+  #  ================================== Confluent Schema Registry ========================================== #
+  schema-registry-1:
+    image: docker.io/confluentinc/cp-schema-registry:8.1.3
+    hostname: schema-registry-1
+    container_name: schema-registry-1
+    labels:
+      com.platys.name: schema-registry
+      com.platys.description: Confluent Schema Registry
+      com.platys.restapi.title: Schema Registry REST API
+      com.platys.restapi.url: http://dataplatform:8081
+    ports:
+      - 8081:8081
+    depends_on:
+      kafka-1:
+        condition: service_healthy
+    environment:
+      SCHEMA_REGISTRY_HOST_NAME: schema-registry-1
+      SCHEMA_REGISTRY_LISTENERS: http://0.0.0.0:8081
+      SCHEMA_REGISTRY_KAFKASTORE_BOOTSTRAP_SERVERS: kafka-1:19092,kafka-2:19093,kafka-3:19094
+      SCHEMA_REGISTRY_GROUP_ID: schema-registry
+      SCHEMA_REGISTRY_LEADER_ELIGIBILITY: 'True'
+      SCHEMA_REGISTRY_MODE_MUTABILITY: 'True'
+      SCHEMA_REGISTRY_SCHEMA_COMPATIBILITY_LEVEL: backward
+      SCHEMA_REGISTRY_KAFKASTORE_TOPIC_REPLICATION_FACTOR: 1
+      SCHEMA_REGISTRY_ACCESS_CONTROL_ALLOW_ORIGIN: '*'
+      SCHEMA_REGISTRY_ACCESS_CONTROL_ALLOW_METHODS: GET,POST,PUT,OPTIONS
+      SCHEMA_REGISTRY_LOG4J_ROOT_LOGLEVEL: info
+      SCHEMA_REGISTRY_DEBUG: 'False'
+      SCHEMA_REGISTRY_KAFKASTORE_SECURITY_PROTOCOL: PLAINTEXT
+    volumes:
+      - ./data-transfer:/data-transfer:z
+      - ./plugins/opentelemetry/agents:/otel:z
+    restart: unless-stopped
+    healthcheck:
+      start_period: 10s
+      interval: 15s
+      retries: 25
+      test: curl --fail --silent --insecure http://schema-registry-1:8081/subjects --output /dev/null || exit 1
+  #  ================================== Apache Spark ========================================== #
+  spark-master:
+    image: docker.io/apache/spark:4.1.1-python3
+    container_name: spark-master
+    hostname: spark-master
+    labels:
+      com.platys.name: spark
+      com.platys.description: Spark Master Node
+      com.platys.webui.title: Spark UI
+      com.platys.webui.url: http://dataplatform:28304
+    user: root
+    ports:
+      - 28304:28304
+      - 6066:6066
+      - 7077:7077
+      - 4040-4044:4040-4044
+    environment:
+      SPARK_MASTER_HOST: spark-master
+      SPARK_MASTER_PORT: 7077
+      SPARK_MASTER_WEBUI_PORT: 28304
+      SPARK_PUBLIC_DNS: ${PUBLIC_IP:-127.0.0.1}
+      SPARK_DEFAULTS_CONF_spark_hadoop_fs_s3a_impl: org.apache.hadoop.fs.s3a.S3AFileSystem
+      SPARK_DEFAULTS_CONF_spark_hadoop_fs_s3a_endpoint: http://rustfs-1:9000
+      SPARK_DEFAULTS_CONF_spark_hadoop_fs_s3a_access_key: ${PLATYS_AWS_ACCESS_KEY:-admin}
+      SPARK_DEFAULTS_CONF_spark_hadoop_fs_s3a_secret_key: ${PLATYS_AWS_SECRET_ACCESS_KEY:-abc123abc123!}
+      SPARK_DEFAULTS_CONF_spark_hadoop_fs_s3a_path_style_access: 'true'
+      AWS_REGION: us-east-1
+      AWS_ACCESS_KEY_ID: ${PLATYS_AWS_ACCESS_KEY:-admin}
+      AWS_SECRET_ACCESS_KEY: ${PLATYS_AWS_SECRET_ACCESS_KEY:-abc123abc123!}
+      SPARK_DEFAULTS_CONF_spark_hadoop_fs_defaultFS: s3a://admin-bucket
+      SPARK_DEFAULTS_CONF_spark_sql_warehouse_dir: s3a://admin-bucket/hive/warehouse
+      SPARK_DEFAULTS_CONF_spark_driver_extraJavaOptions:
+      SPARK_DEFAULTS_CONF_spark_executor_extraJavaOptions:
+      SPARK_DEFAULTS_CONF_spark_cores_max: 2
+      SPARK_DEFAULTS_CONF_spark_extraListeners: datahub.spark.DatahubSparkListener
+      SPARK_DEFAULTS_CONF_spark_datahub_rest_server: http://datahub-gms:8080
+      SPARK_DEFAULTS_CONF_spark_datahub_metadata_dataset_env: ${PLATYS_ENV}
+      SPARK_DEFAULTS_CONF_spark_sql_hive_metastore_jars: builtin
+      # SPARK_DEFAULTS_CONF_spark_sql_hive_metastore_version: 3.1.2    
+      SPARK_DEFAULTS_CONF_spark_sql_catalogImplementation: hive
+      SPARK_DEFAULTS_CONF_spark_sql_catalog_spark__catalog_type: hive
+      SPARK_DEFAULTS_CONF_spark_hadoop_hive_metastore_uris: thrift://hive-metastore:9083
+#      SPARK_DEFAULTS_CONF_spark_sql_catalog_spark__catalog: org.apache.iceberg.spark.SparkCatalog
+      SPARK_DEFAULTS_CONF_spark_sql_defaultCatalog: polaris
+      SPARK_DEFAULTS_CONF_spark_sql_extensions: org.apache.iceberg.spark.extensions.IcebergSparkSessionExtensions,
+      SPARK_DEFAULTS_CONF_spark_sql_catalog_hive__iceberg: org.apache.iceberg.spark.SparkCatalog
+      SPARK_DEFAULTS_CONF_spark_sql_catalog_hive__iceberg_uri: thrift://hive-metastore:9083
+      SPARK_DEFAULTS_CONF_spark_sql_catalog_hive__iceberg_warehouse: s3a://admin-bucket/iceberg/warehouse
+      SPARK_DEFAULTS_CONF_spark_sql_catalog_polaris_type: rest
+      SPARK_DEFAULTS_CONF_spark_sql_catalog_polaris: org.apache.iceberg.spark.SparkCatalog
+      SPARK_DEFAULTS_CONF_spark_sql_catalog_polaris_uri: http://polaris:8181/api/catalog
+      SPARK_DEFAULTS_CONF_spark_sql_catalog_polaris_token___refresh___enabled: true
+      SPARK_DEFAULTS_CONF_spark_sql_catalog_polaris_credential: admin:abc123!
+      SPARK_DEFAULTS_CONF_spark_sql_catalog_polaris_warehouse: polaris_catalog
+      SPARK_DEFAULTS_CONF_spark_sql_catalog_polaris_scope: PRINCIPAL_ROLE:ALL
+      SPARK_DEFAULTS_CONF_spark_sql_catalog_polaris_header_X___Iceberg___Access___Delegation: vended-credentials
+      SPARK_DEFAULTS_CONF_spark_sql_catalog_polaris_default___namespace: default
+      SPARK_DEFAULTS_CONF_spark_sql_legacy_allowNonEmptyLocationInCTAS: 'true'
+      SPARK_DEFAULTS_CONF_spark_jars_repositories:
+      SPARK_DEFAULTS_CONF_spark_jars_packages: io.delta:delta-spark_2.13:4.1.0,io.delta:delta-storage:4.1.0
+      SPARK_DEFAULTS_CONF_spark_jars_excludes:
+      # specifies the JARs to be downloaded to the jars folder by maven-download-sh script (triggered in the init script)
+      SPARK_INSTALL_JAVA_PACKAGES: ',software.amazon.awssdk:bundle:2.35.4,software.amazon.awssdk:s3-transfer-manager:2.35.4,software.amazon.awssdk.crt:aws-crt:0.39.4,org.apache.hadoop:hadoop-aws:3.4.2,io.delta:delta-spark_2.13:4.1.0,io.delta:delta-storage:4.1.0,org.apache.iceberg:iceberg-spark-runtime-4.1_2.13:1.11.0,org.apache.iceberg:iceberg-aws-bundle:1.11.0,org.apache.polaris:polaris-spark-3.5_2.13:1.2.0-incubating,org.apache.hudi:hudi-spark4.1-bundle_2.13:1.2.0,io.acryl:datahub-spark-lineage:1.7.0'
+      SPARK_INSTALL_PYTHON_PACKAGES: ''
+      SPARK_DEFAULTS_CONF_spark_jars: /opt/spark/jars/iceberg-spark-runtime-4.1_2.13-1.11.0.jar,/opt/spark/jars/datahub-spark-lineage-1.7.0.jar
+      MAVEN_DOWNLOAD_REPO: central
+      SPARK_DEFAULTS_CONF_spark_jars_ivySettings:
+      SPARK_DEFAULTS_CONF_spark_jars_ivy: /opt/ivy-cache
+    volumes:
+      - ./data-transfer:/data-transfer:z
+      # the 3 conf files are mapped to conf.default folder, they are copied with env variable interpolation into conf upon start of container
+      - ./conf/spark/hive-site.xml:/opt/spark/conf.default/hive-site.xml:z
+      - ./conf/spark/spark-defaults.conf:/opt/spark/conf.default/spark-defaults.conf:z
+      - ./init/spark:/docker-entrypoint-initdb.d:z
+      - ./scripts/docker/maven-download.sh:/maven-download.sh:z
+      - ./scripts/spark/pyspark:/opt/spark/bin/pyspark:z
+      - ./container-volume/spark/logs/:/var/log/spark/logs:z
+#      - ./scripts/docker/maven-download.sh:/usr/src/app/maven-download.sh
+      - spark-4-1-1-python3-vol:/opt/spark:z
+      - spark-4-1-1-python3-java-vol:/opt/java:z
+    entrypoint: [/docker-entrypoint-initdb.d/spark-init.sh]
+    command: [/opt/spark/bin/spark-class, org.apache.spark.deploy.master.Master]
+    restart: unless-stopped
+    healthcheck:
+      test: [CMD-SHELL, "python3 -c 'import socket; socket.create_connection((\"localhost\", 28304), timeout=5)'"]
+      interval: 30s
+      timeout: 10s
+      retries: 20
+      start_period: 20s
+  spark-worker-1:
+    image: docker.io/apache/spark:4.1.1-python3
+    container_name: spark-worker-1
+    hostname: spark-worker-1
+    user: root
+    labels:
+      com.platys.name: spark
+      com.platys.description: Spark Worker Node
+    depends_on:
+      spark-master:
+        condition: service_healthy
+    ports:
+      - 28111:28111
+    environment:
+      # spark standard env vars
+      SPARK_WORKER_WEBUI_PORT: '28111'
+      SPARK_WORKER_OPTS: -Dspark.worker.cleanup.enabled=true
+      SPARK_PUBLIC_DNS: ${PUBLIC_IP:-127.0.0.1}
+      SPARK_DEFAULTS_CONF_spark_hadoop_fs_s3a_impl: org.apache.hadoop.fs.s3a.S3AFileSystem
+      SPARK_DEFAULTS_CONF_spark_hadoop_fs_s3a_endpoint: http://rustfs-1:9000
+      SPARK_DEFAULTS_CONF_spark_hadoop_fs_s3a_access_key: ${PLATYS_AWS_ACCESS_KEY:-admin}
+      SPARK_DEFAULTS_CONF_spark_hadoop_fs_s3a_secret_key: ${PLATYS_AWS_SECRET_ACCESS_KEY:-abc123abc123!}
+      SPARK_DEFAULTS_CONF_spark_hadoop_fs_s3a_path_style_access: 'true'
+      AWS_REGION: us-east-1
+      AWS_ACCESS_KEY_ID: ${PLATYS_AWS_ACCESS_KEY:-admin}
+      AWS_SECRET_ACCESS_KEY: ${PLATYS_AWS_SECRET_ACCESS_KEY:-abc123abc123!}
+      SPARK_DEFAULTS_CONF_spark_hadoop_fs_defaultFS: s3a://admin-bucket
+      SPARK_DEFAULTS_CONF_spark_sql_warehouse_dir: s3a://admin-bucket/hive/warehouse
+      SPARK_DEFAULTS_CONF_spark_driver_extraJavaOptions:
+      SPARK_DEFAULTS_CONF_spark_executor_extraJavaOptions:
+      SPARK_DEFAULTS_CONF_spark_cores_max: 2
+      SPARK_DEFAULTS_CONF_spark_extraListeners: datahub.spark.DatahubSparkListener
+      SPARK_DEFAULTS_CONF_spark_datahub_rest_server: http://datahub-gms:8080
+      SPARK_DEFAULTS_CONF_spark_datahub_metadata_dataset_env: ${PLATYS_ENV}
+      SPARK_DEFAULTS_CONF_spark_sql_hive_metastore_jars: builtin
+      # SPARK_DEFAULTS_CONF_spark_sql_hive_metastore_version: 3.1.2    
+      SPARK_DEFAULTS_CONF_spark_sql_catalogImplementation: hive
+      SPARK_DEFAULTS_CONF_spark_sql_catalog_spark__catalog_type: hive
+      SPARK_DEFAULTS_CONF_spark_hadoop_hive_metastore_uris: thrift://hive-metastore:9083
+#      SPARK_DEFAULTS_CONF_spark_sql_catalog_spark__catalog: org.apache.iceberg.spark.SparkCatalog
+      SPARK_DEFAULTS_CONF_spark_sql_defaultCatalog: polaris
+      SPARK_DEFAULTS_CONF_spark_sql_extensions: org.apache.iceberg.spark.extensions.IcebergSparkSessionExtensions,
+      SPARK_DEFAULTS_CONF_spark_sql_catalog_hive__iceberg: org.apache.iceberg.spark.SparkCatalog
+      SPARK_DEFAULTS_CONF_spark_sql_catalog_hive__iceberg_uri: thrift://hive-metastore:9083
+      SPARK_DEFAULTS_CONF_spark_sql_catalog_hive__iceberg_warehouse: s3a://admin-bucket/iceberg/warehouse
+      SPARK_DEFAULTS_CONF_spark_sql_catalog_polaris_type: rest
+      SPARK_DEFAULTS_CONF_spark_sql_catalog_polaris: org.apache.iceberg.spark.SparkCatalog
+      SPARK_DEFAULTS_CONF_spark_sql_catalog_polaris_uri: http://polaris:8181/api/catalog
+      SPARK_DEFAULTS_CONF_spark_sql_catalog_polaris_token___refresh___enabled: true
+      SPARK_DEFAULTS_CONF_spark_sql_catalog_polaris_credential: admin:abc123!
+      SPARK_DEFAULTS_CONF_spark_sql_catalog_polaris_warehouse: polaris_catalog
+      SPARK_DEFAULTS_CONF_spark_sql_catalog_polaris_scope: PRINCIPAL_ROLE:ALL
+      SPARK_DEFAULTS_CONF_spark_sql_catalog_polaris_header_X___Iceberg___Access___Delegation: vended-credentials
+      SPARK_DEFAULTS_CONF_spark_sql_catalog_polaris_default___namespace: default
+      SPARK_DEFAULTS_CONF_spark_sql_legacy_allowNonEmptyLocationInCTAS: 'true'
+      SPARK_DEFAULTS_CONF_spark_jars_repositories:
+      SPARK_DEFAULTS_CONF_spark_jars_packages: io.delta:delta-spark_2.13:4.1.0,io.delta:delta-storage:4.1.0
+      SPARK_DEFAULTS_CONF_spark_jars_excludes:
+      # specifies the JARs to be downloaded to the jars folder by maven-download-sh script (triggered in the init script)
+      SPARK_INSTALL_JAVA_PACKAGES: ',software.amazon.awssdk:bundle:2.35.4,software.amazon.awssdk:s3-transfer-manager:2.35.4,software.amazon.awssdk.crt:aws-crt:0.39.4,org.apache.hadoop:hadoop-aws:3.4.2,io.delta:delta-spark_2.13:4.1.0,io.delta:delta-storage:4.1.0,org.apache.iceberg:iceberg-spark-runtime-4.1_2.13:1.11.0,org.apache.iceberg:iceberg-aws-bundle:1.11.0,org.apache.polaris:polaris-spark-3.5_2.13:1.2.0-incubating,org.apache.hudi:hudi-spark4.1-bundle_2.13:1.2.0,io.acryl:datahub-spark-lineage:1.7.0'
+      SPARK_INSTALL_PYTHON_PACKAGES: ''
+      SPARK_DEFAULTS_CONF_spark_jars: /opt/spark/jars/iceberg-spark-runtime-4.1_2.13-1.11.0.jar,/opt/spark/jars/datahub-spark-lineage-1.7.0.jar
+      MAVEN_DOWNLOAD_REPO: central
+      SPARK_DEFAULTS_CONF_spark_jars_ivySettings:
+      SPARK_DEFAULTS_CONF_spark_jars_ivy: /opt/ivy-cache
+    volumes:
+      - ./data-transfer:/data-transfer:z
+      - ./conf/spark/hive-site.xml:/opt/spark/conf.default/hive-site.xml:z
+      - ./conf/spark/spark-defaults.conf:/opt/spark/conf.default/spark-defaults.conf:z
+      - ./init/spark:/docker-entrypoint-initdb.d:z
+      - ./scripts/docker/maven-download.sh:/maven-download.sh:z
+      - ./container-volume/spark/logs/:/var/log/spark/logs:z
+    entrypoint: [/docker-entrypoint-initdb.d/spark-init.sh]
+    command: [/opt/spark/bin/spark-class, org.apache.spark.deploy.worker.Worker, spark://spark-master:7077]
+    restart: unless-stopped
+    healthcheck:
+      test: [CMD-SHELL, "python3 -c 'import socket; socket.create_connection((\"localhost\", 28111), timeout=5)'"]
+      interval: 30s
+      timeout: 10s
+      retries: 20
+      start_period: 120s
+  spark-worker-2:
+    image: docker.io/apache/spark:4.1.1-python3
+    container_name: spark-worker-2
+    hostname: spark-worker-2
+    user: root
+    labels:
+      com.platys.name: spark
+      com.platys.description: Spark Worker Node
+    depends_on:
+      spark-master:
+        condition: service_healthy
+    ports:
+      - 28112:28112
+    environment:
+      # spark standard env vars
+      SPARK_WORKER_WEBUI_PORT: '28112'
+      SPARK_WORKER_OPTS: -Dspark.worker.cleanup.enabled=true
+      SPARK_PUBLIC_DNS: ${PUBLIC_IP:-127.0.0.1}
+      SPARK_DEFAULTS_CONF_spark_hadoop_fs_s3a_impl: org.apache.hadoop.fs.s3a.S3AFileSystem
+      SPARK_DEFAULTS_CONF_spark_hadoop_fs_s3a_endpoint: http://rustfs-1:9000
+      SPARK_DEFAULTS_CONF_spark_hadoop_fs_s3a_access_key: ${PLATYS_AWS_ACCESS_KEY:-admin}
+      SPARK_DEFAULTS_CONF_spark_hadoop_fs_s3a_secret_key: ${PLATYS_AWS_SECRET_ACCESS_KEY:-abc123abc123!}
+      SPARK_DEFAULTS_CONF_spark_hadoop_fs_s3a_path_style_access: 'true'
+      AWS_REGION: us-east-1
+      AWS_ACCESS_KEY_ID: ${PLATYS_AWS_ACCESS_KEY:-admin}
+      AWS_SECRET_ACCESS_KEY: ${PLATYS_AWS_SECRET_ACCESS_KEY:-abc123abc123!}
+      SPARK_DEFAULTS_CONF_spark_hadoop_fs_defaultFS: s3a://admin-bucket
+      SPARK_DEFAULTS_CONF_spark_sql_warehouse_dir: s3a://admin-bucket/hive/warehouse
+      SPARK_DEFAULTS_CONF_spark_driver_extraJavaOptions:
+      SPARK_DEFAULTS_CONF_spark_executor_extraJavaOptions:
+      SPARK_DEFAULTS_CONF_spark_cores_max: 2
+      SPARK_DEFAULTS_CONF_spark_extraListeners: datahub.spark.DatahubSparkListener
+      SPARK_DEFAULTS_CONF_spark_datahub_rest_server: http://datahub-gms:8080
+      SPARK_DEFAULTS_CONF_spark_datahub_metadata_dataset_env: ${PLATYS_ENV}
+      SPARK_DEFAULTS_CONF_spark_sql_hive_metastore_jars: builtin
+      # SPARK_DEFAULTS_CONF_spark_sql_hive_metastore_version: 3.1.2    
+      SPARK_DEFAULTS_CONF_spark_sql_catalogImplementation: hive
+      SPARK_DEFAULTS_CONF_spark_sql_catalog_spark__catalog_type: hive
+      SPARK_DEFAULTS_CONF_spark_hadoop_hive_metastore_uris: thrift://hive-metastore:9083
+#      SPARK_DEFAULTS_CONF_spark_sql_catalog_spark__catalog: org.apache.iceberg.spark.SparkCatalog
+      SPARK_DEFAULTS_CONF_spark_sql_defaultCatalog: polaris
+      SPARK_DEFAULTS_CONF_spark_sql_extensions: org.apache.iceberg.spark.extensions.IcebergSparkSessionExtensions,
+      SPARK_DEFAULTS_CONF_spark_sql_catalog_hive__iceberg: org.apache.iceberg.spark.SparkCatalog
+      SPARK_DEFAULTS_CONF_spark_sql_catalog_hive__iceberg_uri: thrift://hive-metastore:9083
+      SPARK_DEFAULTS_CONF_spark_sql_catalog_hive__iceberg_warehouse: s3a://admin-bucket/iceberg/warehouse
+      SPARK_DEFAULTS_CONF_spark_sql_catalog_polaris_type: rest
+      SPARK_DEFAULTS_CONF_spark_sql_catalog_polaris: org.apache.iceberg.spark.SparkCatalog
+      SPARK_DEFAULTS_CONF_spark_sql_catalog_polaris_uri: http://polaris:8181/api/catalog
+      SPARK_DEFAULTS_CONF_spark_sql_catalog_polaris_token___refresh___enabled: true
+      SPARK_DEFAULTS_CONF_spark_sql_catalog_polaris_credential: admin:abc123!
+      SPARK_DEFAULTS_CONF_spark_sql_catalog_polaris_warehouse: polaris_catalog
+      SPARK_DEFAULTS_CONF_spark_sql_catalog_polaris_scope: PRINCIPAL_ROLE:ALL
+      SPARK_DEFAULTS_CONF_spark_sql_catalog_polaris_header_X___Iceberg___Access___Delegation: vended-credentials
+      SPARK_DEFAULTS_CONF_spark_sql_catalog_polaris_default___namespace: default
+      SPARK_DEFAULTS_CONF_spark_sql_legacy_allowNonEmptyLocationInCTAS: 'true'
+      SPARK_DEFAULTS_CONF_spark_jars_repositories:
+      SPARK_DEFAULTS_CONF_spark_jars_packages: io.delta:delta-spark_2.13:4.1.0,io.delta:delta-storage:4.1.0
+      SPARK_DEFAULTS_CONF_spark_jars_excludes:
+      # specifies the JARs to be downloaded to the jars folder by maven-download-sh script (triggered in the init script)
+      SPARK_INSTALL_JAVA_PACKAGES: ',software.amazon.awssdk:bundle:2.35.4,software.amazon.awssdk:s3-transfer-manager:2.35.4,software.amazon.awssdk.crt:aws-crt:0.39.4,org.apache.hadoop:hadoop-aws:3.4.2,io.delta:delta-spark_2.13:4.1.0,io.delta:delta-storage:4.1.0,org.apache.iceberg:iceberg-spark-runtime-4.1_2.13:1.11.0,org.apache.iceberg:iceberg-aws-bundle:1.11.0,org.apache.polaris:polaris-spark-3.5_2.13:1.2.0-incubating,org.apache.hudi:hudi-spark4.1-bundle_2.13:1.2.0,io.acryl:datahub-spark-lineage:1.7.0'
+      SPARK_INSTALL_PYTHON_PACKAGES: ''
+      SPARK_DEFAULTS_CONF_spark_jars: /opt/spark/jars/iceberg-spark-runtime-4.1_2.13-1.11.0.jar,/opt/spark/jars/datahub-spark-lineage-1.7.0.jar
+      MAVEN_DOWNLOAD_REPO: central
+      SPARK_DEFAULTS_CONF_spark_jars_ivySettings:
+      SPARK_DEFAULTS_CONF_spark_jars_ivy: /opt/ivy-cache
+    volumes:
+      - ./data-transfer:/data-transfer:z
+      - ./conf/spark/hive-site.xml:/opt/spark/conf.default/hive-site.xml:z
+      - ./conf/spark/spark-defaults.conf:/opt/spark/conf.default/spark-defaults.conf:z
+      - ./init/spark:/docker-entrypoint-initdb.d:z
+      - ./scripts/docker/maven-download.sh:/maven-download.sh:z
+      - ./container-volume/spark/logs/:/var/log/spark/logs:z
+    entrypoint: [/docker-entrypoint-initdb.d/spark-init.sh]
+    command: [/opt/spark/bin/spark-class, org.apache.spark.deploy.worker.Worker, spark://spark-master:7077]
+    restart: unless-stopped
+    healthcheck:
+      test: [CMD-SHELL, "python3 -c 'import socket; socket.create_connection((\"localhost\", 28112), timeout=5)'"]
+      interval: 30s
+      timeout: 10s
+      retries: 20
+      start_period: 120s
+  spark-history:
+    image: docker.io/apache/spark:4.1.1-python3
+    container_name: spark-history
+    hostname: spark-history
+    user: root
+    labels:
+      com.platys.name: spark-history
+      com.platys.description: Spark History Server
+      com.platys.webui.title: Spark History Server
+      com.platys.webui.url: http://dataplatform:28117
+      com.platys.restapi.title: Spark History Server
+      com.platys.restapi.url: http://dataplatform:28117/api/v1
+    depends_on:
+      spark-master:
+        condition: service_healthy
+    expose:
+      - 18080
+    ports:
+      - 28117:18080
+    environment:
+      SPARK_DEFAULTS_CONF_spark_hadoop_fs_s3a_impl: org.apache.hadoop.fs.s3a.S3AFileSystem
+      SPARK_DEFAULTS_CONF_spark_hadoop_fs_s3a_endpoint: http://rustfs-1:9000
+      SPARK_DEFAULTS_CONF_spark_hadoop_fs_s3a_access_key: ${PLATYS_AWS_ACCESS_KEY:-admin}
+      SPARK_DEFAULTS_CONF_spark_hadoop_fs_s3a_secret_key: ${PLATYS_AWS_SECRET_ACCESS_KEY:-abc123abc123!}
+      SPARK_DEFAULTS_CONF_spark_hadoop_fs_s3a_path_style_access: 'true'
+      AWS_REGION: us-east-1
+      AWS_ACCESS_KEY_ID: ${PLATYS_AWS_ACCESS_KEY:-admin}
+      AWS_SECRET_ACCESS_KEY: ${PLATYS_AWS_SECRET_ACCESS_KEY:-abc123abc123!}
+      SPARK_DEFAULTS_CONF_spark_hadoop_fs_defaultFS: s3a://admin-bucket
+      SPARK_DEFAULTS_CONF_spark_sql_warehouse_dir: s3a://admin-bucket/hive/warehouse
+      SPARK_DEFAULTS_CONF_spark_driver_extraJavaOptions:
+      SPARK_DEFAULTS_CONF_spark_executor_extraJavaOptions:
+      SPARK_DEFAULTS_CONF_spark_cores_max: 2
+      SPARK_DEFAULTS_CONF_spark_extraListeners: datahub.spark.DatahubSparkListener
+      SPARK_DEFAULTS_CONF_spark_datahub_rest_server: http://datahub-gms:8080
+      SPARK_DEFAULTS_CONF_spark_datahub_metadata_dataset_env: ${PLATYS_ENV}
+      SPARK_DEFAULTS_CONF_spark_sql_hive_metastore_jars: builtin
+      # SPARK_DEFAULTS_CONF_spark_sql_hive_metastore_version: 3.1.2    
+      SPARK_DEFAULTS_CONF_spark_sql_catalogImplementation: hive
+      SPARK_DEFAULTS_CONF_spark_sql_catalog_spark__catalog_type: hive
+      SPARK_DEFAULTS_CONF_spark_hadoop_hive_metastore_uris: thrift://hive-metastore:9083
+#      SPARK_DEFAULTS_CONF_spark_sql_catalog_spark__catalog: org.apache.iceberg.spark.SparkCatalog
+      SPARK_DEFAULTS_CONF_spark_sql_defaultCatalog: polaris
+      SPARK_DEFAULTS_CONF_spark_sql_extensions: org.apache.iceberg.spark.extensions.IcebergSparkSessionExtensions,
+      SPARK_DEFAULTS_CONF_spark_sql_catalog_hive__iceberg: org.apache.iceberg.spark.SparkCatalog
+      SPARK_DEFAULTS_CONF_spark_sql_catalog_hive__iceberg_uri: thrift://hive-metastore:9083
+      SPARK_DEFAULTS_CONF_spark_sql_catalog_hive__iceberg_warehouse: s3a://admin-bucket/iceberg/warehouse
+      SPARK_DEFAULTS_CONF_spark_sql_catalog_polaris_type: rest
+      SPARK_DEFAULTS_CONF_spark_sql_catalog_polaris: org.apache.iceberg.spark.SparkCatalog
+      SPARK_DEFAULTS_CONF_spark_sql_catalog_polaris_uri: http://polaris:8181/api/catalog
+      SPARK_DEFAULTS_CONF_spark_sql_catalog_polaris_token___refresh___enabled: true
+      SPARK_DEFAULTS_CONF_spark_sql_catalog_polaris_credential: admin:abc123!
+      SPARK_DEFAULTS_CONF_spark_sql_catalog_polaris_warehouse: polaris_catalog
+      SPARK_DEFAULTS_CONF_spark_sql_catalog_polaris_scope: PRINCIPAL_ROLE:ALL
+      SPARK_DEFAULTS_CONF_spark_sql_catalog_polaris_header_X___Iceberg___Access___Delegation: vended-credentials
+      SPARK_DEFAULTS_CONF_spark_sql_catalog_polaris_default___namespace: default
+      SPARK_DEFAULTS_CONF_spark_sql_legacy_allowNonEmptyLocationInCTAS: 'true'
+      SPARK_DEFAULTS_CONF_spark_jars_repositories:
+      SPARK_DEFAULTS_CONF_spark_jars_packages: io.delta:delta-spark_2.13:4.1.0,io.delta:delta-storage:4.1.0
+      SPARK_DEFAULTS_CONF_spark_jars_excludes:
+      # specifies the JARs to be downloaded to the jars folder by maven-download-sh script (triggered in the init script)
+      SPARK_INSTALL_JAVA_PACKAGES: ',software.amazon.awssdk:bundle:2.35.4,software.amazon.awssdk:s3-transfer-manager:2.35.4,software.amazon.awssdk.crt:aws-crt:0.39.4,org.apache.hadoop:hadoop-aws:3.4.2,io.delta:delta-spark_2.13:4.1.0,io.delta:delta-storage:4.1.0,org.apache.iceberg:iceberg-spark-runtime-4.1_2.13:1.11.0,org.apache.iceberg:iceberg-aws-bundle:1.11.0,org.apache.polaris:polaris-spark-3.5_2.13:1.2.0-incubating,org.apache.hudi:hudi-spark4.1-bundle_2.13:1.2.0,io.acryl:datahub-spark-lineage:1.7.0'
+      SPARK_INSTALL_PYTHON_PACKAGES: ''
+      SPARK_DEFAULTS_CONF_spark_jars: /opt/spark/jars/iceberg-spark-runtime-4.1_2.13-1.11.0.jar,/opt/spark/jars/datahub-spark-lineage-1.7.0.jar
+      MAVEN_DOWNLOAD_REPO: central
+      SPARK_DEFAULTS_CONF_spark_jars_ivySettings:
+      SPARK_DEFAULTS_CONF_spark_jars_ivy: /opt/ivy-cache
+    volumes:
+      - ./data-transfer:/data-transfer:z
+      # the 3 conf files are mapped to conf.default folder, they are copied with env variable interpolation into conf upon start of container
+      - ./conf/spark/hive-site.xml:/opt/spark/conf/hive-site.xml:z
+      - ./conf/spark/spark-defaults.conf:/opt/spark/conf/spark-defaults.conf:z
+      - ./init/spark:/docker-entrypoint-initdb.d:z
+      - ./scripts/docker/maven-download.sh:/maven-download.sh:z
+      - ./container-volume/spark/logs/:/var/log/spark/logs:z
+    entrypoint: [/docker-entrypoint-initdb.d/spark-init.sh]
+    command: [/opt/spark/bin/spark-class, org.apache.spark.deploy.history.HistoryServer]
+    restart: unless-stopped
+  spark-connect:
+    image: docker.io/apache/spark:4.1.1-python3
+    container_name: spark-connect
+    hostname: spark-connect
+    user: root
+    labels:
+      com.platys.name: spark-connect
+      com.platys.description: Spark Connect
+      com.platys.webui.title: Spark Connect UI
+      com.platys.webui.url: http://dataplatform:24040
+      com.platys.restapi.title: Spark Connect API
+      com.platys.restapi.url: http://dataplatform:15002
+    depends_on:
+      spark-master:
+        condition: service_healthy
+    ports:
+      - 15002:15002    # Spark Connect / gRPC:z
+      - 24040:4040     # UI  
+    environment:
+      MASTER: spark://spark-master:7077
+      SPARK_DEFAULTS_CONF_spark_hadoop_fs_s3a_impl: org.apache.hadoop.fs.s3a.S3AFileSystem
+      SPARK_DEFAULTS_CONF_spark_hadoop_fs_s3a_endpoint: http://rustfs-1:9000
+      SPARK_DEFAULTS_CONF_spark_hadoop_fs_s3a_access_key: ${PLATYS_AWS_ACCESS_KEY:-admin}
+      SPARK_DEFAULTS_CONF_spark_hadoop_fs_s3a_secret_key: ${PLATYS_AWS_SECRET_ACCESS_KEY:-abc123abc123!}
+      SPARK_DEFAULTS_CONF_spark_hadoop_fs_s3a_path_style_access: 'true'
+      AWS_REGION: us-east-1
+      AWS_ACCESS_KEY_ID: ${PLATYS_AWS_ACCESS_KEY:-admin}
+      AWS_SECRET_ACCESS_KEY: ${PLATYS_AWS_SECRET_ACCESS_KEY:-abc123abc123!}
+      SPARK_DEFAULTS_CONF_spark_hadoop_fs_defaultFS: s3a://admin-bucket
+      SPARK_DEFAULTS_CONF_spark_sql_warehouse_dir: s3a://admin-bucket/hive/warehouse
+      SPARK_DEFAULTS_CONF_spark_driver_extraJavaOptions:
+      SPARK_DEFAULTS_CONF_spark_executor_extraJavaOptions:
+      SPARK_DEFAULTS_CONF_spark_cores_max: 2
+      SPARK_DEFAULTS_CONF_spark_extraListeners: datahub.spark.DatahubSparkListener
+      SPARK_DEFAULTS_CONF_spark_datahub_rest_server: http://datahub-gms:8080
+      SPARK_DEFAULTS_CONF_spark_datahub_metadata_dataset_env: ${PLATYS_ENV}
+      SPARK_DEFAULTS_CONF_spark_sql_hive_metastore_jars: builtin
+      # SPARK_DEFAULTS_CONF_spark_sql_hive_metastore_version: 3.1.2    
+      SPARK_DEFAULTS_CONF_spark_sql_catalogImplementation: hive
+      SPARK_DEFAULTS_CONF_spark_sql_catalog_spark__catalog_type: hive
+      SPARK_DEFAULTS_CONF_spark_hadoop_hive_metastore_uris: thrift://hive-metastore:9083
+#      SPARK_DEFAULTS_CONF_spark_sql_catalog_spark__catalog: org.apache.iceberg.spark.SparkCatalog
+      SPARK_DEFAULTS_CONF_spark_sql_defaultCatalog: polaris
+      SPARK_DEFAULTS_CONF_spark_sql_extensions: org.apache.iceberg.spark.extensions.IcebergSparkSessionExtensions,
+      SPARK_DEFAULTS_CONF_spark_sql_catalog_hive__iceberg: org.apache.iceberg.spark.SparkCatalog
+      SPARK_DEFAULTS_CONF_spark_sql_catalog_hive__iceberg_uri: thrift://hive-metastore:9083
+      SPARK_DEFAULTS_CONF_spark_sql_catalog_hive__iceberg_warehouse: s3a://admin-bucket/iceberg/warehouse
+      SPARK_DEFAULTS_CONF_spark_sql_catalog_polaris_type: rest
+      SPARK_DEFAULTS_CONF_spark_sql_catalog_polaris: org.apache.iceberg.spark.SparkCatalog
+      SPARK_DEFAULTS_CONF_spark_sql_catalog_polaris_uri: http://polaris:8181/api/catalog
+      SPARK_DEFAULTS_CONF_spark_sql_catalog_polaris_token___refresh___enabled: true
+      SPARK_DEFAULTS_CONF_spark_sql_catalog_polaris_credential: admin:abc123!
+      SPARK_DEFAULTS_CONF_spark_sql_catalog_polaris_warehouse: polaris_catalog
+      SPARK_DEFAULTS_CONF_spark_sql_catalog_polaris_scope: PRINCIPAL_ROLE:ALL
+      SPARK_DEFAULTS_CONF_spark_sql_catalog_polaris_header_X___Iceberg___Access___Delegation: vended-credentials
+      SPARK_DEFAULTS_CONF_spark_sql_catalog_polaris_default___namespace: default
+      SPARK_DEFAULTS_CONF_spark_sql_legacy_allowNonEmptyLocationInCTAS: 'true'
+      SPARK_DEFAULTS_CONF_spark_jars_repositories:
+      SPARK_DEFAULTS_CONF_spark_jars_packages: io.delta:delta-spark_2.13:4.1.0,io.delta:delta-storage:4.1.0
+      SPARK_DEFAULTS_CONF_spark_jars_excludes:
+      # specifies the JARs to be downloaded to the jars folder by maven-download-sh script (triggered in the init script)
+      SPARK_INSTALL_JAVA_PACKAGES: ',software.amazon.awssdk:bundle:2.35.4,software.amazon.awssdk:s3-transfer-manager:2.35.4,software.amazon.awssdk.crt:aws-crt:0.39.4,org.apache.hadoop:hadoop-aws:3.4.2,io.delta:delta-spark_2.13:4.1.0,io.delta:delta-storage:4.1.0,org.apache.iceberg:iceberg-spark-runtime-4.1_2.13:1.11.0,org.apache.iceberg:iceberg-aws-bundle:1.11.0,org.apache.polaris:polaris-spark-3.5_2.13:1.2.0-incubating,org.apache.hudi:hudi-spark4.1-bundle_2.13:1.2.0,io.acryl:datahub-spark-lineage:1.7.0'
+      SPARK_INSTALL_PYTHON_PACKAGES: ''
+      SPARK_DEFAULTS_CONF_spark_jars: /opt/spark/jars/iceberg-spark-runtime-4.1_2.13-1.11.0.jar,/opt/spark/jars/datahub-spark-lineage-1.7.0.jar
+      MAVEN_DOWNLOAD_REPO: central
+      SPARK_DEFAULTS_CONF_spark_jars_ivySettings:
+      SPARK_DEFAULTS_CONF_spark_jars_ivy: /opt/ivy-cache
+    volumes:
+      - ./data-transfer:/data-transfer:z
+      # the 3 conf files are mapped to conf.default folder, they are copied with env variable interpolation into conf upon start of container
+      - ./conf/spark/hive-site.xml:/opt/spark/conf.default/hive-site.xml:z
+      - ./conf/spark/spark-defaults.conf:/opt/spark/conf.default/spark-defaults.conf:z
+      - ./init/spark:/docker-entrypoint-initdb.d:z
+      - ./scripts/docker/maven-download.sh:/maven-download.sh:z
+      - ./container-volume/spark/logs/:/var/log/spark/logs:z
+      - ./scripts/docker/wait-for-it.sh:/usr/src/app/wait-for-it.sh:z
+    entrypoint: [/docker-entrypoint-initdb.d/spark-init.sh]
+    # we override the run.sh script to start spark connect instead of master/worker
+    command:
+      - /opt/spark/bin/spark-submit
+      - --class
+      - org.apache.spark.sql.connect.service.SparkConnectServer
+    restart: unless-stopped
+  spark-thriftserver:
+    image: docker.io/apache/spark:4.1.1-python3
+    container_name: spark-thriftserver
+    hostname: spark-thriftserver
+    user: root
+    labels:
+      com.platys.name: spark-thriftserver
+      com.platys.description: Spark Thriftserver
+      com.platys.webui.title: Spark Thriftserver UI
+      com.platys.webui.url: http://dataplatform:28298
+    depends_on:
+      spark-master:
+        condition: service_healthy
+    ports:
+      - 28118:10000
+      - 28298:4040
+    environment:
+      SPARK_MASTER_URL: spark://spark-master:7077
+      SPARK_DEFAULTS_CONF_spark_hadoop_fs_s3a_impl: org.apache.hadoop.fs.s3a.S3AFileSystem
+      SPARK_DEFAULTS_CONF_spark_hadoop_fs_s3a_endpoint: http://rustfs-1:9000
+      SPARK_DEFAULTS_CONF_spark_hadoop_fs_s3a_access_key: ${PLATYS_AWS_ACCESS_KEY:-admin}
+      SPARK_DEFAULTS_CONF_spark_hadoop_fs_s3a_secret_key: ${PLATYS_AWS_SECRET_ACCESS_KEY:-abc123abc123!}
+      SPARK_DEFAULTS_CONF_spark_hadoop_fs_s3a_path_style_access: 'true'
+      AWS_REGION: us-east-1
+      AWS_ACCESS_KEY_ID: ${PLATYS_AWS_ACCESS_KEY:-admin}
+      AWS_SECRET_ACCESS_KEY: ${PLATYS_AWS_SECRET_ACCESS_KEY:-abc123abc123!}
+      SPARK_DEFAULTS_CONF_spark_hadoop_fs_defaultFS: s3a://admin-bucket
+      SPARK_DEFAULTS_CONF_spark_sql_warehouse_dir: s3a://admin-bucket/hive/warehouse
+      SPARK_DEFAULTS_CONF_spark_driver_extraJavaOptions:
+      SPARK_DEFAULTS_CONF_spark_executor_extraJavaOptions:
+      SPARK_DEFAULTS_CONF_spark_cores_max: 2
+      SPARK_DEFAULTS_CONF_spark_extraListeners: datahub.spark.DatahubSparkListener
+      SPARK_DEFAULTS_CONF_spark_datahub_rest_server: http://datahub-gms:8080
+      SPARK_DEFAULTS_CONF_spark_datahub_metadata_dataset_env: ${PLATYS_ENV}
+      SPARK_DEFAULTS_CONF_spark_sql_hive_metastore_jars: builtin
+      # SPARK_DEFAULTS_CONF_spark_sql_hive_metastore_version: 3.1.2    
+      SPARK_DEFAULTS_CONF_spark_sql_catalogImplementation: hive
+      SPARK_DEFAULTS_CONF_spark_sql_catalog_spark__catalog_type: hive
+      SPARK_DEFAULTS_CONF_spark_hadoop_hive_metastore_uris: thrift://hive-metastore:9083
+#      SPARK_DEFAULTS_CONF_spark_sql_catalog_spark__catalog: org.apache.iceberg.spark.SparkCatalog
+      SPARK_DEFAULTS_CONF_spark_sql_defaultCatalog: polaris
+      SPARK_DEFAULTS_CONF_spark_sql_extensions: org.apache.iceberg.spark.extensions.IcebergSparkSessionExtensions,
+      SPARK_DEFAULTS_CONF_spark_sql_catalog_hive__iceberg: org.apache.iceberg.spark.SparkCatalog
+      SPARK_DEFAULTS_CONF_spark_sql_catalog_hive__iceberg_uri: thrift://hive-metastore:9083
+      SPARK_DEFAULTS_CONF_spark_sql_catalog_hive__iceberg_warehouse: s3a://admin-bucket/iceberg/warehouse
+      SPARK_DEFAULTS_CONF_spark_sql_catalog_polaris_type: rest
+      SPARK_DEFAULTS_CONF_spark_sql_catalog_polaris: org.apache.iceberg.spark.SparkCatalog
+      SPARK_DEFAULTS_CONF_spark_sql_catalog_polaris_uri: http://polaris:8181/api/catalog
+      SPARK_DEFAULTS_CONF_spark_sql_catalog_polaris_token___refresh___enabled: true
+      SPARK_DEFAULTS_CONF_spark_sql_catalog_polaris_credential: admin:abc123!
+      SPARK_DEFAULTS_CONF_spark_sql_catalog_polaris_warehouse: polaris_catalog
+      SPARK_DEFAULTS_CONF_spark_sql_catalog_polaris_scope: PRINCIPAL_ROLE:ALL
+      SPARK_DEFAULTS_CONF_spark_sql_catalog_polaris_header_X___Iceberg___Access___Delegation: vended-credentials
+      SPARK_DEFAULTS_CONF_spark_sql_catalog_polaris_default___namespace: default
+      SPARK_DEFAULTS_CONF_spark_sql_legacy_allowNonEmptyLocationInCTAS: 'true'
+      SPARK_DEFAULTS_CONF_spark_jars_repositories:
+      SPARK_DEFAULTS_CONF_spark_jars_packages: io.delta:delta-spark_2.13:4.1.0,io.delta:delta-storage:4.1.0
+      SPARK_DEFAULTS_CONF_spark_jars_excludes:
+      # specifies the JARs to be downloaded to the jars folder by maven-download-sh script (triggered in the init script)
+      SPARK_INSTALL_JAVA_PACKAGES: ',software.amazon.awssdk:bundle:2.35.4,software.amazon.awssdk:s3-transfer-manager:2.35.4,software.amazon.awssdk.crt:aws-crt:0.39.4,org.apache.hadoop:hadoop-aws:3.4.2,io.delta:delta-spark_2.13:4.1.0,io.delta:delta-storage:4.1.0,org.apache.iceberg:iceberg-spark-runtime-4.1_2.13:1.11.0,org.apache.iceberg:iceberg-aws-bundle:1.11.0,org.apache.polaris:polaris-spark-3.5_2.13:1.2.0-incubating,org.apache.hudi:hudi-spark4.1-bundle_2.13:1.2.0,io.acryl:datahub-spark-lineage:1.7.0'
+      SPARK_INSTALL_PYTHON_PACKAGES: ''
+      SPARK_DEFAULTS_CONF_spark_jars: /opt/spark/jars/iceberg-spark-runtime-4.1_2.13-1.11.0.jar,/opt/spark/jars/datahub-spark-lineage-1.7.0.jar
+      MAVEN_DOWNLOAD_REPO: central
+      SPARK_DEFAULTS_CONF_spark_jars_ivySettings:
+      SPARK_DEFAULTS_CONF_spark_jars_ivy: /opt/ivy-cache
+    volumes:
+      - ./data-transfer:/data-transfer:z
+      # the 3 conf files are mapped to conf.default folder, they are copied with env variable interpolation into conf upon start of container
+      - ./conf/spark/hive-site.xml:/opt/spark/conf.default/hive-site.xml:z
+      - ./conf/spark/spark-defaults.conf:/opt/spark/conf.default/spark-defaults.conf:z
+      - ./init/spark:/docker-entrypoint-initdb.d:z
+      # we override the run.sh script to start thriftserver instead of master/worker
+      # - ./scripts/spark/run-thriftserver.sh:/opt/bitnami/scripts/spark/run.sh
+      - ./scripts/docker/maven-download.sh:/maven-download.sh:z
+      - ./container-volume/spark/logs/:/var/log/spark/logs:z
+      - ./scripts/docker/wait-for-it.sh:/usr/src/app/wait-for-it.sh:z
+    entrypoint: [/docker-entrypoint-initdb.d/spark-init.sh]
+    command:
+      - /opt/spark/bin/spark-submit
+      - --class
+      - org.apache.spark.sql.hive.thriftserver.HiveThriftServer2
+      - --master
+      - spark://spark-master:7077
+    restart: unless-stopped
+  #  ================================== Apache Hive Metastore ========================================== #
+  hive-metastore:
+    image: docker.io/trivadis/apache-hive:3.1.2-postgresql-metastore-s3
+    container_name: hive-metastore
+    hostname: hive-metastore
+    labels:
+      com.platys.name: hive-metastore
+      com.platys.description: Hive Metastore
+    depends_on:
+      hive-metastore-db:
+        condition: service_healthy
+    ports:
+      - 9083:9083
+      - 9084:9084
+    environment:
+      HIVE_VER: 3.1.2
+      JAVA_TOOL_OPTIONS: -Dhive.log.level=INFO
+      CORE_CONF_fs_defaultFS: file:///tmp
+      HIVE_SITE_CONF_fs_defaultFS: file:///tmp
+      HIVE_SITE_CONF_fs_s3a_endpoint: http://rustfs-1:9000
+      HIVE_SITE_CONF_fs_s3a_access_key: ${PLATYS_AWS_ACCESS_KEY:-admin}
+      HIVE_SITE_CONF_fs_s3a_secret_key: ${PLATYS_AWS_SECRET_ACCESS_KEY:-abc123abc123!}
+      HIVE_SITE_CONF_fs_s3a_path_style_access: 'true'
+      HIVE_SITE_CONF_fs_s3a_impl: org.apache.hadoop.fs.s3a.S3AFileSystem
+      HIVE_SITE_CONF_hive_metastore_uris: thrift://hive-metastore:9083
+      HIVE_SITE_CONF_hive_metastore_warehouse_dir: s3a://admin-bucket/warehouse
+      HIVE_SITE_CONF_hive_metastore_warehouse_external_dir: s3a://admin-bucket/warehouse/external
+      HIVE_SITE_CONF_javax_jdo_option_ConnectionURL: jdbc:postgresql://hive-metastore-db/metastore_db
+      HIVE_SITE_CONF_javax_jdo_option_ConnectionDriverName: org.postgresql.Driver
+      HIVE_SITE_CONF_javax_jdo_option_ConnectionUserName: hive
+      HIVE_SITE_CONF_javax_jdo_option_ConnectionPassword: ${PLATYS_HMS_POSTGRESQL_PASSWORD:-abc123!}
+      HIVE_SITE_CONF_datanucleus_autoCreateSchema: false
+      HIVE_SITE_CONF_hive_metastore_event_db_notification_api_auth: false
+      # necessary for Trino to be able to read from Avro
+      HIVE_SITE_CONF_metastore_storage_schema_reader_impl: org.apache.hadoop.hive.metastore.SerDeStorageSchemaReader
+      SERVICE_PRECONDITION: hive-metastore-db:5432
+      DB_DRIVER: postgres
+      SERVICE_NAME: metastore
+      SERVICE_OPTS: -Xmx1G -Djavax.jdo.option.ConnectionDriverName=org.postgresql.Driver -Djavax.jdo.option.ConnectionURL=jdbc:postgresql://hive-metastore-db/metastore_db -Djavax.jdo.option.ConnectionUserName=hive -Djavax.jdo.option.ConnectionPassword=${PLATYS_HMS_POSTGRESQL_PASSWORD:-abc123!}
+    volumes:
+      - ./data-transfer:/data-transfer:z
+    restart: unless-stopped
+    healthcheck:
+      test: [CMD, nc, -z, hive-metastore, '9083']
+      interval: 30s
+      timeout: 10s
+      retries: 10
+  hive-metastore-db:
+    image: docker.io/postgres
+    container_name: hive-metastore-db
+    hostname: hive-metastore-db
+    labels:
+      com.platys.name: hive-metastore
+      com.platys.description: Hive Metastore DB
+      com.platys.password.envvars: PLATYS_HMS_POSTGRESQL_PASSWORD
+    ports:
+      - 5442:5432
+    environment:
+      POSTGRES_DB: metastore_db
+      POSTGRES_USER: hive
+      POSTGRES_PASSWORD: ${PLATYS_HMS_POSTGRESQL_PASSWORD:-abc123!}
+    volumes:
+      - ./data-transfer:/data-transfer:z
+    restart: unless-stopped
+    healthcheck:
+      test: [CMD, psql, -U, hive, metastore_db]
+  #  ================================== DataHub ========================================== #
+  datahub-frontend:
+    image: docker.io/acryldata/datahub-frontend-react:v1.7.0
+    hostname: datahub-frontend
+    container_name: datahub-frontend
+    labels:
+      com.platys.name: datahub
+      com.platys.description: Datahub Data Catalog
+      com.platys.webui.title: DataHub UI
+      com.platys.webui.url: http://dataplatform:28144
+      com.platys.password.envvars: PLATYS_DATAHUB_PASSWORD
+    depends_on:
+      datahub-gms:
+        condition: service_healthy
+    ports:
+      - 28144:9002
+    environment:
+      - DATAHUB_APP_VERSION=v1.7.0
+      - DATAHUB_BASE_PATH=/
+      - DATAHUB_GMS_BASE_PATH=/
+      - DATAHUB_GMS_HOST=datahub-gms
+      - DATAHUB_GMS_PORT=8080
+      - DATAHUB_PLAY_MEM_BUFFER_SIZE=10MB
+      - DATAHUB_SECRET=${PLATYS_DATAHUB_PASSWORD:-abc123!abc123!}
+      - DATAHUB_SYSTEM_CLIENT_SECRET=JohnSnowKnowsNothing
+      - DATAHUB_TRACKING_TOPIC=DataHubUsageEvent_v1
+      - DATAHUB_ANALYTICS_ENABLED=false
+      - ELASTIC_CLIENT_HOST=datahub-opensearch
+      - ELASTIC_CLIENT_PORT=9200
+      - FRONTEND_BEFORE_SERVICE_UNBIND_TIMEOUT=10s
+      - FRONTEND_GRACEFUL_SHUTDOWN_ENABLED=false
+      - FRONTEND_SERVICE_REQUESTS_DONE_TIMEOUT=65s
+      - FRONTEND_SERVICE_STOP_TIMEOUT=15s
+      - JAVA_OPTS=-Xms512m -Xmx512m -Dhttp.port=9002 -Dconfig.file=datahub-frontend/conf/application.conf -Djava.security.auth.login.config=datahub-frontend/conf/jaas.conf -Dlogback.configurationFile=datahub-frontend/conf/logback.xml -Dlogback.debug=false -Dpidfile.path=/dev/null
+      - KAFKA_BOOTSTRAP_SERVER=kafka-1:19092
+      - LOG_AGGREGATOR_ENDPOINT=
+      - PLAY_HTTP_CONTEXT=/
+      - THEME_V2_DEFAULT=true
+    volumes:
+      - ./data-transfer:/data-transfer:z
+    restart: unless-stopped
+  datahub-gms:
+    image: docker.io/acryldata/datahub-gms:v1.7.0
+    hostname: datahub-gms
+    container_name: datahub-gms
+    labels:
+      com.platys.name: datahub
+      com.platys.description: Datahub Data Catalog GMS Service
+      com.platys.restapi.title: DataHub GMS REST API / GraphiQL
+      com.platys.restapi.url: http://dataplatform:28142/openapi/swagger-ui/index.html http://dataplatform:28142/api/graphiql
+    depends_on:
+      datahub-upgrade:
+        condition: service_completed_successfully
+    ports:
+      - 28142:8080
+    environment:
+      - ALTERNATE_MCP_VALIDATION=true
+      - CONFIG_ENTITY_REGISTRY_USE_OPTIMIZED_LOADING=true
+      - DATAHUB_BASE_PATH=/
+      - DATAHUB_GMS_BASE_PATH=/
+      - DATAHUB_OBJECT_STORAGE_URI=file:///tmp/datahub-object-storage
+      - DATAHUB_SERVER_TYPE=quickstart
+      - DATAHUB_SYSTEM_CLIENT_SECRET=JohnSnowKnowsNothing
+      - DATAHUB_TELEMETRY_ENABLED=False
+      - DATAHUB_TOKEN_SERVICE_SALT=+iwt/f8xPlr5czlNryVfPg7YdAkjCiaZxSbIBkfUGto=
+      - DATAHUB_TOKEN_SERVICE_SIGNING_KEY=VDjHg8p2RjCUIFvahdVIscnU7f8ccE0awXk6h++d5ZE=
+      - DATAHUB_UPGRADE_HISTORY_KAFKA_CONSUMER_GROUP_ID=generic-duhe-consumer-job-client-gms
+      - DATAHUB_ANALYTICS_ENABLED=false
+      - EBEAN_DATASOURCE_DRIVER=com.mysql.jdbc.Driver
+      - EBEAN_DATASOURCE_HOST=datahub-mysql:3306
+      - EBEAN_DATASOURCE_URL=jdbc:mysql://datahub-mysql:3306/datahub?verifyServerCertificate=false&useSSL=true&useUnicode=yes&characterEncoding=UTF-8
+      - EBEAN_DATASOURCE_USERNAME=datahub
+      - EBEAN_DATASOURCE_PASSWORD=datahub
+      - ELASTICSEARCH_HOST=datahub-opensearch
+      - ELASTICSEARCH_IMPLEMENTATION=opensearch
+      - ELASTICSEARCH_INDEX_BUILDER_SETTINGS_REINDEX=true
+      - ELASTICSEARCH_INDEX_BUILDER_MAPPINGS_REINDEX=true
+      - ELASTICSEARCH_LIMIT_RESULTS_STRICT=true
+      - ELASTICSEARCH_PORT=9200
+      - ELASTICSEARCH_PROTOCOL=http
+      - ELASTICSEARCH_USE_SSL=false
+      - ENTITY_REGISTRY_CONFIG_PATH=/datahub/datahub-gms/resources/entity-registry.yml
+      - ENTITY_SERVICE_ENABLE_RETENTION=true
+      - ENTITY_VERSIONING_ENABLED=true
+      - ES_BULK_REFRESH_POLICY=WAIT_UNTIL
+      - EXTRACT_JAR_ENABLED=true
+      - GMS_LIFECYCLE_TIMEOUT=65s
+      - GRAPH_SERVICE_DIFF_MODE_ENABLED=True
+      - GRAPH_SERVICE_IMPL=neo4j
+      - GRAPHQL_SHAPE_LOGGING_DURATION_THRESHOLD_MS=3000
+      - GRAPHQL_SHAPE_LOGGING_ENABLED=false
+      - GRAPHQL_SHAPE_LOGGING_ERROR_COUNT_THRESHOLD=1
+      - GRAPHQL_SHAPE_LOGGING_FIELD_COUNT_THRESHOLD=100
+      - GRAPHQL_SHAPE_LOGGING_RESPONSE_SIZE_THRESHOLD_BYTES=1048576
+      - JAVA_OPTS=-Xms1g -Xmx1g
+      - KAFKA_BOOTSTRAP_SERVER=kafka-1:19092
+      - KAFKA_CONSUMER_STOP_ON_DESERIALIZATION_ERROR=true
+      - KAFKA_SCHEMAREGISTRY_URL=http://schema-registry-1:8081
+      - LOG_AGGREGATOR_ENDPOINT=
+      - MAE_CONSUMER_ENABLED=true
+      - MCE_CONSUMER_ENABLED=true
+      - MCL_CONSUMER_BATCH_ENABLED=true
+      - MCP_CONSUMER_BATCH_ENABLED=true
+      - METADATA_SERVICE_AUTH_ENABLED=false
+      - NEO4J_HOST=http://datahub-neo4j:7474
+      - NEO4J_URI=bolt://${PUBLIC_IP:-127.0.0.1}:17688
+      - NEO4J_USERNAME=neo4j
+      - NEO4J_PASSWORD=abc123!
+      - PE_CONSUMER_ENABLED=true
+      - POLICY_CACHE_REFRESH_INTERVAL_SECONDS=120
+      - SCHEMA_REGISTRY_TYPE=KAFKA
+      - SEARCH_BAR_API_VARIANT=SEARCH_ACROSS_ENTITIES
+      - SERVER_SHUTDOWN_MODE=immediate
+      - SHOW_HAS_SIBLINGS_FILTER=true
+      - SHOW_HOME_PAGE_REDESIGN=true
+      - SHOW_INGESTION_PAGE_REDESIGN=true
+      - SHOW_SEARCH_BAR_AUTOCOMPLETE_REDESIGN=true
+      - STRICT_URN_VALIDATION_ENABLED=true
+      - THEME_V2_DEFAULT=true
+      - UI_INGESTION_ENABLED=true
+      - USAGE_AGGREGATION_ALIGNMENT_PERIOD_SECONDS=3600
+      - USAGE_AGGREGATION_ENABLED=true
+      - USAGE_AGGREGATION_FLUSH_INTERVAL_SECONDS=30
+      - USAGE_AGGREGATION_INCLUDE_AGENT_NAME=true
+      - ZDU_STAGE_10=true
+      - ZDU_STAGE_20=true
+      - UI_INGESTION_DEFAULT_CLI_VERSION=1.3.1.7
+      - EMBEDDING_PROVIDER_TYPE=local
+      - ELASTICSEARCH_SEMANTIC_SEARCH_ENABLED=true
+      - LOCAL_EMBEDDING_ENDPOINT=http://ollama:11434/v1/embeddings
+      - LOCAL_EMBEDDING_MODEL=nomic-embed-text
+    volumes:
+      - ./data-transfer:/data-transfer:z
+    restart: unless-stopped
+    healthcheck:
+      test: curl -sS --fail http://datahub-gms:8080/health
+      start_period: 90s
+      interval: 5s
+      retries: 5
+      timeout: 5s
+  datahub-actions:
+    image: docker.io/acryldata/datahub-actions:v1.7.0
+    hostname: datahub-actions
+    container_name: datahub-actions
+    labels:
+      com.platys.name: datahub
+      com.platys.description: Datahub Data Catalog Action Service
+    depends_on:
+      datahub-gms:
+        condition: service_healthy
+    environment:
+      - ACTIONS_CONFIG=''
+      - ACTIONS_EXTRA_PACKAGES=''
+      - DATAHUB_GMS_HOST=datahub-gms
+      - DATAHUB_GMS_PORT=8080
+      - DATAHUB_GMS_PROTOCOL=http
+      - DATAHUB_SYSTEM_CLIENT_ID=__datahub_system
+      - DATAHUB_SYSTEM_CLIENT_SECRET=JohnSnowKnowsNothing
+      - ELASTICSEARCH_HOST=datahub-opensearch
+      - ELASTICSEARCH_PORT=9200
+      - ELASTICSEARCH_PROTOCOL=http
+      - ELASTICSEARCH_USE_SSL=false
+      - KAFKA_BOOTSTRAP_SERVER=kafka-1:19092
+      - METADATA_AUDIT_EVENT_NAME=MetadataAuditEvent_v4
+      - METADATA_CHANGE_LOG_VERSIONED_TOPIC_NAME=MetadataChangeLog_Versioned_v1
+      - SCHEMA_REGISTRY_URL=http://schema-registry-1:8081
+    volumes:
+      - ./data-transfer:/data-transfer:z
+    restart: unless-stopped
+  datahub-mysql:
+    image: docker.io/mysql:8.2
+    hostname: datahub-mysql
+    container_name: datahub-mysql
+    labels:
+      com.platys.name: mysql
+      com.platys.description: Datahub Data Catalog MySQL Instance
+    ports:
+      - 3307:3306
+    environment:
+      - MYSQL_DATABASE=datahub
+      - MYSQL_USER=datahub
+      - MYSQL_PASSWORD=datahub
+      - MYSQL_ROOT_PASSWORD=datahub
+    volumes:
+      - ./data-transfer:/data-transfer:z
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_bin --default-authentication-plugin=caching_sha2_password
+    restart: unless-stopped
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - mysqladmin ping -h mysql -u $$MYSQL_USER --password=$$MYSQL_PASSWORD
+      timeout: 10s
+      interval: 2s
+      retries: 5
+      start_period: 20s
+  datahub-neo4j:
+    image: docker.io/neo4j:4.4.28-community
+    hostname: datahub-neo4j
+    container_name: datahub-neo4j
+    labels:
+      com.platys.name: neo4j
+      com.platys.description: Datahub Data Catalog Neo4J Instance
+      com.platys.webui.title: DataHub Neo4J UI
+      com.platys.webui.url: http://dataplatform:17475
+    ports:
+      - 17475:7474
+      - 17688:7687
+    environment:
+      - NEO4J_AUTH=neo4j/abc123!
+      - NEO4J_dbms_default__database=graph.db
+      - NEO4J_dbms_allow__upgrade=true
+      - NEO4JLABS_PLUGINS=["apoc"]
+    volumes:
+      - ./data-transfer:/data-transfer:z
+    restart: unless-stopped
+    healthcheck:
+      interval: 5s
+      retries: 5
+      start_period: 10s
+      test: wget http://datahub-neo4j:7474
+      timeout: 5s
+  datahub-opensearch:
+    image: docker.io/opensearchproject/opensearch:2.19.3
+    hostname: datahub-opensearch
+    container_name: datahub-opensearch
+    labels:
+      com.platys.name: opensearch
+      com.platys.restapi.title: OpenSearch REST API
+      com.platys.restapi.url: http://dataplatform:28363
+      com.platys.manual.step.msgs: sudo sysctl -w vm.max_map_count=262144
+    ports:
+      - 28363:9200
+    environment:
+      - cluster.name=opensearch-cluster
+      - node.name=datahub-opensearch
+      - discovery.type=single-node
+      - knn.plugin.enabled=true
+      - DISABLE_INSTALL_DEMO_CONFIG=true     # disables execution of install_demo_configuration.sh bundled with security plugin, which installs demo certificates and security configurations to OpenSearch
+      - DISABLE_SECURITY_PLUGIN=true     #  disables security plugin entirely in OpenSearch by setting plugins.security.disabled: true in opensearch.yml
+      - bootstrap.memory_lock=true   # along with the memlock settings below, disables swapping
+      - OPENSEARCH_JAVA_OPTS=-Xms512m -Xmx512m -Dlog4j2.formatMsgNoLookups=true   # minimum and maximum Java heap size, recommend setting both to 50% of system RAM
+      - http.cors.enabled=true
+      - http.cors.allow-origin="http://${DOCKER_HOST_IP:-localhost}:28275,http://${PUBLIC_IP:-127.0.0.1}:28275,http://dejavu:1358,http://dataplatform:28125,http://dataplatform:28125,http://${PUBLIC_IP:-127.0.0.1}:28125,http://${DOCKER_HOST_IP:-localhost}:28125,http://127.0.0.1:1358"
+      - http.cors.allow-headers="X-Requested-With,X-Auth-Token,Content-Type,Content-Length,Authorization"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+      nofile:
+        soft: 65536 # maximum number of open files for the OpenSearch user, set to at least 65536 on modern systems
+        hard: 65536
+    volumes:
+      - ./data-transfer:/data-transfer:z
+    restart: unless-stopped
+  datahub-upgrade:
+    image: docker.io/acryldata/datahub-upgrade:v1.7.0
+    hostname: datahub-upgrade
+    container_name: datahub-upgrade
+    labels:
+      datahub_setup_job: true
+      com.platys.name: datahub
+    depends_on:
+      - datahub-opensearch
+    environment:
+      - BACKFILL_BROWSE_PATHS_V2=true
+      - CREATE_USER=false
+      - CREATE_USER_PASSWORD=datahub
+      - CREATE_USER_USERNAME=datahub
+      - DATAHUB_BASE_PATH=/
+      - DATAHUB_GMS_BASE_PATH=/
+      - DATAHUB_GMS_HOST=datahub-gms
+      - DATAHUB_GMS_PORT=8080
+      - DATAHUB_PRECREATE_TOPICS=true
+      - DATAHUB_SQL_SETUP_ENABLED=true      # handles MySQL/Postgres setup
+      - DATAHUB_SYSTEM_CLIENT_SECRET=JohnSnowKnowsNothing
+      - DATAHUB_TOKEN_SERVICE_SALT=+iwt/f8xPlr5czlNryVfPg7YdAkjCiaZxSbIBkfUGto=
+      - DATAHUB_TOKEN_SERVICE_SIGNING_KEY=VDjHg8p2RjCUIFvahdVIscnU7f8ccE0awXk6h++d5ZE=
+      - EBEAN_DATASOURCE_DRIVER=com.mysql.jdbc.Driver
+      - EBEAN_DATASOURCE_HOST=datahub-mysql:3306
+      - EBEAN_DATASOURCE_USERNAME=datahub
+      - EBEAN_DATASOURCE_PASSWORD=datahub
+      - EBEAN_DATASOURCE_URL=jdbc:mysql://datahub-mysql:3306/datahub?verifyServerCertificate=false&useSSL=true&useUnicode=yes&characterEncoding=UTF-8&enabledTLSProtocols=TLSv1.2
+      - ELASTICSEARCH_BUILD_INDICES_CLONE_INDICES=false
+      - ELASTICSEARCH_HOST=datahub-opensearch
+      - ELASTICSEARCH_IMPLEMENTATION=elasticsearch
+      - ELASTICSEARCH_INDEX_BUILDER_MAPPINGS_REINDEX=true
+      - ELASTICSEARCH_INDEX_BUILDER_REFRESH_INTERVAL_SECONDS=3
+      - ELASTICSEARCH_INDEX_BUILDER_SETTINGS_REINDEX=true
+      - ELASTICSEARCH_PORT=9200
+      - ELASTICSEARCH_PROTOCOL=http
+      - ELASTICSEARCH_USE_SSL=false
+      - KAFKA_BOOTSTRAP_SERVER=kafka-1:19092,kafka-2:19093,kafka-3:19094
+      - KAFKA_SCHEMAREGISTRY_URL=http://schema-registry-1:8081
+      - DATAHUB_ANALYTICS_ENABLED=false
+      - ENTITY_REGISTRY_CONFIG_PATH=/datahub/datahub-gms/resources/entity-registry.yml
+      - ENTITY_SERVICE_ENABLE_RETENTION=true
+      - ENTITY_VERSIONING_ENABLED=true
+      - GRAPH_SERVICE_IMPL=neo4j
+      - NEO4J_HOST=datahub-neo4j:7474
+      - NEO4J_URI=bolt://${PUBLIC_IP:-127.0.0.1}:17688
+      - NEO4J_USERNAME=neo4j
+      - NEO4J_PASSWORD=abc123!
+      - REPROCESS_DEFAULT_BROWSE_PATHS_V2=false
+      - SCHEMA_REGISTRY_SYSTEM_UPDATE=true
+      - SCHEMA_REGISTRY_TYPE=KAFKA
+      - SPRING_KAFKA_PROPERTIES_AUTO_REGISTER_SCHEMAS=true
+      - SPRING_KAFKA_PROPERTIES_USE_LATEST_VERSION=true
+      - USE_CONFLUENT_SCHEMA_REGISTRY=true
+      - ZDU_STAGE_10=true
+      - ZDU_STAGE_20=true
+    volumes:
+      - ./data-transfer:/data-transfer:z
+    command: -u SystemUpdate
+    init: true
+  datahub-cli:
+    image: docker.io/acryldata/datahub-ingestion:head
+    hostname: datahub-cli
+    container_name: datahub-cli
+    labels:
+      com.platys.name: datahub
+      com.platys.description: Datahub Data Catalog CLI
+    entrypoint: tail -f /dev/null
+    tty: true
+    environment:
+      - DATAHUB_GMS_URL=http://datahub-gms:8080
+      - DATAHUB_GMS_PROTOCOL=http
+      - DATAHUB_DEBUG=false
+    volumes:
+      - ./data-transfer:/data-transfer:z
+    restart: unless-stopped
+  #  ================================== Airflow ========================================== #
+  airflow-apiserver:
+    image: docker.io/apache/airflow:3.1.6-python3.10
+    container_name: airflow-apiserver
+    hostname: airflow-apiserver
+    labels:
+      com.platys.name: airflow
+      com.platys.description: Job Orchestration & Scheduler
+      com.platys.webui.title: Airflow UI
+      com.platys.webui.url: http://dataplatform:28139
+      com.platys.restapi.title: Airflow REST API (apiserver)
+      com.platys.restapi.url: http://dataplatform:28139/api/v2/version
+      com.platys.password.envvars: PLATYS_AIRFLOW_ADMIN_PASSWORD,PLATYS_AIRFLOW_FERNET_KEY,PLATYS_AIRFLOW_SECRET_KEY,PLATYS_AIRFLOW_JWT_SECRET
+    depends_on:
+      airflow-init:
+        condition: service_completed_successfully
+        required: true
+      airflow-db:
+        condition: service_healthy
+    command:
+      - api-server
+    ports:
+      - 28139:8080
+    environment:
+      AIRFLOW__CORE__AUTH_MANAGER: airflow.providers.fab.auth_manager.fab_auth_manager.FabAuthManager
+      AIRFLOW__CORE__EXECUTION_API_SERVER_URL: http://airflow-apiserver:8080/execution/
+      # provide a health service on port 8974
+      AIRFLOW__SCHEDULER__ENABLE_HEALTH_CHECK: true
+      AIRFLOW__CORE__EXECUTOR: LocalExecutor
+      AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:${PLATYS_AIRFLOW_POSTGRESQL_PASSWORD:-abc123!}@airflow-db/airflowdb
+      # For backward compatibility, with Airflow <2.3
+      AIRFLOW__CORE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:${PLATYS_AIRFLOW_POSTGRESQL_PASSWORD:-abc123!}@airflow-db/airflowdb
+      AIRFLOW__CELERY__RESULT_BACKEND: db+postgresql://airflow:${PLATYS_AIRFLOW_POSTGRESQL_PASSWORD:-abc123!}@airflow-db/airflowdb
+      AIRFLOW__CELERY__BROKER_URL: redis://:@airflow-redis:6379/0
+      AIRFLOW__CORE__FERNET_KEY: ${PLATYS_AIRFLOW_FERNET_KEY:-E4H9MUpUWhztG-eO3UTz1YdZt9fRSq5R10eUTPSt8AE=}
+      AIRFLOW__WEBSERVER__SECRET_KEY: ${PLATYS_AIRFLOW_SECRET_KEY:-037223d1eda59bb91822f6ea04e892f0}
+      AIRFLOW__API_AUTH__JWT_SECRET: ${PLATYS_AIRFLOW_JWT_SECRET:-jUnJ/Vt17d04x0UqHRMRGg==}
+      AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION: true
+      AIRFLOW__CORE__LOAD_EXAMPLES: false
+      _PIP_ADDITIONAL_REQUIREMENTS: apache-airflow[amazon] apache-airflow-providers-apache-spark dlt[airflow] dlt[s3] pyarrow
+      AIRFLOW__SCHEDULER__DAG_DIR_LIST_INTERVAL: 60
+      AIRFLOW__CORE__TEST_CONNECTION: Disabled
+      AIRFLOW__LOGGING__LOGGING_LEVEL: INFO
+      AIRFLOW__API__EXPOSE_CONFIG: true
+      SPARK_HOME: /opt/spark
+      JAVA_HOME: /opt/java
+      AIRFLOW_VAR_S3_ENDPOINT: http://rustfs-1:9000
+      AIRFLOW_VAR_S3_ACCESS_KEY: ${PLATYS_AWS_ACCESS_KEY:-admin}
+      AIRFLOW_VAR_S3_SECRET_ACCESS_KEY: ${PLATYS_AWS_SECRET_ACCESS_KEY:-abc123abc123!}
+      AIRFLOW_VAR_S3_PATH_STYLE_ACCESS: 'true'
+      AIRFLOW__LOGGING__REMOTE_LOGGING: true
+      AIRFLOW__LOGGING__REMOTE_LOG_CONN_ID: log_s3_conn
+      AIRFLOW__LOGGING__REMOTE_BASE_LOG_FOLDER: s3://admin-bucket/airflow-logs
+      AIRFLOW_CONN_LOG_S3_CONN: >
+        { "conn_type": "aws", 
+          "host": "rustfs-1", 
+          "login": "${PLATYS_AWS_ACCESS_KEY:-admin}", 
+          "password": "${PLATYS_AWS_SECRET_ACCESS_KEY:-abc123abc123!}", 
+          "schema": "", 
+          "port": 9000, 
+          "extra": {"endpoint_url": "http://rustfs-1:9000", "region_name": "us-east-1"}
+        }
+      AWS_ACCESS_KEY_ID: ${PLATYS_AWS_ACCESS_KEY:-admin}
+      AWS_SECRET_ACCESS_KEY: ${PLATYS_AWS_SECRET_ACCESS_KEY:-abc123abc123!}
+      AIRFLOW__OPENLINEAGE__DISABLED: true
+    volumes:
+      - ./data-transfer:/data-transfer:z
+      - ./scripts/airflow/dags:/opt/airflow/dags:Z
+      - ./plugins/airflow/:/opt/airflow/plugins:Z
+      - ./scripts/docker/wait-for-it.sh:/usr/src/app/wait-for-it.sh:z
+      - spark-4-1-1-python3-vol:/opt/spark:RO
+      - spark-4-1-1-python3-java-vol:/opt/java:RO
+      - ./container-volume/spark/logs/:/var/log/spark/logs:z
+    #  - aws-credentials-vol:/home/airflow/.aws:RO
+    user: ${AIRFLOW_UID:-50000}:${AIRFLOW_GID:-0}
+    restart: unless-stopped
+    healthcheck:
+      test: [CMD, curl, --fail, http://localhost:8080/api/v2/version]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+  airflow-dag-processor:
+    image: docker.io/apache/airflow:3.1.6-python3.10
+    container_name: airflow-processor
+    hostname: airflow-processor
+    labels:
+      com.platys.name: airflow
+      com.platys.description: Job Orchestration & Scheduler
+    depends_on:
+      airflow-init:
+        condition: service_completed_successfully
+        required: true
+      airflow-db:
+        condition: service_healthy
+        required: true
+    command:
+      - dag-processor
+    environment:
+      AIRFLOW__CORE__AUTH_MANAGER: airflow.providers.fab.auth_manager.fab_auth_manager.FabAuthManager
+      AIRFLOW__CORE__EXECUTION_API_SERVER_URL: http://airflow-apiserver:8080/execution/
+      # provide a health service on port 8974
+      AIRFLOW__SCHEDULER__ENABLE_HEALTH_CHECK: true
+      AIRFLOW__CORE__EXECUTOR: LocalExecutor
+      AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:${PLATYS_AIRFLOW_POSTGRESQL_PASSWORD:-abc123!}@airflow-db/airflowdb
+      # For backward compatibility, with Airflow <2.3
+      AIRFLOW__CORE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:${PLATYS_AIRFLOW_POSTGRESQL_PASSWORD:-abc123!}@airflow-db/airflowdb
+      AIRFLOW__CELERY__RESULT_BACKEND: db+postgresql://airflow:${PLATYS_AIRFLOW_POSTGRESQL_PASSWORD:-abc123!}@airflow-db/airflowdb
+      AIRFLOW__CELERY__BROKER_URL: redis://:@airflow-redis:6379/0
+      AIRFLOW__CORE__FERNET_KEY: ${PLATYS_AIRFLOW_FERNET_KEY:-E4H9MUpUWhztG-eO3UTz1YdZt9fRSq5R10eUTPSt8AE=}
+      AIRFLOW__WEBSERVER__SECRET_KEY: ${PLATYS_AIRFLOW_SECRET_KEY:-037223d1eda59bb91822f6ea04e892f0}
+      AIRFLOW__API_AUTH__JWT_SECRET: ${PLATYS_AIRFLOW_JWT_SECRET:-jUnJ/Vt17d04x0UqHRMRGg==}
+      AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION: true
+      AIRFLOW__CORE__LOAD_EXAMPLES: false
+      _PIP_ADDITIONAL_REQUIREMENTS: apache-airflow[amazon] apache-airflow-providers-apache-spark dlt[airflow] dlt[s3] pyarrow
+      AIRFLOW__SCHEDULER__DAG_DIR_LIST_INTERVAL: 60
+      AIRFLOW__CORE__TEST_CONNECTION: Disabled
+      AIRFLOW__LOGGING__LOGGING_LEVEL: INFO
+      AIRFLOW__API__EXPOSE_CONFIG: true
+      SPARK_HOME: /opt/spark
+      JAVA_HOME: /opt/java
+      AIRFLOW_VAR_S3_ENDPOINT: http://rustfs-1:9000
+      AIRFLOW_VAR_S3_ACCESS_KEY: ${PLATYS_AWS_ACCESS_KEY:-admin}
+      AIRFLOW_VAR_S3_SECRET_ACCESS_KEY: ${PLATYS_AWS_SECRET_ACCESS_KEY:-abc123abc123!}
+      AIRFLOW_VAR_S3_PATH_STYLE_ACCESS: 'true'
+      AIRFLOW__LOGGING__REMOTE_LOGGING: true
+      AIRFLOW__LOGGING__REMOTE_LOG_CONN_ID: log_s3_conn
+      AIRFLOW__LOGGING__REMOTE_BASE_LOG_FOLDER: s3://admin-bucket/airflow-logs
+      AIRFLOW_CONN_LOG_S3_CONN: >
+        { "conn_type": "aws", 
+          "host": "rustfs-1", 
+          "login": "${PLATYS_AWS_ACCESS_KEY:-admin}", 
+          "password": "${PLATYS_AWS_SECRET_ACCESS_KEY:-abc123abc123!}", 
+          "schema": "", 
+          "port": 9000, 
+          "extra": {"endpoint_url": "http://rustfs-1:9000", "region_name": "us-east-1"}
+        }
+      AWS_ACCESS_KEY_ID: ${PLATYS_AWS_ACCESS_KEY:-admin}
+      AWS_SECRET_ACCESS_KEY: ${PLATYS_AWS_SECRET_ACCESS_KEY:-abc123abc123!}
+      AIRFLOW__OPENLINEAGE__DISABLED: true
+    volumes:
+      - ./data-transfer:/data-transfer:z
+      - ./scripts/airflow/dags:/opt/airflow/dags:Z
+      - ./plugins/airflow/:/opt/airflow/plugins:Z
+      - ./scripts/docker/wait-for-it.sh:/usr/src/app/wait-for-it.sh:z
+      - spark-4-1-1-python3-vol:/opt/spark:RO
+      - spark-4-1-1-python3-java-vol:/opt/java:RO
+      - ./container-volume/spark/logs/:/var/log/spark/logs:z
+    #  - aws-credentials-vol:/home/airflow/.aws:RO
+    user: ${AIRFLOW_UID:-50000}:${AIRFLOW_GID:-0}
+    restart: unless-stopped
+    healthcheck:
+      test: [CMD-SHELL, 'airflow jobs check --job-type DagProcessorJob --hostname "$${HOSTNAME}"']
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+  airflow-scheduler:
+    image: docker.io/apache/airflow:3.1.6-python3.10
+    container_name: airflow-scheduler
+    hostname: airflow-scheduler
+    labels:
+      com.platys.name: airflow
+      com.platys.description: Job Orchestration & Scheduler
+    depends_on:
+      airflow-init:
+        condition: service_completed_successfully
+        required: true
+      airflow-db:
+        condition: service_healthy
+        required: true
+    command:
+      - scheduler
+    environment:
+      AIRFLOW__CORE__AUTH_MANAGER: airflow.providers.fab.auth_manager.fab_auth_manager.FabAuthManager
+      AIRFLOW__CORE__EXECUTION_API_SERVER_URL: http://airflow-apiserver:8080/execution/
+      # provide a health service on port 8974
+      AIRFLOW__SCHEDULER__ENABLE_HEALTH_CHECK: true
+      AIRFLOW__CORE__EXECUTOR: LocalExecutor
+      AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:${PLATYS_AIRFLOW_POSTGRESQL_PASSWORD:-abc123!}@airflow-db/airflowdb
+      # For backward compatibility, with Airflow <2.3
+      AIRFLOW__CORE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:${PLATYS_AIRFLOW_POSTGRESQL_PASSWORD:-abc123!}@airflow-db/airflowdb
+      AIRFLOW__CELERY__RESULT_BACKEND: db+postgresql://airflow:${PLATYS_AIRFLOW_POSTGRESQL_PASSWORD:-abc123!}@airflow-db/airflowdb
+      AIRFLOW__CELERY__BROKER_URL: redis://:@airflow-redis:6379/0
+      AIRFLOW__CORE__FERNET_KEY: ${PLATYS_AIRFLOW_FERNET_KEY:-E4H9MUpUWhztG-eO3UTz1YdZt9fRSq5R10eUTPSt8AE=}
+      AIRFLOW__WEBSERVER__SECRET_KEY: ${PLATYS_AIRFLOW_SECRET_KEY:-037223d1eda59bb91822f6ea04e892f0}
+      AIRFLOW__API_AUTH__JWT_SECRET: ${PLATYS_AIRFLOW_JWT_SECRET:-jUnJ/Vt17d04x0UqHRMRGg==}
+      AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION: true
+      AIRFLOW__CORE__LOAD_EXAMPLES: false
+      _PIP_ADDITIONAL_REQUIREMENTS: apache-airflow[amazon] apache-airflow-providers-apache-spark dlt[airflow] dlt[s3] pyarrow
+      AIRFLOW__SCHEDULER__DAG_DIR_LIST_INTERVAL: 60
+      AIRFLOW__CORE__TEST_CONNECTION: Disabled
+      AIRFLOW__LOGGING__LOGGING_LEVEL: INFO
+      AIRFLOW__API__EXPOSE_CONFIG: true
+      SPARK_HOME: /opt/spark
+      JAVA_HOME: /opt/java
+      AIRFLOW_VAR_S3_ENDPOINT: http://rustfs-1:9000
+      AIRFLOW_VAR_S3_ACCESS_KEY: ${PLATYS_AWS_ACCESS_KEY:-admin}
+      AIRFLOW_VAR_S3_SECRET_ACCESS_KEY: ${PLATYS_AWS_SECRET_ACCESS_KEY:-abc123abc123!}
+      AIRFLOW_VAR_S3_PATH_STYLE_ACCESS: 'true'
+      AIRFLOW__LOGGING__REMOTE_LOGGING: true
+      AIRFLOW__LOGGING__REMOTE_LOG_CONN_ID: log_s3_conn
+      AIRFLOW__LOGGING__REMOTE_BASE_LOG_FOLDER: s3://admin-bucket/airflow-logs
+      AIRFLOW_CONN_LOG_S3_CONN: >
+        { "conn_type": "aws", 
+          "host": "rustfs-1", 
+          "login": "${PLATYS_AWS_ACCESS_KEY:-admin}", 
+          "password": "${PLATYS_AWS_SECRET_ACCESS_KEY:-abc123abc123!}", 
+          "schema": "", 
+          "port": 9000, 
+          "extra": {"endpoint_url": "http://rustfs-1:9000", "region_name": "us-east-1"}
+        }
+      AWS_ACCESS_KEY_ID: ${PLATYS_AWS_ACCESS_KEY:-admin}
+      AWS_SECRET_ACCESS_KEY: ${PLATYS_AWS_SECRET_ACCESS_KEY:-abc123abc123!}
+      AIRFLOW__OPENLINEAGE__DISABLED: true
+    volumes:
+      - ./data-transfer:/data-transfer:z
+      - ./scripts/airflow/dags:/opt/airflow/dags:Z
+      - ./plugins/airflow/:/opt/airflow/plugins:Z
+      - ./scripts/docker/wait-for-it.sh:/usr/src/app/wait-for-it.sh:z
+      - spark-4-1-1-python3-vol:/opt/spark:RO
+      - spark-4-1-1-python3-java-vol:/opt/java:RO
+      - ./container-volume/spark/logs/:/var/log/spark/logs:z
+    #  - aws-credentials-vol:/home/airflow/.aws:RO
+    user: ${AIRFLOW_UID:-50000}:${AIRFLOW_GID:-0}
+    restart: unless-stopped
+    healthcheck:
+      test: [CMD, curl, --fail, http://localhost:8974/health]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+  airflow-db:
+    image: docker.io/postgres:13
+    container_name: airflow-db
+    hostname: airflow-db
+    labels:
+      com.platys.name: airflow
+      com.platys.description: Job Orchestration & Scheduler
+      com.platys.password.envvars: PLATYS_AIRFLOW_POSTGRESQL_PASSWORD
+    environment:
+      - POSTGRES_DB=airflowdb
+      - POSTGRES_USER=airflow
+      - POSTGRES_PASSWORD=${PLATYS_AIRFLOW_POSTGRESQL_PASSWORD:-abc123!}
+    volumes:
+      - ./data-transfer:/data-transfer:z
+    restart: unless-stopped
+    healthcheck:
+      test: [CMD, pg_isready, -U, airflow, -p, '5432', -d, airflowdb]
+      interval: 10s
+      retries: 5
+      start_period: 5s
+  airflow-statsd-exporter:
+    image: docker.io/prom/statsd-exporter:v0.24.0
+    container_name: airflow-statsd-exporter
+    hostname: airflow-statsd-exporter
+    labels:
+      com.platys.name: statsd-exporter
+      com.platys.description: StatsD Exporter for Prometheus
+    volumes:
+      - ./conf/airflow/statsd/statsd.yaml:/home/statsd-mapping-configs.yaml:z
+    entrypoint: [/bin/sh, -c, --]
+    command: [statsd_exporter --statsd.listen-udp=:9125 --web.listen-address=:9102 --log.level debug --statsd.mapping-config=/home/statsd-mapping-configs.yaml]
+    restart: unless-stopped
+  airflow-init:
+    image: docker.io/apache/airflow:3.1.6-python3.10
+    container_name: airflow-init
+    hostname: airflow-init
+    labels:
+      com.platys.name: airflow
+    depends_on:
+      airflow-db:
+        condition: service_healthy
+        required: true
+    entrypoint: /bin/bash
+    # yamllint disable rule:line-length
+    command:
+      - -c
+      - |
+        if [[ -z "${AIRFLOW_UID}" ]]; then
+          echo
+          echo -e "\033[1;33mWARNING!!!: AIRFLOW_UID not set!\e[0m"
+          echo "If you are on Linux, you SHOULD follow the instructions below to set "
+          echo "AIRFLOW_UID environment variable, otherwise files will be owned by root."
+          echo "For other operating systems you can get rid of the warning with manually created .env file:"
+          echo "    See: https://airflow.apache.org/docs/apache-airflow/stable/howto/docker-compose/index.html#setting-the-right-airflow-user"
+          echo
+          export AIRFLOW_UID=$(id -u)
+        fi
+        one_meg=1048576
+        mem_available=$$(($$(getconf _PHYS_PAGES) * $$(getconf PAGE_SIZE) / one_meg))
+        cpus_available=$$(grep -cE 'cpu[0-9]+' /proc/stat)
+        disk_available=$$(df / | tail -1 | awk '{print $$4}')
+        warning_resources="false"
+        if (( mem_available < 4000 )) ; then
+          echo
+          echo -e "\033[1;33mWARNING!!!: Not enough memory available for Docker.\e[0m"
+          echo "At least 4GB of memory required. You have $$(numfmt --to iec $$((mem_available * one_meg)))"
+          echo
+          warning_resources="true"
+        fi
+        if (( cpus_available < 2 )); then
+          echo
+          echo -e "\033[1;33mWARNING!!!: Not enough CPUS available for Docker.\e[0m"
+          echo "At least 2 CPUs recommended. You have $${cpus_available}"
+          echo
+          warning_resources="true"
+        fi
+        if (( disk_available < one_meg * 10 )); then
+          echo
+          echo -e "\033[1;33mWARNING!!!: Not enough Disk space available for Docker.\e[0m"
+          echo "At least 10 GBs recommended. You have $$(numfmt --to iec $$((disk_available * 1024 )))"
+          echo
+          warning_resources="true"
+        fi
+        if [[ $${warning_resources} == "true" ]]; then
+          echo
+          echo -e "\033[1;33mWARNING!!!: You have not enough resources to run Airflow (see above)!\e[0m"
+          echo "Please follow the instructions to increase amount of resources available:"
+          echo "   https://airflow.apache.org/docs/apache-airflow/stable/howto/docker-compose/index.html#before-you-begin"
+          echo
+        fi
+        echo
+        echo "Creating missing opt dirs if missing:"
+        echo
+        mkdir -v -p /opt/airflow/{logs,dags,plugins,config}
+        echo
+        echo "Airflow version:"
+        /entrypoint airflow version
+        echo
+        echo "Files in shared volumes:"
+        echo
+        ls -la /opt/airflow/{logs,dags,plugins,config}
+        echo
+        echo "Running airflow config list to create default config file if missing."
+        echo
+        /entrypoint airflow config list >/dev/null
+        echo
+        echo "Files in shared volumes:"
+        echo
+        ls -la /opt/airflow/{logs,dags,plugins,config}
+        echo
+        echo "Change ownership of files in /opt/airflow to ${AIRFLOW_UID}:0"
+        echo
+        chown -R "${AIRFLOW_UID}:0" /opt/airflow/
+        echo
+        echo "Change ownership of files in shared volumes to ${AIRFLOW_UID}:0"
+        echo
+        chown -v -R "${AIRFLOW_UID}:0" /opt/airflow/{logs,dags,plugins,config}
+        echo
+        echo "Files in shared volumes:"
+        echo
+        ls -la /opt/airflow/{logs,dags,plugins,config}
+    # yamllint enable rule:line-length
+    environment:
+      _AIRFLOW_DB_MIGRATE: true
+      _AIRFLOW_WWW_USER_CREATE: true
+      _AIRFLOW_WWW_USER_USERNAME: airflow
+      _AIRFLOW_WWW_USER_PASSWORD: ${PLATYS_AIRFLOW_ADMIN_PASSWORD:-abc123!}
+      AIRFLOW__CORE__AUTH_MANAGER: airflow.providers.fab.auth_manager.fab_auth_manager.FabAuthManager
+      AIRFLOW__CORE__EXECUTION_API_SERVER_URL: http://airflow-apiserver:8080/execution/
+      # provide a health service on port 8974
+      AIRFLOW__SCHEDULER__ENABLE_HEALTH_CHECK: true
+      AIRFLOW__CORE__EXECUTOR: LocalExecutor
+      AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:${PLATYS_AIRFLOW_POSTGRESQL_PASSWORD:-abc123!}@airflow-db/airflowdb
+      # For backward compatibility, with Airflow <2.3
+      AIRFLOW__CORE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:${PLATYS_AIRFLOW_POSTGRESQL_PASSWORD:-abc123!}@airflow-db/airflowdb
+      AIRFLOW__CELERY__RESULT_BACKEND: db+postgresql://airflow:${PLATYS_AIRFLOW_POSTGRESQL_PASSWORD:-abc123!}@airflow-db/airflowdb
+      AIRFLOW__CELERY__BROKER_URL: redis://:@airflow-redis:6379/0
+      AIRFLOW__CORE__FERNET_KEY: ${PLATYS_AIRFLOW_FERNET_KEY:-E4H9MUpUWhztG-eO3UTz1YdZt9fRSq5R10eUTPSt8AE=}
+      AIRFLOW__WEBSERVER__SECRET_KEY: ${PLATYS_AIRFLOW_SECRET_KEY:-037223d1eda59bb91822f6ea04e892f0}
+      AIRFLOW__API_AUTH__JWT_SECRET: ${PLATYS_AIRFLOW_JWT_SECRET:-jUnJ/Vt17d04x0UqHRMRGg==}
+      AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION: true
+      AIRFLOW__CORE__LOAD_EXAMPLES: false
+      _PIP_ADDITIONAL_REQUIREMENTS: apache-airflow[amazon] apache-airflow-providers-apache-spark dlt[airflow] dlt[s3] pyarrow
+      AIRFLOW__SCHEDULER__DAG_DIR_LIST_INTERVAL: 60
+      AIRFLOW__CORE__TEST_CONNECTION: Disabled
+      AIRFLOW__LOGGING__LOGGING_LEVEL: INFO
+      AIRFLOW__API__EXPOSE_CONFIG: true
+      SPARK_HOME: /opt/spark
+      JAVA_HOME: /opt/java
+      AIRFLOW_VAR_S3_ENDPOINT: http://rustfs-1:9000
+      AIRFLOW_VAR_S3_ACCESS_KEY: ${PLATYS_AWS_ACCESS_KEY:-admin}
+      AIRFLOW_VAR_S3_SECRET_ACCESS_KEY: ${PLATYS_AWS_SECRET_ACCESS_KEY:-abc123abc123!}
+      AIRFLOW_VAR_S3_PATH_STYLE_ACCESS: 'true'
+      AIRFLOW__LOGGING__REMOTE_LOGGING: true
+      AIRFLOW__LOGGING__REMOTE_LOG_CONN_ID: log_s3_conn
+      AIRFLOW__LOGGING__REMOTE_BASE_LOG_FOLDER: s3://admin-bucket/airflow-logs
+      AIRFLOW_CONN_LOG_S3_CONN: >
+        { "conn_type": "aws", 
+          "host": "rustfs-1", 
+          "login": "${PLATYS_AWS_ACCESS_KEY:-admin}", 
+          "password": "${PLATYS_AWS_SECRET_ACCESS_KEY:-abc123abc123!}", 
+          "schema": "", 
+          "port": 9000, 
+          "extra": {"endpoint_url": "http://rustfs-1:9000", "region_name": "us-east-1"}
+        }
+      AWS_ACCESS_KEY_ID: ${PLATYS_AWS_ACCESS_KEY:-admin}
+      AWS_SECRET_ACCESS_KEY: ${PLATYS_AWS_SECRET_ACCESS_KEY:-abc123abc123!}
+      AIRFLOW__OPENLINEAGE__DISABLED: true
+    volumes:
+      - ./data-transfer:/data-transfer:z
+    user: 0:0
+    init: true
+  #  ================================== Jupyter ========================================== #
+  jupyter:
+    image: quay.io/jupyter/all-spark-notebook:spark-4.1.1
+    container_name: jupyter
+    hostname: jupyter
+    labels:
+      com.platys.name: jupyter
+      com.platys.description: Web-based interactive development environment for notebooks, code, and data
+      com.platys.webui.title: Jupyter UI
+      com.platys.webui.url: http://dataplatform:38888
+      com.platys.password.envvars: PLATYS_JUPYTER_TOKEN,PLATYS_AWS_SECRET_ACCESS_KEY
+    ports:
+      - 38888:8888
+      - 28376-28380:4040-4044
+    user: root
+    extra_hosts:
+      - host.docker.internal:host-gateway
+    environment:
+      JUPYTER_ENABLE_LAB: "'yes'"
+      GRANT_SUDO: "'yes'"
+      JUPYTER_TOKEN: ${PLATYS_JUPYTER_TOKEN:-abc123!}
+      DOCKER_STACKS_JUPYTER_CMD: lab
+      MAVEN_DOWNLOAD_REPO: central
+      MAVEN_DOWNLOAD_REPO_NEXUS: http://nexus:8081/repository/maven-public
+      MAVEN_DOWNLOAD_REPO_NEXUS_USER: admin
+      MAVEN_DOWNLOAD_REPO_NEXUS_PASSWORD: ${PLATYS_NEXUS_ADMIN_PASSWORD:-abc123!abc123!}
+      MAVEN_DOWNLOAD_JARS: software.amazon.awssdk:bundle:2.35.4,org.apache.hadoop:hadoop-aws:3.4.2
+      # remove some JARS if they are conflicting with the ones installed above
+      REMOVE_JARS: guava-14.0.1.jar
+      # for awscli & s3cmd
+      AWS_ACCESS_KEY_ID: ${PLATYS_AWS_ACCESS_KEY:-admin}
+      AWS_SECRET_ACCESS_KEY: ${PLATYS_AWS_SECRET_ACCESS_KEY:-${PLATYS_AWS_SECRET_ACCESS_KEY:-abc123abc123!}}
+      AWS_ENDPOINT: http://rustfs-1:9000
+      AWS_REGION: us-east-1
+      AWS_DEFAULT_REGION: us-east-1
+      #PYSPARK_PYTHON: /opt/bitnami/python/bin/python3.12
+      #PYSPARK_DRIVER_PYTHON: /usr/bin/python3.12   
+    volumes:
+      - ./data-transfer:/data-transfer:z
+      - ./init/jupyter/on-startup-jupyter/:/usr/local/bin/start-notebook.d/:z
+      - ./init/jupyter/on-startup-jupyter-finished/:/usr/local/bin/before-notebook.d/:z
+      - ./init/jupyter/on-startup-notebook-kernel:/home/jovyan/.ipython/profile_default/startup/:z
+      - ./scripts/docker/maven-download.sh:/maven-download.sh:z
+#      - spark-4-1-1-python3-vol:/opt/spark:RO
+    command:
+      # In the command section, $ are replaced with $$ to avoid the error 'Invalid interpolation format for "command" option'
+      - bash
+      - -c
+      - |
+        conda create -y --name py310 python=3.10.12
+        source /opt/conda/etc/profile.d/conda.sh
+        conda activate py310
+        pip install ipykernel
+        python -m ipykernel install --user --name py310 --display-name "Python 3.10.12 (ipykernel)"
+        conda run -n py310 pip install pyspark==4.1.1 numpy graphframes-py typing_extensions jupysql "zstandard>=0.25.0" pandas arrow pyarrow grpcio-status boto3
+        start-notebook.sh
+    restart: unless-stopped
+    healthcheck:
+      test: [CMD, wget, -qO-, http://localhost:8888/api]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+  #  ================================== PostgreSQL ========================================== #
+  postgresql:
+    image: docker.io/postgres:18
+    container_name: postgresql
+    hostname: postgresql
+    labels:
+      com.platys.name: postgresql
+      com.platys.description: Open-Source object-relational database system
+      com.platys.password.envvars: PLATYS_POSTGRESQL_PASSWORD,PLATYS_POSTGRESQL_MULTIPLE_PASSWORD
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_PASSWORD=${PLATYS_POSTGRESQL_PASSWORD:-abc123!}
+      - POSTGRES_USER=postgres
+      - POSTGRES_DB=postgres
+#      - POSTGRES_INITDB_ARGS=--encoding=UTF8 --data-checksums      
+      - POSTGRES_MULTIPLE_DATABASES=demodb,polaris,nimtabledb,dbt_workbench
+      - POSTGRES_MULTIPLE_USERS=demo,postgres,nimtable,dbt_workbench
+      - POSTGRES_MULTIPLE_PASSWORDS=${PLATYS_POSTGRESQL_MULTIPLE_PASSWORD:-abc123!,abc123!,abc123!,abc123!}
+      - POSTGRES_MULTIPLE_ADDL_ROLES=
+      - PGDATA=/var/lib/postgresql/data/pgdata
+      - DB_SCHEMA=demo
+    volumes:
+      - ./data-transfer:/data-transfer:z
+      - ./init/postgresql:/docker-entrypoint-initdb.d/:z
+    restart: unless-stopped
+    healthcheck:
+      test: [CMD-SHELL, pg_isready -U postgres]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+  #  ================================== Trino ========================================== #
+  trino-1:
+    image: docker.io/trinodb/trino:483
+    hostname: trino-1
+    container_name: trino-1
+    labels:
+      com.platys.name: trino
+      com.platys.description: SQL Virtualization Engine
+      com.platys.webui.title: Trino UI
+      com.platys.webui.url: http://dataplatform:28082/ui
+      com.platys.password.envvars: PLATYS_GSHEET_CREDENTIALS_KEY
+    ports:
+      - 28082:8080
+      - 28087:8443
+    environment:
+      COORDINATOR_HOST: trino-1
+      CATALOG_MANAGEMENT: static
+      CATALOG_CONFIG_DIR: /catalog
+      #CATALOG_STORE: file
+      QUERY_MAX_MEMORY_PER_NODE: 4GB
+      HMS_ICEBERG_REST_CATALOG_URI: http://hive-metastore:9084/iceberg
+      HMS_ICEBERG_REST_CATALOG_WAREHOUSE: s3a://admin-bucket/iceberg/warehouse
+      S3_ENDPOINT: http://rustfs-1:9000
+      S3_REGION: us-east-1
+      S3_AWS_ACCESS_KEY: ${PLATYS_AWS_ACCESS_KEY:-admin}
+      S3_AWS_SECRET_KEY: ${PLATYS_AWS_SECRET_ACCESS_KEY:-abc123abc123!}
+      S3_PATH_STYLE_ACCESS: 'true'
+      HIVE_METASTORE_URI: thrift://hive-metastore:9083
+      HIVE_STORAGE_FORMAT: ORC
+      HIVE_COMPRESSION_CODEC: GZIP
+      HIVE_VIEWS_ENABLED: 'false'
+      HIVE_RUN_AS_INVOKER: 'false'
+      HIVE_LEGACY_TRANSLATION: 'false'
+      NESSIE_CATALOG_WAREHOUSE_DIR: s3a://admin-bucket/nessie/warehouse
+      ICEBERG_POLARIS_CATALOG_URI: http://polaris:8181/api/catalog
+      ICEBERG_POLARIS_CATALOG_WAREHOUSE: polaris_catalog
+      CLIENT_ID: admin
+      CLIENT_SECRET: ${PLATYS_POLARIS_CLIENT_SECRET:-abc123!}
+      KAFKA_NODES: kafka-1:19092,kafka-2:19093,kafka-3:19094
+      KAFKA_SCHEMA_REGISTRY_URL: http://schema-registry-1:8081
+      KAFKA_CONFIG_RESOURCES: /etc/trino/kafka-configuration.properties
+      KAFKA_SECURITY_PROTOCOL: PLAINTEXT
+      KAFKA_TABLE_NAMES:
+      KAFKA_DEFAULT_SCHEMA: default
+      KAFKA_TABLE_DESCRIPTOR_DIR: /etc/trino/kafka/
+      POSTGRESQL_DATABASE: postgres
+      POSTGRESQL_USER: postgres
+      POSTGRESQL_PASSWORD: abc123!
+      EVENT_LISTENER_CONFIG_FILES: ''
+    volumes:
+      - ./data-transfer:/data-transfer:z
+      - ./conf/trino/single/config.properties:/etc/trino/config.properties:z
+      - ./conf/trino/single/node.properties:/etc/trino/node.properties:z
+      - ./conf/trino/single/log-debug.properties:/etc/trino/log.properties:z
+      - ./conf/trino/catalog/hive.properties:/catalog/minio.properties:z
+      - ./conf/trino/catalog/hive.properties:/catalog/hive.properties:z
+      - ./conf/trino/catalog/iceberg-hive.properties:/catalog/iceberg_hive.properties:z
+      - ./conf/trino/catalog/iceberg-polaris.properties:/catalog/iceberg_polaris.properties:z
+      - ./conf/trino/catalog/postgresql.properties:/catalog/postgresql.properties:z
+      - ./custom-conf/trino/security:/etc/trino/security:z
+    restart: unless-stopped
+    healthcheck:
+      test: [CMD-SHELL, trino --version]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+  #  ================================== RustFS (S3 Storage) ========================================== #
+  rustfs-1:
+    image: docker.io/rustfs/rustfs:latest
+    container_name: rustfs-1
+    hostname: rustfs-1
+    security_opt:
+      - no-new-privileges:true
+    labels:
+      com.platys.name: rustfs
+      com.platys.description: Software-defined Object Storage
+      com.platys.webui.title: RustFS Console
+      com.platys.webui.url: http://dataplatform:9014
+      com.platys.password.envvars: PLATYS_AWS_SECRET_ACCESS_KEY
+    ports:
+      - 9005:9000   # S3 API port
+      - 9014:9010   # Console port    
+    environment:
+      - RUSTFS_VOLUMES=/data/rustfs{0..3} # Define 4 storage volumes
+      - RUSTFS_ADDRESS=0.0.0.0:9000
+      - RUSTFS_CONSOLE_ADDRESS=0.0.0.0:9010
+      - RUSTFS_CONSOLE_ENABLE=true
+      - RUSTFS_CORS_ALLOWED_ORIGINS=*
+      - RUSTFS_CONSOLE_CORS_ALLOWED_ORIGINS=*
+      - RUSTFS_ACCESS_KEY=${PLATYS_AWS_ACCESS_KEY:-admin}
+      - RUSTFS_SECRET_KEY=${PLATYS_AWS_SECRET_ACCESS_KEY:-abc123abc123!}
+      - RUSTFS_OBS_LOGGER_LEVEL=info
+      # Keep strict disk topology checks enabled by default.
+      # For local testing only, set `RUSTFS_UNSAFE_BYPASS_DISK_CHECK=true` explicitly.      
+      - RUSTFS_UNSAFE_BYPASS_DISK_CHECK=true
+#      - RUSTFS_TLS_PATH=/opt/tls
+    volumes:
+      - ./data-transfer:/data-transfer:z
+    restart: unless-stopped
+    healthcheck:
+      test: [CMD, sh, -c, curl -f http://127.0.0.1:9000/health && curl -f http://127.0.0.1:9010/rustfs/console/health]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+  #  ================================== RustFS MC ========================================== #
+  rustfs-mc:
+    image: quay.io/minio/mc:latest
+    container_name: rustfs-mc
+    hostname: rustfs-mc
+    labels:
+      com.platys.name: rustfs
+      com.platys.description: RustFS CLI
+    environment:
+      # these two env variables are also needed for the s3-credentials.properties file gen to work! 
+      AWS_ACCESS_KEY: ${PLATYS_AWS_ACCESS_KEY:-admin}
+      AWS_SECRET_ACCESS_KEY: ${PLATYS_AWS_SECRET_ACCESS_KEY:-abc123abc123!}
+      MC_HOST_rustfs-1: http://${PLATYS_AWS_ACCESS_KEY:-admin}:${PLATYS_AWS_SECRET_ACCESS_KEY:-abc123abc123!}@rustfs-1:9000
+    volumes:
+      - ./data-transfer:/data-transfer:z
+      - ./scripts/docker/wait-for-it.sh:/usr/src/app/wait-for-it.sh:z
+    entrypoint:
+      - /bin/sh
+      - -c
+      - |
+        /usr/src/app/wait-for-it.sh -t 180 rustfs-1:9000
+        mc mb --ignore-existing rustfs-1/admin-bucket
+              for bucket in $$(tr ',' '\n' <<< "")
+        do
+          mc mb --ignore-existing rustfs-1/$$bucket
+        done
+        #
+        while [ 1 -eq 1 ];do sleep 60;done
+    restart: unless-stopped
+  #  ================================== Awscli ========================================== #
+  awscli:
+    image: docker.io/trivadis/awscli-s3cmd:latest
+    container_name: awscli
+    hostname: awscli
+    labels:
+      com.platys.name: awscli
+      com.platys.description: AWS CLI
+    environment:
+      AWS_ACCESS_KEY_ID: ${PLATYS_AWS_ACCESS_KEY:-admin}
+      AWS_SECRET_ACCESS_KEY: ${PLATYS_AWS_SECRET_ACCESS_KEY:-${PLATYS_AWS_SECRET_ACCESS_KEY:-abc123abc123!}}
+      AWS_ENDPOINT: rustfs-1:9000
+      AWS_DEFAULT_REGION: us-east-1
+    volumes:
+      - ./data-transfer:/data-transfer:z
+      - ./conf/awscli/s3cfg.template:/root/.s3cfg.template:z
+    command: tail -f /dev/null
+    restart: unless-stopped
+  #  ================================== Polaris ========================================== #
+  polaris:
+    image: docker.io/apache/polaris:latest
+    container_name: polaris
+    hostname: polaris
+    labels:
+      com.platys.name: polaris
+      com.platys.description: Secure, fast and easy to use Iceberg REST Catalog
+      com.platys.restapi.title: Polaris Web UI
+      com.platys.restapi.url: http://dataplatform:8181/api/management/v1/catalogs
+      com.platys.password.envvars: PLATYS_POLARIS_DB_PASSWORD,PLATYS_POLARIS_CLIENT_SECRET
+    ports:
+      - 8181:8181
+      - 8182:8182
+    depends_on:
+      postgresql:
+        condition: service_healthy
+    environment:
+      AWS_ACCESS_KEY_ID: ${PLATYS_AWS_ACCESS_KEY:-admin}
+      AWS_SECRET_ACCESS_KEY: ${PLATYS_AWS_SECRET_ACCESS_KEY:-abc123abc123!}
+      AWS_REGION: us-east-1
+      AWS_ENDPOINT_URL_S3: http://rustfs-1:9000
+      AWS_ENDPOINT_URL_STS: http://rustfs-1:9000
+      POLARIS_PERSISTENCE_TYPE: relational-jdbc
+      POLARIS_PERSISTENCE_RELATIONAL_JDBC_MAX_RETRIES: 5
+      POLARIS_PERSISTENCE_RELATIONAL_JDBC_INITIAL_DELAY_IN_MS: 100
+      POLARIS_PERSISTENCE_RELATIONAL_JDBC_MAX_DURATION_IN_MS: 5000
+      QUARKUS_DATASOURCE_JDBC_URL: jdbc:postgresql://postgresql:5432/polaris
+      QUARKUS_DATASOURCE_USERNAME: postgres
+      QUARKUS_DATASOURCE_PASSWORD: ${PLATYS_POLARIS_DB_PASSWORD:-abc123!}
+      POLARIS_BOOTSTRAP_CREDENTIALS: POLARIS,admin,${PLATYS_POLARIS_CLIENT_SECRET:-abc123!}
+      POLARIS_REALM_CONTEXT_REALMS: POLARIS
+      QUARKUS_OTEL_SDK_DISABLED: true
+      polaris.features."ALLOW_INSECURE_STORAGE_TYPES": 'true'
+      polaris.features."SUPPORTED_CATALOG_STORAGE_TYPES": '["FILE","S3","GCS","AZURE"]'
+      polaris.readiness.ignore-severe-issues: 'true'
+      QUARKUS_HTTP_CORS_ENABLED: true
+      QUARKUS_HTTP_CORS_ORIGINS: http://${PUBLIC_IP}:28494
+      QUARKUS_HTTP_CORS_METHODS: GET,POST,PUT,DELETE,PATCH,OPTIONS
+      QUARKUS_HTTP_CORS_HEADERS: Content-Type,Authorization,Polaris-Realm,X-Request-ID
+      QUARKUS_HTTP_CORS_EXPOSED_HEADERS: '*'
+      QUARKUS_HTTP_CORS_ACCESS_CONTROL_ALLOW_CREDENTIALS: true
+      QUARKUS_HTTP_CORS_ACCESS_CONTROL_MAX_AGE: PT10M
+    volumes:
+      - ./data-transfer:/data-transfer:z
+    restart: unless-stopped
+    healthcheck:
+      test: [CMD, curl, -f, http://localhost:8182/q/health]
+      interval: 10s
+      timeout: 5s
+      retries: 15
+  polaris-db-setup:
+    image: docker.io/apache/polaris-admin-tool:latest
+    container_name: polaris-db-setup
+    hostname: polaris-db-setup
+    labels:
+      com.platys.name: polaris
+    depends_on:
+      postgresql:
+        condition: service_healthy
+    environment:
+      POLARIS_PERSISTENCE_TYPE: relational-jdbc
+      QUARKUS_DATASOURCE_JDBC_URL: jdbc:postgresql://postgresql:5432/polaris
+      QUARKUS_DATASOURCE_USERNAME: postgres
+      QUARKUS_DATASOURCE_PASSWORD: ${PLATYS_POLARIS_DB_PASSWORD:-abc123!}
+    volumes:
+      - ./data-transfer:/data-transfer:z
+    command:
+      - bootstrap
+      - --realm=POLARIS
+      - --credential=POLARIS,admin,${PLATYS_POLARIS_CLIENT_SECRET:-abc123!}
+    init: true
+    restart: no
+  polaris-catalog-setup:
+    image: docker.io/alpine/curl
+    container_name: polaris-catalog-setup
+    hostname: polaris-catalog-setup
+    depends_on:
+      polaris:
+        condition: service_healthy
+    environment:
+      - CLIENT_ID=admin
+      - CLIENT_SECRET=${PLATYS_POLARIS_CLIENT_SECRET:-abc123!}
+      - S3_ENDPOINT=http://rustfs-1:9000
+      - DEFAULT_STORAGE_LOCATION=s3a://admin-bucket
+      - ALLOWED_STORAGE_LOCATIONS=s3a://admin-bucket,s3a://iceberg-bucket
+      - NAMESPACE=default
+      - NAMESPACE_STORAGE_LOCATION=s3a://admin-bucket
+      - CATALOG_NAME=polaris_catalog
+      - REALM=POLARIS
+    volumes:
+      - ./init/polaris/:/polaris:z
+    entrypoint: /bin/sh
+    command:
+      - -c
+      - >-
+        source /polaris/obtain-token.sh &&
+        echo Creating catalog... &&
+        ALLOWED_LOCS=$$([ -n "$$ALLOWED_STORAGE_LOCATIONS" ] && echo "$$ALLOWED_STORAGE_LOCATIONS" | sed 's/,/","/g; s/^/"/; s/$/"/' || echo "\"$$DEFAULT_STORAGE_LOCATION\"") &&
+        export STORAGE_CONFIG_INFO='{"storageType":"S3",
+          "endpoint":"'$$S3_ENDPOINT'",
+          "endpointInternal":"'$$S3_ENDPOINT'",
+          "allowedLocations":['$$ALLOWED_LOCS'],
+          "pathStyleAccess":true,
+          "region":"us-east-1"}' &&
+        export DEFAULT_STORAGE_LOCATION='s3a://admin-bucket' &&
+        export CATALOG_NAME='polaris_catalog' &&
+        export NAMESPACE=default &&
+        export NAMESPACE_STORAGE_LOCATION=s3a://admin-bucket &&
+        /polaris/create-catalog.sh POLARIS $$TOKEN &&
+        echo Extra grants... &&
+        curl \
+          --fail-with-body \
+          -H "Authorization: Bearer $$TOKEN" \
+          -H 'Content-Type: application/json' \
+          -X PUT \
+          http://polaris:8181/api/management/v1/catalogs/polaris_catalog/catalog-roles/catalog_admin/grants \
+          -d '{"type":"catalog", "privilege":"CATALOG_MANAGE_CONTENT"}' &&
+        echo Done. &&
+        echo ""
+        echo "=========================================="
+        echo "🎉 Polaris Setup Complete!"
+        echo "=========================================="
+        echo ""
+        echo "Catalog: $$CATALOG_NAME"
+        echo "  Storage: S3"
+        echo "  Location: s3a://admin-bucket"
+        echo "  S3 UI: http://rustfs-1:9000"
+        echo ""
+        echo "Root credentials:"
+        echo "  Client ID:     $$CLIENT_ID"
+        echo "  Client Secret: $$CLIENT_SECRET"
+        echo ""
+        echo "Polaris main APIs:"
+        echo "  - Iceberg REST:   http://${PUBLIC_IP:-localhost}:8181/api/catalog/v1"
+        echo "  - Management:     http://${PUBLIC_IP:-localhost}:8181/api/management/v1"
+        echo "  - Generic Tables: http://${PUBLIC_IP:-localhost}:8181/api/polaris/v1"
+        echo ""
+        echo "Polaris admin APIs:"
+        echo "  - Health check:   http://localhost:8182/q/health"
+        echo "  - Metrics:        http://localhost:8182/q/metrics"
+        echo ""
+        echo "To get started with Spark:"
+        echo "  spark-sql \\"
+        echo "    --packages org.apache.iceberg:iceberg-spark-runtime-3.5_2.12:1.10.1,org.apache.iceberg:iceberg-aws-bundle:1.10.1 \\"
+        echo "    --conf spark.sql.extensions=org.apache.iceberg.spark.extensions.IcebergSparkSessionExtensions \\"
+        echo "    --conf spark.sql.catalog.polaris=org.apache.iceberg.spark.SparkCatalog \\"
+        echo "    --conf spark.sql.catalog.polaris.type=rest \\"
+        echo "    --conf spark.sql.catalog.polaris.warehouse=$$CATALOG_NAME \\"
+        echo "    --conf spark.sql.catalog.polaris.uri=http://${PUBLIC_IP:-localhost}:8181/api/catalog \\"
+        echo "    --conf spark.sql.catalog.polaris.credential=$$CLIENT_ID:$$CLIENT_SECRET \\"
+        echo "    --conf spark.sql.catalog.polaris.scope=PRINCIPAL_ROLE:ALL \\"
+        echo "    --conf spark.sql.catalog.polaris.header.X-Iceberg-Access-Delegation=vended-credentials \\"
+        echo "    --conf spark.sql.defaultCatalog=polaris"
+        echo ""
+        echo "Note: With credential vending enabled (X-Iceberg-Access-Delegation=vended-credentials),"
+        echo "      Polaris automatically provides temporary S3 credentials, endpoint, region, and"
+        echo "      other storage configuration. No explicit storage settings are needed."
+        echo ""
+        echo "To get started with REST API:"
+        echo "  # Get a token"
+        echo "  export TOKEN=\$$(curl -s -X POST http://${PUBLIC_IP:-localhost}:8181/api/catalog/v1/oauth/tokens \\"
+        echo "    -d 'grant_type=client_credentials' \\"
+        echo "    -d 'client_id=$$CLIENT_ID' \\"
+        echo "    -d 'client_secret=$$CLIENT_SECRET' \\"
+        echo "    -d 'scope=PRINCIPAL_ROLE:ALL' \\"
+        echo "    | jq -r '.access_token')"
+        echo ""
+        echo "  # Create a namespace"
+        echo "  curl -X POST http://${PUBLIC_IP:-localhost}:8181/api/catalog/v1/$$CATALOG_NAME/namespaces \\"
+        echo "    -H \"Authorization: Bearer \$$TOKEN\" \\"
+        echo "    -H 'Content-Type: application/json' \\"
+        echo "    -d '{\"namespace\": [\"my_namespace\"], \"properties\": {}}'"
+        echo ""
+        echo "  # List namespaces"
+        echo "  curl -X GET http://${PUBLIC_IP:-localhost}:8181/api/catalog/v1/$$CATALOG_NAME/namespaces \\"
+        echo "    -H \"Authorization: Bearer \$$TOKEN\""
+        echo ""
+        echo "=========================================="
+        touch /tmp/polaris-setup-done
+        tail -f /dev/null
+    init: true
+    restart: no
+    healthcheck:
+      interval: 1s
+      timeout: 10s
+      retries: 240
+      test: [CMD, test, -f, /tmp/polaris-setup-done]
+  #  ================================== Polaris UI ========================================== #
+  polaris-ui:
+    image: docker.io/trivadis/polaris-console:latest
+    container_name: polaris-ui
+    hostname: polaris-ui
+    platform: linux/amd64
+    labels:
+      com.platys.name: polaris
+      com.platys.description: Web UI for Apache Polaris Iceberg REST Catalog
+      com.platys.webui.title: Polaris UI
+      com.platys.webui.url: http://dataplatform:28494
+    ports:
+      - 28494:8080
+    depends_on:
+      polaris:
+        condition: service_healthy
+    environment:
+      VITE_POLARIS_API_URL: http://${PUBLIC_IP}:8181
+      VITE_OAUTH_TOKEN_URL: http://${PUBLIC_IP}:8181/api/catalog/v1/oauth/tokens
+      VITE_POLARIS_REALM: POLARIS
+      VITE_POLARIS_PRINCIPAL_SCOPE: PRINCIPAL_ROLE:ALL
+    volumes:
+      - ./data-transfer:/data-transfer:z
+    restart: unless-stopped
+  #  ================================== Nimtabe ========================================== #
+  nimtable-web:
+    image: ghcr.io/nimtable/nimtable-web:nightly
+    container_name: nimtable-web
+    hostname: nimtable-web
+    labels:
+      com.platys.name: nimtable
+      com.platys.description: Control Plane for Iceberg
+      com.platys.webui.title: Nimtable Web UI
+      com.platys.webui.url: http://dataplatform:28463
+      com.platys.password.envvars: PLATYS_NIMTABLE_ADMIN_PASSWORD
+    depends_on:
+      - nimtable
+    ports:
+      - 28463:3000
+    environment:
+      - JAVA_API_URL=http://nimtable:8182
+      - DATABASE_URL=postgresql://nimtable:abc123!@postgresql:5432/nimtabledb
+      - JWT_SECRET=your-super-secret-jwt-key-change-this-in-production
+      - ADMIN_USERNAME=admin
+      - ADMIN_PASSWORD=${PLATYS_NIMTABLE_ADMIN_PASSWORD:-abc123!}
+    volumes:
+      - ./data-transfer:/data-transfer:z
+    restart: unless-stopped
+  nimtable:
+    image: ghcr.io/nimtable/nimtable:nightly
+    container_name: nimtable
+    hostname: nimtable
+    labels:
+      com.platys.name: nimtable
+      com.platys.description: Control Plane for Iceberg
+    depends_on:
+      postgresql:
+        condition: service_healthy
+    ports:
+      - 28464:8182
+    environment:
+      - JAVA_OPTS=-Xmx32g -Xms512m
+      - AWS_ACCESS_KEY_ID=${PLATYS_AWS_ACCESS_KEY:-admin}
+      - AWS_SECRET_ACCESS_KEY=${PLATYS_AWS_SECRET_ACCESS_KEY:-abc123abc123!}
+      - AWS_REGION=us-east-1
+      - AWS_ENDPOINT_URL_S3=http://rustfs-1:9000
+      - AWS_ENDPOINT_URL_STS=http://rustfs-1:9000
+    # Mount configuration files
+    configs:
+      - source: nimtable-config.yaml
+        target: /nimtable/config.yaml
+    volumes:
+      - ./data-transfer:/data-transfer:z
+    restart: unless-stopped
+  #  ================================== Coder ========================================== #
+  coder:
+    image: ghcr.io/coder/coder:v2.36.3
+    container_name: coder
+    hostname: coder
+    labels:
+      com.platys.name: coder
+      com.platys.description: Cloud development environments on your infrastructure
+      com.platys.webui.title: Coder UI
+      com.platys.webui.url: http://dataplatform:7080
+    user: root
+    depends_on:
+      - postgresql
+    ports:
+      - 7080:7080
+    environment:
+      CODER_PG_CONNECTION_URL: postgresql://postgres:abc123!@postgresql/postgres?sslmode=disable
+      CODER_HTTP_ADDRESS: 0.0.0.0:7080
+      CODER_ACCESS_URL: http://${PUBLIC_IP:-dataplatform}:7080
+    volumes:
+      - ./data-transfer:/data-transfer:z
+      - /var/run/docker.sock:/var/run/docker.sock:z
+    restart: unless-stopped
+  #  ================================== Wetty ========================================== #
+  wetty:
+    image: docker.io/wettyoss/wetty:2
+    container_name: wetty
+    hostname: wetty
+    labels:
+      com.platys.name: wetty
+      com.platys.description: A terminal window in Web-Browser
+      com.platys.webui.title: WeTTY UI
+      com.platys.webui.url: http://dataplatform:3001
+    ports:
+      - 3001:3000
+    environment:
+      - SSHHOST=${DOCKER_HOST_IP:-localhost}
+      - SSHPORT=22
+      - SSHUSER=
+      - SSHAUTH=password
+      - PORT=3000
+      - BASE=/
+    volumes:
+      - ./data-transfer:/data-transfer:z
+    restart: unless-stopped
+  #  ================================== Forgejo ========================================== #
+  forgejo:
+    image: codeberg.org/forgejo/forgejo:9
+    container_name: forgejo
+    hostname: forgejo
+    labels:
+      com.platys.name: forgejo
+      com.platys.description: Lightweight self-hosted Git service
+      com.platys.webui.title: Forgejo UI
+      com.platys.webui.url: http://dataplatform:3004
+    ports:
+      - 3004:3000
+      - 222:22
+    environment:
+      - USER_UID=1000
+      - USER_GID=1000
+    volumes:
+      - ./container-volume/forgejo:/data:z
+      - ./data-transfer:/data-transfer:z
+    restart: unless-stopped
+  #  ================================== dbt Workbench ========================================== #
+  dbt-workbench-backend:
+    image: ghcr.io/rezer-bleede/dbt-workbench-backend:latest
+    container_name: dbt-workbench-backend
+    hostname: dbt-workbench-backend
+    platform: linux/amd64
+    labels:
+      com.platys.name: dbt-workbench
+      com.platys.description: dbt Workbench backend
+    depends_on:
+      postgresql:
+        condition: service_healthy
+    ports:
+      - 28496:8000
+    environment:
+      - AUTH_ENABLED=false
+      - CORS_ORIGINS=http://localhost:28497,http://${PUBLIC_IP:-dataplatform}:28497
+      - POSTGRES_HOST=postgresql
+      - POSTGRES_USER=dbt_workbench
+      - POSTGRES_PASSWORD=${PLATYS_DBT_WORKBENCH_DB_PASSWORD:-abc123!}
+      - POSTGRES_DB=dbt_workbench
+      - DBT_ARTIFACTS_PATH=/app/data/artifacts
+      - DBT_PROJECT_PATH=/app/data/repos/default
+      - BACKEND_PORT=8000
+      - SQL_WORKSPACE_DEFAULT_CONNECTION_URL=postgresql://dbt_workbench:${PLATYS_DBT_WORKBENCH_DB_PASSWORD:-abc123!}@postgresql:5432/dbt_workbench
+      - AI_ENABLED=false
+      - AI_DEFAULT_MODE=direct
+      - AI_DEFAULT_DIRECT_PROVIDER=openai
+      - AI_DEFAULT_DIRECT_MODEL_OPENAI=
+      - AI_DEFAULT_DIRECT_MODEL_ANTHROPIC
+      - AI_ALLOW_SESSION_PROVIDER_OVERRIDE=true
+      - AI_MCP_LOCAL_ALLOWLIST_JSON={}
+    volumes:
+      - ./data-transfer:/data-transfer:z
+    restart: unless-stopped
+    healthcheck:
+      test: [CMD, curl, -f, http://localhost:8000/health]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+  dbt-workbench-frontend:
+    image: ghcr.io/rezer-bleede/dbt-workbench-frontend:latest
+    container_name: dbt-workbench-frontend
+    hostname: dbt-workbench-frontend
+    platform: linux/amd64
+    labels:
+      com.platys.name: dbt-workbench
+      com.platys.description: dbt Workbench — web-based IDE for dbt projects
+      com.platys.webui.title: dbt Workbench UI
+      com.platys.webui.url: http://dataplatform:28497
+    depends_on:
+      dbt-workbench-backend:
+        condition: service_healthy
+    ports:
+      - 28497:3000
+    environment:
+      - VITE_API_BASE_URL=http://${PUBLIC_IP:-dataplatform}:28496
+    entrypoint:
+      - /bin/sh
+      - -c
+      - |
+        find /app/dist -name '*.js' -exec sed -i "s|http://localhost:8000|$$VITE_API_BASE_URL|g" {} \;
+        exec serve -s dist -l 3000
+    volumes:
+      - ./data-transfer:/data-transfer:z
+    restart: unless-stopped
+    healthcheck:
+      test: [CMD, wget, --no-verbose, --tries=1, --spider, http://localhost:3000]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+  #  ================================== markdown-viewer ========================================== #
+  markdown-viewer:
+    image: docker.io/dannyben/madness:1.2.5
+    container_name: markdown-viewer
+    hostname: markdown-viewer
+    labels:
+      com.platys.name: markdown-viewer
+      com.platys.description: Platys Platform homepage viewer
+      com.platys.webui.title: Markdown Viewer UI
+      com.platys.webui.url: http://dataplatform:80
+    ports:
+      - 80:3000
+    volumes:
+      - ./artefacts:/docs
+      - ./conf/markdown-viewer/markdown-madness.yml:/docs/.madness.yml:z
+      - ./data-transfer:/data-transfer:z
+    command: server
+    restart: unless-stopped
+    healthcheck:
+      test: [CMD-SHELL, curl -f http://markdown-viewer:3000 || exit 1]
+      interval: 1m30s
+      timeout: 10s
+      retries: 3
+      start_period: 1m
+  markdown-renderer:
+    image: docker.io/trivadis/jinja2-renderer:0.8.1
+    container_name: markdown-renderer
+    hostname: markdown-renderer
+    labels:
+      com.platys.name: markdown-renderer
+      com.platys.description: Platys Platform homepage rendering
+    environment:
+      USE_PUBLIC_IP: 'True'
+      PUBLIC_IP: ${PUBLIC_IP:-127.0.0.1}
+      DOCKER_HOST_IP: ${DOCKER_HOST_IP:-localhost}
+      DATAPLATFORM_HOME: ${DATAPLATFORM_HOME}
+      PLATYS_PLATFORM_NAME: platys-platform
+      PLATYS_PLATFORM_STACK: trivadis/platys-modern-data-platform
+      PLATYS_PLATFORM_STACK_VERSION: develop
+      PLATYS_COPY_COOKBOOK_DATA: 'True'
+      PLATYS_DATACENTER:
+      SERVICE_LIST_VERSION: 2
+    volumes:
+      - ./artefacts/templates:/templates:z
+      - ./artefacts/templates:/scripts:z
+      - .:/variables:z
+      - ./artefacts:/output:z
+      - ./data-transfer:/data-transfer:z
+    init: true
+  #  ================================== data-provisioning ========================================== #
+  data-provisioning:
+    image: docker.io/trivadis/platys-modern-data-platform-data:latest
+    container_name: data-provisioning
+    hostname: data-provisioning
+    labels:
+      com.platys.name: data-provisioning
+      com.platys.description: Provisioning sample data
+    environment:
+      DUMMY: make-it-valid
+    volumes:
+      - ./data-transfer:/data-transfer:z
+    init: true
+volumes:
+  data-transfer-vol:
+    name: data_transfer_vol
+  spark-4-1-1-python3-vol:
+  spark-4-1-1-python3-java-vol:
+configs:
+  # Nimtable config file to be mounted into the Docker containers.
+  # See backend/config.yaml for more complete example
+  nimtable-config.yaml:
+    content: |-
+      server:
+        port: 8182
+        host: 0.0.0.0
+      database:
+        # You can also point to your own Postgres database, instead of using the one provided by docker-compose.
+        url: jdbc:postgresql://postgresql:5432/nimtabledb
+        username: nimtable
+        password: abc123!
