@@ -2735,9 +2735,9 @@
       POSTGRESQL_user: postgres
       POSTGRESQL_password: abc123!
       POSTGRESQL_schema: demo
-      POSTGRESQL_multiple_databases: demodb,polaris,nimtabledb,dbt_workbench
-      POSTGRESQL_multiple_users: demo,postgres,nimtable,dbt_workbench
-      POSTGRESQL_multiple_passwords: abc123!,abc123!,abc123!,abc123!
+      POSTGRESQL_multiple_databases: demodb,polaris,nimtabledb
+      POSTGRESQL_multiple_users: demo,postgres,nimtable
+      POSTGRESQL_multiple_passwords: abc123!,abc123!,abc123!
       POSTGRESQL_multiple_addl_roles: ''
       # one of the valid Postgresql wal_levels: "replica", "minimal", "logical". Use logical if you want to work with Debezium.
       POSTGRESQL_wal_level: null
@@ -3911,12 +3911,12 @@
       #
       # ===== Forgejo ========
       #
-      FORGEJO_enable: true
+      FORGEJO_enable: false
 
       #
       # ===== dbt Workbench ========
       #
-      DBT_WORKBENCH_enable: true
+      DBT_WORKBENCH_enable: false
       DBT_WORKBENCH_volume_map_data: false
       DBT_WORKBENCH_db_user: dbt_workbench
       DBT_WORKBENCH_db_password: abc123!
