@@ -1696,7 +1696,7 @@ services:
     healthcheck:
       disable: true
   superset-worker:
-    image: apachesuperset.docker.scarf.sh/apache/supersetlatest-dev
+    image: apachesuperset.docker.scarf.sh/apache/superset:latest-dev
     hostname: superset-worker
     container_name: superset-worker
     labels:
