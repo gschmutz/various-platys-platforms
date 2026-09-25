@@ -1618,7 +1618,7 @@ services:
       start_period: 30s
   #  ================================== Superset ========================================== #
   superset:
-    image: docker.io/apache/superset:latest-dev
+    image: apachesuperset.docker.scarf.sh/apache/superset:latest-dev
     hostname: superset
     container_name: superset
     labels:
@@ -1629,35 +1629,47 @@ services:
     ports:
       - 28151:8088
     user: root
+    depends_on:
+      superset-init:
+        condition: service_completed_successfully
     environment:
       - DATABASE_DB=superset
       - DATABASE_HOST=superset-db
-      - DATABASE_PASSWORD=superset
+      - DATABASE_PASSWORD=abc123!
       - DATABASE_USER=superset
       - DATABASE_PORT=5432
       - DATABASE_DIALECT=postgresql
       - POSTGRES_DB=superset
       - POSTGRES_USER=superset
-      - POSTGRES_PASSWORD=superset
+      - POSTGRES_PASSWORD=abc123!
       - PYTHONPATH=/app/pythonpath:/app/docker/pythonpath_dev
       - REDIS_HOST=superset-redis
       - REDIS_PORT=6379
+      - FLASK_DEBUG=true
       - FLASK_ENV=development
+      - SUPERSET_LOG_LEVEL=info
       - SUPERSET_ENV=development
+      - SUPERSET_ENABLE_SWAGGER_UI=true
       - SUPERSET_LOAD_EXAMPLES=no
       - CYPRESS_CONFIG=false
       - SUPERSET_PORT=8088
+      - SUPERSET_APP_ROOT="/"
     volumes:
       - ./data-transfer:/data-transfer:z
       - ./conf/superset:/app/docker:z
 #      - ./container-volume/superset:/app/superset_home
-    command: [/app/docker/docker-bootstrap.sh, app]
+    command: [/app/docker/docker-bootstrap.sh, app-gunicorn]
     restart: unless-stopped
   superset-init:
-    image: docker.io/apache/superset:latest-dev
+    image: apachesuperset.docker.scarf.sh/apache/superset:latest-dev
     hostname: superset-init
     container_name: superset-init
     user: root
+    depends_on:
+      superset-db:
+        condition: service_started
+      superset-redis:
+        condition: service_started
     environment:
       - DATABASE_DB=superset
       - DATABASE_HOST=superset-db
@@ -1681,14 +1693,19 @@ services:
       - ./conf/superset:/app/docker:z
     command: [/app/docker/docker-init.sh]
     init: true
+    healthcheck:
+      disable: true
   superset-worker:
-    image: docker.io/apache/superset:latest-dev
+    image: apachesuperset.docker.scarf.sh/apache/supersetlatest-dev
     hostname: superset-worker
     container_name: superset-worker
     labels:
       com.platys.name: superset
       com.platys.description: modern data exploration and visualization platform
     user: root
+    depends_on:
+      superset-init:
+        condition: service_completed_successfully
     environment:
       - DATABASE_DB=superset
       - DATABASE_HOST=superset-db
@@ -1712,14 +1729,19 @@ services:
       - ./conf/superset:/app/docker:z
     command: [/app/docker/docker-bootstrap.sh, worker]
     restart: unless-stopped
+    healthcheck:
+      test: [CMD-SHELL, celery -A superset.tasks.celery_app:app inspect ping -d celery@$$HOSTNAME]
   superset-worker-beat:
-    image: docker.io/apache/superset:latest-dev
+    image: apachesuperset.docker.scarf.sh/apache/superset:latest-dev
     hostname: superset-worker-beat
     container_name: superset-worker-beat
     labels:
       com.platys.name: superset
       com.platys.description: modern data exploration and visualization platform
     user: root
+    depends_on:
+      superset-init:
+        condition: service_completed_successfully
     environment:
       - DATABASE_DB=superset
       - DATABASE_HOST=superset-db
@@ -1743,6 +1765,8 @@ services:
       - ./conf/superset:/app/docker:z
     command: [/app/docker/docker-bootstrap.sh, beat]
     restart: unless-stopped
+    healthcheck:
+      disable: true
   superset-db:
     image: docker.io/postgres:10
     hostname: superset-db
