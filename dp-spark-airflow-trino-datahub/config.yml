@@ -268,8 +268,8 @@
       #
       # ===== Kafka Init for Topic Creation ========
       #
-      KAFKA_INIT_enable: false
-      KAFKA_INIT_topics: ''
+      KAFKA_INIT_enable: true
+      KAFKA_INIT_topics: 'MetadataChangeEvent_v4:2:3'
       
       #
       # ===== Kafka Console Utilities ========
@@ -408,7 +408,7 @@
       #
       KAFKA_MIRROR_MAKER2_enable: false
       
-      SCHEMA_REGISTRY_enable: false
+      SCHEMA_REGISTRY_enable: true
       # either "confluent", "apicurio"
       SCHEMA_REGISTRY_flavour: confluent
       SCHEMA_REGISTRY_nodes: 1
@@ -548,7 +548,7 @@
       #
       # ===== AKHQ ========
       #
-      AKHQ_enable: false
+      AKHQ_enable: true
       AKHQ_topic_page_size: 25
       AKHQ_topic_data_size: 50
       AKHQ_topic_data_poll_timeout: 1000
@@ -2007,7 +2007,7 @@
       #
       # ===== Superset ========
       #
-      SUPERSET_enable: false
+      SUPERSET_enable: true
       SUPERSET_provision_examples: false
       
       #
@@ -2078,7 +2078,7 @@
       #
       # ===== Cube.js ========
       #
-      CUBEJS_enable: false
+      CUBEJS_enable: true
       CUBEJS_dev_mode: true
       
       #
