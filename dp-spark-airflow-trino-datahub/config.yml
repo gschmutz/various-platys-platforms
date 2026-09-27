@@ -269,7 +269,7 @@
       # ===== Kafka Init for Topic Creation ========
       #
       KAFKA_INIT_enable: true
-      KAFKA_INIT_topics: 'MetadataChangeEvent_v4:2:3'
+      KAFKA_INIT_topics: 'MetadataChangeEvent_v4:2:3,DataHubUsageEvent_v1:2:3'
       
       #
       # ===== Kafka Console Utilities ========
@@ -2008,6 +2008,8 @@
       # ===== Superset ========
       #
       SUPERSET_enable: true
+      SUPERSET_volume_map_superset_home: false
+      SUPERSET_admin_password: abc123!      
       SUPERSET_provision_examples: false
       
       #
