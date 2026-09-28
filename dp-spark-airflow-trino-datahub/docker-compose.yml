@@ -1691,7 +1691,7 @@ services:
       superset-redis:
         condition: service_started
     environment:
-      - ADMIN_PASSWORD=${PLATYS_SUPERSET_ADMIN_PASSWORD:-abc123!
+      - ADMIN_PASSWORD=${PLATYS_SUPERSET_ADMIN_PASSWORD:-abc123!}
       # common env variables
       - PYTHONUNBUFFERED=1
       - COMPOSE_PROJECT_NAME=superset
