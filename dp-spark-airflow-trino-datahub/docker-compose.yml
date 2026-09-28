@@ -2160,6 +2160,7 @@ services:
     depends_on:
       postgresql:
         condition: service_healthy
+      polaris-db-setup:
     environment:
       AWS_ACCESS_KEY_ID: ${PLATYS_AWS_ACCESS_KEY:-admin}
       AWS_SECRET_ACCESS_KEY: ${PLATYS_AWS_SECRET_ACCESS_KEY:-abc123abc123!}
