@@ -7,6 +7,8 @@ networks:
   default:
     name: platys-platform
 # enforce some dependencies
+# "/opt/spark/jars/acryl-spark-lineage-" ~ __DATAHUB_version | replace("v", "") ~ ".jar"
+# "io.acryl:acryl-spark-lineage:" ~ __DATAHUB_version | replace("v", "")
 services:
 #  ================================== Kafka ========================================== #
   kafka-1:
@@ -322,9 +324,9 @@ services:
       SPARK_DEFAULTS_CONF_spark_jars_packages: io.delta:delta-spark_2.13:4.1.0,io.delta:delta-storage:4.1.0
       SPARK_DEFAULTS_CONF_spark_jars_excludes:
       # specifies the JARs to be downloaded to the jars folder by maven-download-sh script (triggered in the init script)
-      SPARK_INSTALL_JAVA_PACKAGES: ',software.amazon.awssdk:bundle:2.35.4,software.amazon.awssdk:s3-transfer-manager:2.35.4,software.amazon.awssdk.crt:aws-crt:0.39.4,org.apache.hadoop:hadoop-aws:3.4.2,io.delta:delta-spark_2.13:4.1.0,io.delta:delta-storage:4.1.0,org.apache.iceberg:iceberg-spark-runtime-4.1_2.13:1.11.0,org.apache.iceberg:iceberg-aws-bundle:1.11.0,org.apache.polaris:polaris-spark-3.5_2.13:1.2.0-incubating,org.apache.hudi:hudi-spark4.1-bundle_2.13:1.2.0,io.acryl:acryl-spark-lineage:1.7.0'
+      SPARK_INSTALL_JAVA_PACKAGES: ',software.amazon.awssdk:bundle:2.35.4,software.amazon.awssdk:s3-transfer-manager:2.35.4,software.amazon.awssdk.crt:aws-crt:0.39.4,org.apache.hadoop:hadoop-aws:3.4.2,io.delta:delta-spark_2.13:4.1.0,io.delta:delta-storage:4.1.0,org.apache.iceberg:iceberg-spark-runtime-4.1_2.13:1.11.0,org.apache.iceberg:iceberg-aws-bundle:1.11.0,org.apache.polaris:polaris-spark-3.5_2.13:1.2.0-incubating,org.apache.hudi:hudi-spark4.1-bundle_2.13:1.2.0,'
       SPARK_INSTALL_PYTHON_PACKAGES: ''
-      SPARK_DEFAULTS_CONF_spark_jars: /opt/spark/jars/iceberg-spark-runtime-4.1_2.13-1.11.0.jar,/opt/spark/jars/acryl-spark-lineage-1.7.0.jar
+      SPARK_DEFAULTS_CONF_spark_jars: /opt/spark/jars/iceberg-spark-runtime-4.1_2.13-1.11.0.jar,
       MAVEN_DOWNLOAD_REPO: nexus
       MAVEN_DOWNLOAD_REPO_NEXUS: http://nexus:8081/repository/maven-public
       MAVEN_DOWNLOAD_REPO_NEXUS_USER: admin
@@ -414,9 +416,9 @@ services:
       SPARK_DEFAULTS_CONF_spark_jars_packages: io.delta:delta-spark_2.13:4.1.0,io.delta:delta-storage:4.1.0
       SPARK_DEFAULTS_CONF_spark_jars_excludes:
       # specifies the JARs to be downloaded to the jars folder by maven-download-sh script (triggered in the init script)
-      SPARK_INSTALL_JAVA_PACKAGES: ',software.amazon.awssdk:bundle:2.35.4,software.amazon.awssdk:s3-transfer-manager:2.35.4,software.amazon.awssdk.crt:aws-crt:0.39.4,org.apache.hadoop:hadoop-aws:3.4.2,io.delta:delta-spark_2.13:4.1.0,io.delta:delta-storage:4.1.0,org.apache.iceberg:iceberg-spark-runtime-4.1_2.13:1.11.0,org.apache.iceberg:iceberg-aws-bundle:1.11.0,org.apache.polaris:polaris-spark-3.5_2.13:1.2.0-incubating,org.apache.hudi:hudi-spark4.1-bundle_2.13:1.2.0,io.acryl:acryl-spark-lineage:1.7.0'
+      SPARK_INSTALL_JAVA_PACKAGES: ',software.amazon.awssdk:bundle:2.35.4,software.amazon.awssdk:s3-transfer-manager:2.35.4,software.amazon.awssdk.crt:aws-crt:0.39.4,org.apache.hadoop:hadoop-aws:3.4.2,io.delta:delta-spark_2.13:4.1.0,io.delta:delta-storage:4.1.0,org.apache.iceberg:iceberg-spark-runtime-4.1_2.13:1.11.0,org.apache.iceberg:iceberg-aws-bundle:1.11.0,org.apache.polaris:polaris-spark-3.5_2.13:1.2.0-incubating,org.apache.hudi:hudi-spark4.1-bundle_2.13:1.2.0,'
       SPARK_INSTALL_PYTHON_PACKAGES: ''
-      SPARK_DEFAULTS_CONF_spark_jars: /opt/spark/jars/iceberg-spark-runtime-4.1_2.13-1.11.0.jar,/opt/spark/jars/acryl-spark-lineage-1.7.0.jar
+      SPARK_DEFAULTS_CONF_spark_jars: /opt/spark/jars/iceberg-spark-runtime-4.1_2.13-1.11.0.jar,
       MAVEN_DOWNLOAD_REPO: nexus
       MAVEN_DOWNLOAD_REPO_NEXUS: http://nexus:8081/repository/maven-public
       MAVEN_DOWNLOAD_REPO_NEXUS_USER: admin
@@ -501,9 +503,9 @@ services:
       SPARK_DEFAULTS_CONF_spark_jars_packages: io.delta:delta-spark_2.13:4.1.0,io.delta:delta-storage:4.1.0
       SPARK_DEFAULTS_CONF_spark_jars_excludes:
       # specifies the JARs to be downloaded to the jars folder by maven-download-sh script (triggered in the init script)
-      SPARK_INSTALL_JAVA_PACKAGES: ',software.amazon.awssdk:bundle:2.35.4,software.amazon.awssdk:s3-transfer-manager:2.35.4,software.amazon.awssdk.crt:aws-crt:0.39.4,org.apache.hadoop:hadoop-aws:3.4.2,io.delta:delta-spark_2.13:4.1.0,io.delta:delta-storage:4.1.0,org.apache.iceberg:iceberg-spark-runtime-4.1_2.13:1.11.0,org.apache.iceberg:iceberg-aws-bundle:1.11.0,org.apache.polaris:polaris-spark-3.5_2.13:1.2.0-incubating,org.apache.hudi:hudi-spark4.1-bundle_2.13:1.2.0,io.acryl:acryl-spark-lineage:1.7.0'
+      SPARK_INSTALL_JAVA_PACKAGES: ',software.amazon.awssdk:bundle:2.35.4,software.amazon.awssdk:s3-transfer-manager:2.35.4,software.amazon.awssdk.crt:aws-crt:0.39.4,org.apache.hadoop:hadoop-aws:3.4.2,io.delta:delta-spark_2.13:4.1.0,io.delta:delta-storage:4.1.0,org.apache.iceberg:iceberg-spark-runtime-4.1_2.13:1.11.0,org.apache.iceberg:iceberg-aws-bundle:1.11.0,org.apache.polaris:polaris-spark-3.5_2.13:1.2.0-incubating,org.apache.hudi:hudi-spark4.1-bundle_2.13:1.2.0,'
       SPARK_INSTALL_PYTHON_PACKAGES: ''
-      SPARK_DEFAULTS_CONF_spark_jars: /opt/spark/jars/iceberg-spark-runtime-4.1_2.13-1.11.0.jar,/opt/spark/jars/acryl-spark-lineage-1.7.0.jar
+      SPARK_DEFAULTS_CONF_spark_jars: /opt/spark/jars/iceberg-spark-runtime-4.1_2.13-1.11.0.jar,
       MAVEN_DOWNLOAD_REPO: nexus
       MAVEN_DOWNLOAD_REPO_NEXUS: http://nexus:8081/repository/maven-public
       MAVEN_DOWNLOAD_REPO_NEXUS_USER: admin
@@ -590,9 +592,9 @@ services:
       SPARK_DEFAULTS_CONF_spark_jars_packages: io.delta:delta-spark_2.13:4.1.0,io.delta:delta-storage:4.1.0
       SPARK_DEFAULTS_CONF_spark_jars_excludes:
       # specifies the JARs to be downloaded to the jars folder by maven-download-sh script (triggered in the init script)
-      SPARK_INSTALL_JAVA_PACKAGES: ',software.amazon.awssdk:bundle:2.35.4,software.amazon.awssdk:s3-transfer-manager:2.35.4,software.amazon.awssdk.crt:aws-crt:0.39.4,org.apache.hadoop:hadoop-aws:3.4.2,io.delta:delta-spark_2.13:4.1.0,io.delta:delta-storage:4.1.0,org.apache.iceberg:iceberg-spark-runtime-4.1_2.13:1.11.0,org.apache.iceberg:iceberg-aws-bundle:1.11.0,org.apache.polaris:polaris-spark-3.5_2.13:1.2.0-incubating,org.apache.hudi:hudi-spark4.1-bundle_2.13:1.2.0,io.acryl:acryl-spark-lineage:1.7.0'
+      SPARK_INSTALL_JAVA_PACKAGES: ',software.amazon.awssdk:bundle:2.35.4,software.amazon.awssdk:s3-transfer-manager:2.35.4,software.amazon.awssdk.crt:aws-crt:0.39.4,org.apache.hadoop:hadoop-aws:3.4.2,io.delta:delta-spark_2.13:4.1.0,io.delta:delta-storage:4.1.0,org.apache.iceberg:iceberg-spark-runtime-4.1_2.13:1.11.0,org.apache.iceberg:iceberg-aws-bundle:1.11.0,org.apache.polaris:polaris-spark-3.5_2.13:1.2.0-incubating,org.apache.hudi:hudi-spark4.1-bundle_2.13:1.2.0,'
       SPARK_INSTALL_PYTHON_PACKAGES: ''
-      SPARK_DEFAULTS_CONF_spark_jars: /opt/spark/jars/iceberg-spark-runtime-4.1_2.13-1.11.0.jar,/opt/spark/jars/acryl-spark-lineage-1.7.0.jar
+      SPARK_DEFAULTS_CONF_spark_jars: /opt/spark/jars/iceberg-spark-runtime-4.1_2.13-1.11.0.jar,
       MAVEN_DOWNLOAD_REPO: nexus
       MAVEN_DOWNLOAD_REPO_NEXUS: http://nexus:8081/repository/maven-public
       MAVEN_DOWNLOAD_REPO_NEXUS_USER: admin
@@ -674,9 +676,9 @@ services:
       SPARK_DEFAULTS_CONF_spark_jars_packages: io.delta:delta-spark_2.13:4.1.0,io.delta:delta-storage:4.1.0
       SPARK_DEFAULTS_CONF_spark_jars_excludes:
       # specifies the JARs to be downloaded to the jars folder by maven-download-sh script (triggered in the init script)
-      SPARK_INSTALL_JAVA_PACKAGES: ',software.amazon.awssdk:bundle:2.35.4,software.amazon.awssdk:s3-transfer-manager:2.35.4,software.amazon.awssdk.crt:aws-crt:0.39.4,org.apache.hadoop:hadoop-aws:3.4.2,io.delta:delta-spark_2.13:4.1.0,io.delta:delta-storage:4.1.0,org.apache.iceberg:iceberg-spark-runtime-4.1_2.13:1.11.0,org.apache.iceberg:iceberg-aws-bundle:1.11.0,org.apache.polaris:polaris-spark-3.5_2.13:1.2.0-incubating,org.apache.hudi:hudi-spark4.1-bundle_2.13:1.2.0,io.acryl:acryl-spark-lineage:1.7.0'
+      SPARK_INSTALL_JAVA_PACKAGES: ',software.amazon.awssdk:bundle:2.35.4,software.amazon.awssdk:s3-transfer-manager:2.35.4,software.amazon.awssdk.crt:aws-crt:0.39.4,org.apache.hadoop:hadoop-aws:3.4.2,io.delta:delta-spark_2.13:4.1.0,io.delta:delta-storage:4.1.0,org.apache.iceberg:iceberg-spark-runtime-4.1_2.13:1.11.0,org.apache.iceberg:iceberg-aws-bundle:1.11.0,org.apache.polaris:polaris-spark-3.5_2.13:1.2.0-incubating,org.apache.hudi:hudi-spark4.1-bundle_2.13:1.2.0,'
       SPARK_INSTALL_PYTHON_PACKAGES: ''
-      SPARK_DEFAULTS_CONF_spark_jars: /opt/spark/jars/iceberg-spark-runtime-4.1_2.13-1.11.0.jar,/opt/spark/jars/acryl-spark-lineage-1.7.0.jar
+      SPARK_DEFAULTS_CONF_spark_jars: /opt/spark/jars/iceberg-spark-runtime-4.1_2.13-1.11.0.jar,
       MAVEN_DOWNLOAD_REPO: nexus
       MAVEN_DOWNLOAD_REPO_NEXUS: http://nexus:8081/repository/maven-public
       MAVEN_DOWNLOAD_REPO_NEXUS_USER: admin
@@ -761,9 +763,9 @@ services:
       SPARK_DEFAULTS_CONF_spark_jars_packages: io.delta:delta-spark_2.13:4.1.0,io.delta:delta-storage:4.1.0
       SPARK_DEFAULTS_CONF_spark_jars_excludes:
       # specifies the JARs to be downloaded to the jars folder by maven-download-sh script (triggered in the init script)
-      SPARK_INSTALL_JAVA_PACKAGES: ',software.amazon.awssdk:bundle:2.35.4,software.amazon.awssdk:s3-transfer-manager:2.35.4,software.amazon.awssdk.crt:aws-crt:0.39.4,org.apache.hadoop:hadoop-aws:3.4.2,io.delta:delta-spark_2.13:4.1.0,io.delta:delta-storage:4.1.0,org.apache.iceberg:iceberg-spark-runtime-4.1_2.13:1.11.0,org.apache.iceberg:iceberg-aws-bundle:1.11.0,org.apache.polaris:polaris-spark-3.5_2.13:1.2.0-incubating,org.apache.hudi:hudi-spark4.1-bundle_2.13:1.2.0,io.acryl:acryl-spark-lineage:1.7.0'
+      SPARK_INSTALL_JAVA_PACKAGES: ',software.amazon.awssdk:bundle:2.35.4,software.amazon.awssdk:s3-transfer-manager:2.35.4,software.amazon.awssdk.crt:aws-crt:0.39.4,org.apache.hadoop:hadoop-aws:3.4.2,io.delta:delta-spark_2.13:4.1.0,io.delta:delta-storage:4.1.0,org.apache.iceberg:iceberg-spark-runtime-4.1_2.13:1.11.0,org.apache.iceberg:iceberg-aws-bundle:1.11.0,org.apache.polaris:polaris-spark-3.5_2.13:1.2.0-incubating,org.apache.hudi:hudi-spark4.1-bundle_2.13:1.2.0,'
       SPARK_INSTALL_PYTHON_PACKAGES: ''
-      SPARK_DEFAULTS_CONF_spark_jars: /opt/spark/jars/iceberg-spark-runtime-4.1_2.13-1.11.0.jar,/opt/spark/jars/acryl-spark-lineage-1.7.0.jar
+      SPARK_DEFAULTS_CONF_spark_jars: /opt/spark/jars/iceberg-spark-runtime-4.1_2.13-1.11.0.jar,
       MAVEN_DOWNLOAD_REPO: nexus
       MAVEN_DOWNLOAD_REPO_NEXUS: http://nexus:8081/repository/maven-public
       MAVEN_DOWNLOAD_REPO_NEXUS_USER: admin
