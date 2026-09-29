@@ -1048,7 +1048,7 @@ services:
     healthcheck:
       test:
         - CMD-SHELL
-        - mysqladmin ping -h mysql -u $$MYSQL_USER --password=$$MYSQL_PASSWORD
+        - mysqladmin ping -h localhost -u $$MYSQL_USER --password=$$MYSQL_PASSWORD
       timeout: 10s
       interval: 2s
       retries: 5
@@ -1120,8 +1120,12 @@ services:
       datahub_setup_job: true
       com.platys.name: datahub
     depends_on:
-      - datahub-opensearch
-      - schema-registry-1
+      datahub-opensearch:
+        condition: service_healthy
+      schema-registry-1:
+        condition: service_healthy
+      datahub-mysql:
+        condition: service_healthy
     environment:
       - BACKFILL_BROWSE_PATHS_V2=true
       - CREATE_USER=false
