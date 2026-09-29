@@ -783,7 +783,7 @@
       SPARK_sql_warehouse_dir: ''
       SPARK_cores_max: 2
       SPARK_executor_memory:
-      SPARK_datahub_agent_enabled: false
+      SPARK_datahub_agent_enabled: true
       
       SPARK_sql_default_catalog: polaris
   

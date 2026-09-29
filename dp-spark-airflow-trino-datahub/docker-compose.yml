@@ -271,6 +271,8 @@ services:
     depends_on:
       nexus:
         condition: service_healthy
+      datahub-gms:
+        condition: service_healthy
     ports:
       - 28304:28304
       - 6066:6066
@@ -1120,12 +1122,9 @@ services:
       datahub_setup_job: true
       com.platys.name: datahub
     depends_on:
-      datahub-opensearch:
-        condition: service_healthy
-      schema-registry-1:
-        condition: service_healthy
-      datahub-mysql:
-        condition: service_healthy
+      - datahub-opensearch
+      - schema-registry-1
+      - datahub-mysql
     environment:
       - BACKFILL_BROWSE_PATHS_V2=true
       - CREATE_USER=false
