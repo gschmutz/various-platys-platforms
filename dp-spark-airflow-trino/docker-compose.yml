@@ -609,6 +609,8 @@ services:
         required: true
       airflow-db:
         condition: service_healthy
+      nexus:
+        condition: service_healthy
     command:
       - api-server
     ports:
@@ -657,6 +659,8 @@ services:
       AIRFLOW__OPENLINEAGE__DISABLED: true
       PIP_INDEX_URL: http://nexus:8081/repository/pypi-proxy/simple/
       PIP_TRUSTED_HOST: nexus
+      _PIP_INDEX_URL: http://nexus:8081/repository/pypi-proxy/simple/
+      _PIP_TRUSTED_HOST: nexus
     volumes:
       - ./data-transfer:/data-transfer:z
       - ./scripts/airflow/dags:/opt/airflow/dags:Z
@@ -688,6 +692,8 @@ services:
       airflow-db:
         condition: service_healthy
         required: true
+      nexus:
+        condition: service_healthy
     command:
       - dag-processor
     environment:
@@ -734,6 +740,8 @@ services:
       AIRFLOW__OPENLINEAGE__DISABLED: true
       PIP_INDEX_URL: http://nexus:8081/repository/pypi-proxy/simple/
       PIP_TRUSTED_HOST: nexus
+      _PIP_INDEX_URL: http://nexus:8081/repository/pypi-proxy/simple/
+      _PIP_TRUSTED_HOST: nexus
     volumes:
       - ./data-transfer:/data-transfer:z
       - ./scripts/airflow/dags:/opt/airflow/dags:Z
@@ -765,6 +773,8 @@ services:
       airflow-db:
         condition: service_healthy
         required: true
+      nexus:
+        condition: service_healthy
     command:
       - scheduler
     environment:
@@ -811,6 +821,8 @@ services:
       AIRFLOW__OPENLINEAGE__DISABLED: true
       PIP_INDEX_URL: http://nexus:8081/repository/pypi-proxy/simple/
       PIP_TRUSTED_HOST: nexus
+      _PIP_INDEX_URL: http://nexus:8081/repository/pypi-proxy/simple/
+      _PIP_TRUSTED_HOST: nexus
     volumes:
       - ./data-transfer:/data-transfer:z
       - ./scripts/airflow/dags:/opt/airflow/dags:Z
