@@ -1459,11 +1459,11 @@ services:
       - ./init/postgresql:/docker-entrypoint-initdb.d/:z
     restart: unless-stopped
     healthcheck:
-      test: [CMD-SHELL, pg_isready -U postgres]
+      test: [CMD-SHELL, "pg_isready -U postgres && psql -U postgres -c 'SELECT 1' -q --no-align -t > /dev/null"]
       interval: 10s
       timeout: 5s
-      retries: 10          # increase retries
-      start_period: 30s    # add a grace period before checks begin
+      retries: 15
+      start_period: 60s
   #  ================================== Trino ========================================== #
   trino-1:
     image: docker.io/trinodb/trino:483
