@@ -159,7 +159,7 @@ services:
     container_name: kafka-init
     hostname: kafka-init
     depends_on:
-      kafka-1:
+      kafka-env1-1:
         condition: service_started
     environment:
       BOOTSTRAP_SERVERS: kafka-env1-1:19092,kafka-env1-2:19093,kafka-env1-3:19094
