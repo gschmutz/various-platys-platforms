@@ -2007,7 +2007,9 @@
       #
       # ===== Superset ========
       #
-      SUPERSET_enable: false
+      SUPERSET_enable: true
+      SUPERSET_volume_map_superset_home: false
+      SUPERSET_admin_password: abc123!      
       SUPERSET_provision_examples: false
       
       #
@@ -2078,7 +2080,7 @@
       #
       # ===== Cube.js ========
       #
-      CUBEJS_enable: false
+      CUBEJS_enable: true
       CUBEJS_dev_mode: true
       
       #
@@ -2736,6 +2738,7 @@
       POSTGRESQL_password: abc123!
       POSTGRESQL_schema: demo
       POSTGRESQL_multiple_databases: demodb,polaris,nimtabledb,dbt_workbench
+      POSTGRESQL_multiple_schemas: public,polaris_schema,public
       POSTGRESQL_multiple_users: demo,postgres,nimtable,dbt_workbench
       POSTGRESQL_multiple_passwords: abc123!,abc123!,abc123!,abc123!
       POSTGRESQL_multiple_addl_roles: ''
