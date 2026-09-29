@@ -10,7 +10,7 @@ networks:
 services:
 #  ================================== Kafka ========================================== #
   kafka-1:
-    image: docker.io/confluentinc/cp-kafka:8.1.3
+    image: docker.io/confluentinc/cp-kafka:8.3.2
     container_name: kafka-1
     hostname: kafka-1
     labels:
@@ -58,7 +58,7 @@ services:
       retries: 40
       start_period: 20s
   kafka-2:
-    image: docker.io/confluentinc/cp-kafka:8.1.3
+    image: docker.io/confluentinc/cp-kafka:8.3.2
     container_name: kafka-2
     hostname: kafka-2
     labels:
@@ -106,7 +106,7 @@ services:
       retries: 40
       start_period: 20s
   kafka-3:
-    image: docker.io/confluentinc/cp-kafka:8.1.3
+    image: docker.io/confluentinc/cp-kafka:8.3.2
     container_name: kafka-3
     hostname: kafka-3
     labels:
@@ -173,7 +173,7 @@ services:
     init: true
   #  ================================== Confluent Schema Registry ========================================== #
   schema-registry-1:
-    image: docker.io/confluentinc/cp-schema-registry:8.1.3
+    image: docker.io/confluentinc/cp-schema-registry:8.3.2
     hostname: schema-registry-1
     container_name: schema-registry-1
     labels:
@@ -281,7 +281,7 @@ services:
       - DATAHUB_GMS_PORT=8080
       - DATAHUB_PLAY_MEM_BUFFER_SIZE=10MB
       - DATAHUB_SECRET=${PLATYS_DATAHUB_PASSWORD:-WFqedcrR1diAtbRcoSnllKrGWOe0Pcx/pPwE0stgezw=}
-      - DATAHUB_SYSTEM_CLIENT_SECRET=JohnSnowKnowsNothing
+      - DATAHUB_SYSTEM_CLIENT_SECRET=RhGh+qjObZ8iFBUBZk4LIAyWgHN4Mt+njS+Cj4kWixk=
       - DATAHUB_TRACKING_TOPIC=DataHubUsageEvent_v1
       - DATAHUB_ANALYTICS_ENABLED=false
       - ELASTIC_CLIENT_HOST=datahub-opensearch
@@ -319,7 +319,7 @@ services:
       - DATAHUB_GMS_BASE_PATH=/
       - DATAHUB_OBJECT_STORAGE_URI=file:///tmp/datahub-object-storage
       - DATAHUB_SERVER_TYPE=quickstart
-      - DATAHUB_SYSTEM_CLIENT_SECRET=JohnSnowKnowsNothing
+      - DATAHUB_SYSTEM_CLIENT_SECRET=RhGh+qjObZ8iFBUBZk4LIAyWgHN4Mt+njS+Cj4kWixk=
       - DATAHUB_TELEMETRY_ENABLED=False
       - DATAHUB_TOKEN_SERVICE_SALT=+iwt/f8xPlr5czlNryVfPg7YdAkjCiaZxSbIBkfUGto=
       - DATAHUB_TOKEN_SERVICE_SIGNING_KEY=VDjHg8p2RjCUIFvahdVIscnU7f8ccE0awXk6h++d5ZE=
@@ -414,7 +414,7 @@ services:
       - DATAHUB_GMS_PORT=8080
       - DATAHUB_GMS_PROTOCOL=http
       - DATAHUB_SYSTEM_CLIENT_ID=__datahub_system
-      - DATAHUB_SYSTEM_CLIENT_SECRET=JohnSnowKnowsNothing
+      - DATAHUB_SYSTEM_CLIENT_SECRET=RhGh+qjObZ8iFBUBZk4LIAyWgHN4Mt+njS+Cj4kWixk=
       - ELASTICSEARCH_HOST=datahub-opensearch
       - ELASTICSEARCH_PORT=9200
       - ELASTICSEARCH_PROTOCOL=http
@@ -447,7 +447,7 @@ services:
     healthcheck:
       test:
         - CMD-SHELL
-        - mysqladmin ping -h mysql -u $$MYSQL_USER --password=$$MYSQL_PASSWORD
+        - mysqladmin ping -h localhost -u $$MYSQL_USER --password=$$MYSQL_PASSWORD
       timeout: 10s
       interval: 2s
       retries: 5
@@ -520,18 +520,20 @@ services:
       com.platys.name: datahub
     depends_on:
       - datahub-opensearch
+      - schema-registry-1
+      - datahub-mysql
     environment:
       - BACKFILL_BROWSE_PATHS_V2=true
       - CREATE_USER=false
       - CREATE_USER_PASSWORD=datahub
-      - CREATE_USER_USERNAME=datahub
+      - CREATE_USER_USERNAME=abc123!
       - DATAHUB_BASE_PATH=/
       - DATAHUB_GMS_BASE_PATH=/
       - DATAHUB_GMS_HOST=datahub-gms
       - DATAHUB_GMS_PORT=8080
       - DATAHUB_PRECREATE_TOPICS=true
       - DATAHUB_SQL_SETUP_ENABLED=true      # handles MySQL/Postgres setup
-      - DATAHUB_SYSTEM_CLIENT_SECRET=JohnSnowKnowsNothing
+      - DATAHUB_SYSTEM_CLIENT_SECRET=RhGh+qjObZ8iFBUBZk4LIAyWgHN4Mt+njS+Cj4kWixk=
       - DATAHUB_TOKEN_SERVICE_SALT=+iwt/f8xPlr5czlNryVfPg7YdAkjCiaZxSbIBkfUGto=
       - DATAHUB_TOKEN_SERVICE_SIGNING_KEY=VDjHg8p2RjCUIFvahdVIscnU7f8ccE0awXk6h++d5ZE=
       - EBEAN_DATASOURCE_DRIVER=com.mysql.jdbc.Driver

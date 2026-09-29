@@ -29,6 +29,8 @@ See [Upgrade to a new platform stack version](https://github.com/TrivadisPF/plat
  * Update `hasura` to `v2.50.3-ce`
  * Update `trino` to `483`
  * Update `hive-metastore` to `4.2.1`
+ * Update `polaris` to `1.8.0`
+ * Update `confluent` to `8.3.2`
 
 ### Enhancements
 
@@ -124,7 +126,7 @@ See [Upgrade to a new platform stack version](https://github.com/TrivadisPF/plat
 
  * add default values for environment variables `PUBLIC_IP=127.0.0.1` and `DOCKER_HOST_IP=localhost`
  * change docker image for the iceberg rest service from `tabulario/iceberg-rest` to `apache/iceberg-rest-fixture`
- * add aistor as an editon of Minio
+ * add aistor as an edition of Minio
  
 ### Breaking Changes
  
