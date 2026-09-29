@@ -30,6 +30,7 @@ See [Upgrade to a new platform stack version](https://github.com/TrivadisPF/plat
  * Update `trino` to `483`
  * Update `hive-metastore` to `4.2.1`
  * Update `polaris` to `1.8.0`
+ * Update `confluent` to `8.3.2`
 
 ### Enhancements
 
@@ -38,6 +39,7 @@ See [Upgrade to a new platform stack version](https://github.com/TrivadisPF/plat
 
 ### Breaking Changes
 
+ * rename `data_centers` to `environments` and `data_center_to_use` to `environment_to_use`
  * rename `CONFLUENT_SCHEMA_REGISTRY_xxxx` to `SCHEMA_REGISTRY_confluent_xxxx`
  * rename `APICURIO_SCHEMA_REGISTRY_xxxx` to `SCHEMA_REGISTRY_apicurio_xxxx`
  * rename `DATAIKU_DSS_xxxx` to `DATAIKU_xxxx`
