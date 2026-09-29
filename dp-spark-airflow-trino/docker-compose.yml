@@ -1450,7 +1450,7 @@ services:
       - POSTGRES_MULTIPLE_DATABASES=demodb,polaris,nimtabledb,dbt_workbench
       - POSTGRES_MULTIPLE_USERS=demo,postgres,nimtable,dbt_workbench
       - POSTGRES_MULTIPLE_PASSWORDS=${PLATYS_POSTGRESQL_MULTIPLE_PASSWORD:-abc123!,abc123!,abc123!,abc123!}
-      - POSTGRES_MULTIPLE_SCHEMAS=public,polaris_schema,public
+      - POSTGRES_MULTIPLE_SCHEMAS=public,polaris_schema,public,public
       - POSTGRES_MULTIPLE_ADDL_ROLES=
       - PGDATA=/var/lib/postgresql/data/pgdata
       - DB_SCHEMA=demo
