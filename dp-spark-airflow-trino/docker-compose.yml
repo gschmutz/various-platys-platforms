@@ -18,6 +18,9 @@ services:
       com.platys.webui.title: Spark UI
       com.platys.webui.url: http://dataplatform:28304
     user: root
+    depends_on:
+      nexus:
+        condition: service_healthy
     ports:
       - 28304:28304
       - 6066:6066
@@ -41,6 +44,9 @@ services:
       SPARK_DEFAULTS_CONF_spark_driver_extraJavaOptions:
       SPARK_DEFAULTS_CONF_spark_executor_extraJavaOptions:
       SPARK_DEFAULTS_CONF_spark_cores_max: 2
+      SPARK_DEFAULTS_CONF_spark_extraListeners: datahub.spark.DatahubSparkListener
+      SPARK_DEFAULTS_CONF_spark_datahub_rest_server: http://${DOCKER_HOST_IP}:28142
+      SPARK_DEFAULTS_CONF_spark_datahub_metadata_dataset_env: ${PLATYS_ENV}
       SPARK_DEFAULTS_CONF_spark_sql_hive_metastore_jars: builtin
       # SPARK_DEFAULTS_CONF_spark_sql_hive_metastore_version: 3.1.2    
       SPARK_DEFAULTS_CONF_spark_sql_catalogImplementation: hive
@@ -65,12 +71,17 @@ services:
       SPARK_DEFAULTS_CONF_spark_jars_repositories:
       SPARK_DEFAULTS_CONF_spark_jars_packages: io.delta:delta-spark_2.13:4.1.0,io.delta:delta-storage:4.1.0
       SPARK_DEFAULTS_CONF_spark_jars_excludes:
-      # specifies the JARs to be downloaded to the jars folder by maven-download-sh script
-      SPARK_INSTALL_JAVA_PACKAGES: ',software.amazon.awssdk:bundle:2.35.4,software.amazon.awssdk:s3-transfer-manager:2.35.4,software.amazon.awssdk.crt:aws-crt:0.39.4,org.apache.hadoop:hadoop-aws:3.4.2,io.delta:delta-spark_2.13:4.1.0,io.delta:delta-storage:4.1.0,org.apache.iceberg:iceberg-spark-runtime-4.1_2.13:1.11.0,org.apache.iceberg:iceberg-aws-bundle:1.11.0,org.apache.polaris:polaris-spark-3.5_2.13:1.2.0-incubating,org.apache.hudi:hudi-spark4.1-bundle_2.13:1.2.0'
-      SPARK_INSTALL_PYTHON_PACKAGES: ' delta-spark==4.1.0'
-      SPARK_DEFAULTS_CONF_spark_jars: /opt/spark/jars/iceberg-spark-runtime-4.1_2.13-1.11.0.jar
-      MAVEN_DOWNLOAD_REPO: central
-      SPARK_DEFAULTS_CONF_spark_jars_ivySettings:
+      # specifies the JARs to be downloaded to the jars folder by maven-download-sh script (triggered in the init script)
+      SPARK_INSTALL_JAVA_PACKAGES: ',software.amazon.awssdk:bundle:2.35.4,software.amazon.awssdk:s3-transfer-manager:2.35.4,software.amazon.awssdk.crt:aws-crt:0.39.4,org.apache.hadoop:hadoop-aws:3.4.2,io.delta:delta-spark_2.13:4.1.0,io.delta:delta-storage:4.1.0,org.apache.iceberg:iceberg-spark-runtime-4.1_2.13:1.11.0,org.apache.iceberg:iceberg-aws-bundle:1.11.0,org.apache.polaris:polaris-spark-3.5_2.13:1.2.0-incubating,org.apache.hudi:hudi-spark4.1-bundle_2.13:1.2.0,io.acryl:acryl-spark-lineage_2.13:0.2.18'
+      SPARK_INSTALL_PYTHON_PACKAGES: ''
+      SPARK_DEFAULTS_CONF_spark_jars: /opt/spark/jars/iceberg-spark-runtime-4.1_2.13-1.11.0.jar,/opt/spark/jars/acryl-spark-lineage_2.13-0.2.18.jar
+      MAVEN_DOWNLOAD_REPO: nexus
+      MAVEN_DOWNLOAD_REPO_NEXUS: http://nexus:8081/repository/maven-public
+      MAVEN_DOWNLOAD_REPO_NEXUS_USER: admin
+      MAVEN_DOWNLOAD_REPO_NEXUS_PASSWORD: ${PLATYS_NEXUS_ADMIN_PASSWORD:-abc123!abc123!}
+      PIP_INDEX_URL: http://nexus:8081/repository/pypi-proxy/simple/
+      PIP_TRUSTED_HOST: nexus
+      SPARK_DEFAULTS_CONF_spark_jars_ivySettings: /opt/spark/conf/ivy-settings.xml
       SPARK_DEFAULTS_CONF_spark_jars_ivy: /opt/ivy-cache
     volumes:
       - ./data-transfer:/data-transfer:z
@@ -78,6 +89,7 @@ services:
       - ./conf/spark/hive-site.xml:/opt/spark/conf.default/hive-site.xml:z
       - ./conf/spark/spark-defaults.conf:/opt/spark/conf.default/spark-defaults.conf:z
       - ./init/spark:/docker-entrypoint-initdb.d:z
+      - ./conf/spark/ivy-settings.xml:/opt/spark/conf/ivy-settings.xml:z
       - ./scripts/docker/maven-download.sh:/maven-download.sh:z
       - ./scripts/spark/pyspark:/opt/spark/bin/pyspark:z
       - ./container-volume/spark/logs/:/var/log/spark/logs:z
@@ -124,6 +136,9 @@ services:
       SPARK_DEFAULTS_CONF_spark_driver_extraJavaOptions:
       SPARK_DEFAULTS_CONF_spark_executor_extraJavaOptions:
       SPARK_DEFAULTS_CONF_spark_cores_max: 2
+      SPARK_DEFAULTS_CONF_spark_extraListeners: datahub.spark.DatahubSparkListener
+      SPARK_DEFAULTS_CONF_spark_datahub_rest_server: http://${DOCKER_HOST_IP}:28142
+      SPARK_DEFAULTS_CONF_spark_datahub_metadata_dataset_env: ${PLATYS_ENV}
       SPARK_DEFAULTS_CONF_spark_sql_hive_metastore_jars: builtin
       # SPARK_DEFAULTS_CONF_spark_sql_hive_metastore_version: 3.1.2    
       SPARK_DEFAULTS_CONF_spark_sql_catalogImplementation: hive
@@ -148,18 +163,24 @@ services:
       SPARK_DEFAULTS_CONF_spark_jars_repositories:
       SPARK_DEFAULTS_CONF_spark_jars_packages: io.delta:delta-spark_2.13:4.1.0,io.delta:delta-storage:4.1.0
       SPARK_DEFAULTS_CONF_spark_jars_excludes:
-      # specifies the JARs to be downloaded to the jars folder by maven-download-sh script
-      SPARK_INSTALL_JAVA_PACKAGES: ',software.amazon.awssdk:bundle:2.35.4,software.amazon.awssdk:s3-transfer-manager:2.35.4,software.amazon.awssdk.crt:aws-crt:0.39.4,org.apache.hadoop:hadoop-aws:3.4.2,io.delta:delta-spark_2.13:4.1.0,io.delta:delta-storage:4.1.0,org.apache.iceberg:iceberg-spark-runtime-4.1_2.13:1.11.0,org.apache.iceberg:iceberg-aws-bundle:1.11.0,org.apache.polaris:polaris-spark-3.5_2.13:1.2.0-incubating,org.apache.hudi:hudi-spark4.1-bundle_2.13:1.2.0'
-      SPARK_INSTALL_PYTHON_PACKAGES: ' delta-spark==4.1.0'
-      SPARK_DEFAULTS_CONF_spark_jars: /opt/spark/jars/iceberg-spark-runtime-4.1_2.13-1.11.0.jar
-      MAVEN_DOWNLOAD_REPO: central
-      SPARK_DEFAULTS_CONF_spark_jars_ivySettings:
+      # specifies the JARs to be downloaded to the jars folder by maven-download-sh script (triggered in the init script)
+      SPARK_INSTALL_JAVA_PACKAGES: ',software.amazon.awssdk:bundle:2.35.4,software.amazon.awssdk:s3-transfer-manager:2.35.4,software.amazon.awssdk.crt:aws-crt:0.39.4,org.apache.hadoop:hadoop-aws:3.4.2,io.delta:delta-spark_2.13:4.1.0,io.delta:delta-storage:4.1.0,org.apache.iceberg:iceberg-spark-runtime-4.1_2.13:1.11.0,org.apache.iceberg:iceberg-aws-bundle:1.11.0,org.apache.polaris:polaris-spark-3.5_2.13:1.2.0-incubating,org.apache.hudi:hudi-spark4.1-bundle_2.13:1.2.0,io.acryl:acryl-spark-lineage_2.13:0.2.18'
+      SPARK_INSTALL_PYTHON_PACKAGES: ''
+      SPARK_DEFAULTS_CONF_spark_jars: /opt/spark/jars/iceberg-spark-runtime-4.1_2.13-1.11.0.jar,/opt/spark/jars/acryl-spark-lineage_2.13-0.2.18.jar
+      MAVEN_DOWNLOAD_REPO: nexus
+      MAVEN_DOWNLOAD_REPO_NEXUS: http://nexus:8081/repository/maven-public
+      MAVEN_DOWNLOAD_REPO_NEXUS_USER: admin
+      MAVEN_DOWNLOAD_REPO_NEXUS_PASSWORD: ${PLATYS_NEXUS_ADMIN_PASSWORD:-abc123!abc123!}
+      PIP_INDEX_URL: http://nexus:8081/repository/pypi-proxy/simple/
+      PIP_TRUSTED_HOST: nexus
+      SPARK_DEFAULTS_CONF_spark_jars_ivySettings: /opt/spark/conf/ivy-settings.xml
       SPARK_DEFAULTS_CONF_spark_jars_ivy: /opt/ivy-cache
     volumes:
       - ./data-transfer:/data-transfer:z
       - ./conf/spark/hive-site.xml:/opt/spark/conf.default/hive-site.xml:z
       - ./conf/spark/spark-defaults.conf:/opt/spark/conf.default/spark-defaults.conf:z
       - ./init/spark:/docker-entrypoint-initdb.d:z
+      - ./conf/spark/ivy-settings.xml:/opt/spark/conf/ivy-settings.xml:z
       - ./scripts/docker/maven-download.sh:/maven-download.sh:z
       - ./container-volume/spark/logs/:/var/log/spark/logs:z
     entrypoint: [/docker-entrypoint-initdb.d/spark-init.sh]
@@ -202,6 +223,9 @@ services:
       SPARK_DEFAULTS_CONF_spark_driver_extraJavaOptions:
       SPARK_DEFAULTS_CONF_spark_executor_extraJavaOptions:
       SPARK_DEFAULTS_CONF_spark_cores_max: 2
+      SPARK_DEFAULTS_CONF_spark_extraListeners: datahub.spark.DatahubSparkListener
+      SPARK_DEFAULTS_CONF_spark_datahub_rest_server: http://${DOCKER_HOST_IP}:28142
+      SPARK_DEFAULTS_CONF_spark_datahub_metadata_dataset_env: ${PLATYS_ENV}
       SPARK_DEFAULTS_CONF_spark_sql_hive_metastore_jars: builtin
       # SPARK_DEFAULTS_CONF_spark_sql_hive_metastore_version: 3.1.2    
       SPARK_DEFAULTS_CONF_spark_sql_catalogImplementation: hive
@@ -226,18 +250,24 @@ services:
       SPARK_DEFAULTS_CONF_spark_jars_repositories:
       SPARK_DEFAULTS_CONF_spark_jars_packages: io.delta:delta-spark_2.13:4.1.0,io.delta:delta-storage:4.1.0
       SPARK_DEFAULTS_CONF_spark_jars_excludes:
-      # specifies the JARs to be downloaded to the jars folder by maven-download-sh script
-      SPARK_INSTALL_JAVA_PACKAGES: ',software.amazon.awssdk:bundle:2.35.4,software.amazon.awssdk:s3-transfer-manager:2.35.4,software.amazon.awssdk.crt:aws-crt:0.39.4,org.apache.hadoop:hadoop-aws:3.4.2,io.delta:delta-spark_2.13:4.1.0,io.delta:delta-storage:4.1.0,org.apache.iceberg:iceberg-spark-runtime-4.1_2.13:1.11.0,org.apache.iceberg:iceberg-aws-bundle:1.11.0,org.apache.polaris:polaris-spark-3.5_2.13:1.2.0-incubating,org.apache.hudi:hudi-spark4.1-bundle_2.13:1.2.0'
-      SPARK_INSTALL_PYTHON_PACKAGES: ' delta-spark==4.1.0'
-      SPARK_DEFAULTS_CONF_spark_jars: /opt/spark/jars/iceberg-spark-runtime-4.1_2.13-1.11.0.jar
-      MAVEN_DOWNLOAD_REPO: central
-      SPARK_DEFAULTS_CONF_spark_jars_ivySettings:
+      # specifies the JARs to be downloaded to the jars folder by maven-download-sh script (triggered in the init script)
+      SPARK_INSTALL_JAVA_PACKAGES: ',software.amazon.awssdk:bundle:2.35.4,software.amazon.awssdk:s3-transfer-manager:2.35.4,software.amazon.awssdk.crt:aws-crt:0.39.4,org.apache.hadoop:hadoop-aws:3.4.2,io.delta:delta-spark_2.13:4.1.0,io.delta:delta-storage:4.1.0,org.apache.iceberg:iceberg-spark-runtime-4.1_2.13:1.11.0,org.apache.iceberg:iceberg-aws-bundle:1.11.0,org.apache.polaris:polaris-spark-3.5_2.13:1.2.0-incubating,org.apache.hudi:hudi-spark4.1-bundle_2.13:1.2.0,io.acryl:acryl-spark-lineage_2.13:0.2.18'
+      SPARK_INSTALL_PYTHON_PACKAGES: ''
+      SPARK_DEFAULTS_CONF_spark_jars: /opt/spark/jars/iceberg-spark-runtime-4.1_2.13-1.11.0.jar,/opt/spark/jars/acryl-spark-lineage_2.13-0.2.18.jar
+      MAVEN_DOWNLOAD_REPO: nexus
+      MAVEN_DOWNLOAD_REPO_NEXUS: http://nexus:8081/repository/maven-public
+      MAVEN_DOWNLOAD_REPO_NEXUS_USER: admin
+      MAVEN_DOWNLOAD_REPO_NEXUS_PASSWORD: ${PLATYS_NEXUS_ADMIN_PASSWORD:-abc123!abc123!}
+      PIP_INDEX_URL: http://nexus:8081/repository/pypi-proxy/simple/
+      PIP_TRUSTED_HOST: nexus
+      SPARK_DEFAULTS_CONF_spark_jars_ivySettings: /opt/spark/conf/ivy-settings.xml
       SPARK_DEFAULTS_CONF_spark_jars_ivy: /opt/ivy-cache
     volumes:
       - ./data-transfer:/data-transfer:z
       - ./conf/spark/hive-site.xml:/opt/spark/conf.default/hive-site.xml:z
       - ./conf/spark/spark-defaults.conf:/opt/spark/conf.default/spark-defaults.conf:z
       - ./init/spark:/docker-entrypoint-initdb.d:z
+      - ./conf/spark/ivy-settings.xml:/opt/spark/conf/ivy-settings.xml:z
       - ./scripts/docker/maven-download.sh:/maven-download.sh:z
       - ./container-volume/spark/logs/:/var/log/spark/logs:z
     entrypoint: [/docker-entrypoint-initdb.d/spark-init.sh]
@@ -282,6 +312,9 @@ services:
       SPARK_DEFAULTS_CONF_spark_driver_extraJavaOptions:
       SPARK_DEFAULTS_CONF_spark_executor_extraJavaOptions:
       SPARK_DEFAULTS_CONF_spark_cores_max: 2
+      SPARK_DEFAULTS_CONF_spark_extraListeners: datahub.spark.DatahubSparkListener
+      SPARK_DEFAULTS_CONF_spark_datahub_rest_server: http://${DOCKER_HOST_IP}:28142
+      SPARK_DEFAULTS_CONF_spark_datahub_metadata_dataset_env: ${PLATYS_ENV}
       SPARK_DEFAULTS_CONF_spark_sql_hive_metastore_jars: builtin
       # SPARK_DEFAULTS_CONF_spark_sql_hive_metastore_version: 3.1.2    
       SPARK_DEFAULTS_CONF_spark_sql_catalogImplementation: hive
@@ -306,12 +339,17 @@ services:
       SPARK_DEFAULTS_CONF_spark_jars_repositories:
       SPARK_DEFAULTS_CONF_spark_jars_packages: io.delta:delta-spark_2.13:4.1.0,io.delta:delta-storage:4.1.0
       SPARK_DEFAULTS_CONF_spark_jars_excludes:
-      # specifies the JARs to be downloaded to the jars folder by maven-download-sh script
-      SPARK_INSTALL_JAVA_PACKAGES: ',software.amazon.awssdk:bundle:2.35.4,software.amazon.awssdk:s3-transfer-manager:2.35.4,software.amazon.awssdk.crt:aws-crt:0.39.4,org.apache.hadoop:hadoop-aws:3.4.2,io.delta:delta-spark_2.13:4.1.0,io.delta:delta-storage:4.1.0,org.apache.iceberg:iceberg-spark-runtime-4.1_2.13:1.11.0,org.apache.iceberg:iceberg-aws-bundle:1.11.0,org.apache.polaris:polaris-spark-3.5_2.13:1.2.0-incubating,org.apache.hudi:hudi-spark4.1-bundle_2.13:1.2.0'
-      SPARK_INSTALL_PYTHON_PACKAGES: ' delta-spark==4.1.0'
-      SPARK_DEFAULTS_CONF_spark_jars: /opt/spark/jars/iceberg-spark-runtime-4.1_2.13-1.11.0.jar
-      MAVEN_DOWNLOAD_REPO: central
-      SPARK_DEFAULTS_CONF_spark_jars_ivySettings:
+      # specifies the JARs to be downloaded to the jars folder by maven-download-sh script (triggered in the init script)
+      SPARK_INSTALL_JAVA_PACKAGES: ',software.amazon.awssdk:bundle:2.35.4,software.amazon.awssdk:s3-transfer-manager:2.35.4,software.amazon.awssdk.crt:aws-crt:0.39.4,org.apache.hadoop:hadoop-aws:3.4.2,io.delta:delta-spark_2.13:4.1.0,io.delta:delta-storage:4.1.0,org.apache.iceberg:iceberg-spark-runtime-4.1_2.13:1.11.0,org.apache.iceberg:iceberg-aws-bundle:1.11.0,org.apache.polaris:polaris-spark-3.5_2.13:1.2.0-incubating,org.apache.hudi:hudi-spark4.1-bundle_2.13:1.2.0,io.acryl:acryl-spark-lineage_2.13:0.2.18'
+      SPARK_INSTALL_PYTHON_PACKAGES: ''
+      SPARK_DEFAULTS_CONF_spark_jars: /opt/spark/jars/iceberg-spark-runtime-4.1_2.13-1.11.0.jar,/opt/spark/jars/acryl-spark-lineage_2.13-0.2.18.jar
+      MAVEN_DOWNLOAD_REPO: nexus
+      MAVEN_DOWNLOAD_REPO_NEXUS: http://nexus:8081/repository/maven-public
+      MAVEN_DOWNLOAD_REPO_NEXUS_USER: admin
+      MAVEN_DOWNLOAD_REPO_NEXUS_PASSWORD: ${PLATYS_NEXUS_ADMIN_PASSWORD:-abc123!abc123!}
+      PIP_INDEX_URL: http://nexus:8081/repository/pypi-proxy/simple/
+      PIP_TRUSTED_HOST: nexus
+      SPARK_DEFAULTS_CONF_spark_jars_ivySettings: /opt/spark/conf/ivy-settings.xml
       SPARK_DEFAULTS_CONF_spark_jars_ivy: /opt/ivy-cache
     volumes:
       - ./data-transfer:/data-transfer:z
@@ -319,6 +357,7 @@ services:
       - ./conf/spark/hive-site.xml:/opt/spark/conf/hive-site.xml:z
       - ./conf/spark/spark-defaults.conf:/opt/spark/conf/spark-defaults.conf:z
       - ./init/spark:/docker-entrypoint-initdb.d:z
+      - ./conf/spark/ivy-settings.xml:/opt/spark/conf/ivy-settings.xml:z
       - ./scripts/docker/maven-download.sh:/maven-download.sh:z
       - ./container-volume/spark/logs/:/var/log/spark/logs:z
     entrypoint: [/docker-entrypoint-initdb.d/spark-init.sh]
@@ -357,6 +396,9 @@ services:
       SPARK_DEFAULTS_CONF_spark_driver_extraJavaOptions:
       SPARK_DEFAULTS_CONF_spark_executor_extraJavaOptions:
       SPARK_DEFAULTS_CONF_spark_cores_max: 2
+      SPARK_DEFAULTS_CONF_spark_extraListeners: datahub.spark.DatahubSparkListener
+      SPARK_DEFAULTS_CONF_spark_datahub_rest_server: http://${DOCKER_HOST_IP}:28142
+      SPARK_DEFAULTS_CONF_spark_datahub_metadata_dataset_env: ${PLATYS_ENV}
       SPARK_DEFAULTS_CONF_spark_sql_hive_metastore_jars: builtin
       # SPARK_DEFAULTS_CONF_spark_sql_hive_metastore_version: 3.1.2    
       SPARK_DEFAULTS_CONF_spark_sql_catalogImplementation: hive
@@ -381,12 +423,17 @@ services:
       SPARK_DEFAULTS_CONF_spark_jars_repositories:
       SPARK_DEFAULTS_CONF_spark_jars_packages: io.delta:delta-spark_2.13:4.1.0,io.delta:delta-storage:4.1.0
       SPARK_DEFAULTS_CONF_spark_jars_excludes:
-      # specifies the JARs to be downloaded to the jars folder by maven-download-sh script
-      SPARK_INSTALL_JAVA_PACKAGES: ',software.amazon.awssdk:bundle:2.35.4,software.amazon.awssdk:s3-transfer-manager:2.35.4,software.amazon.awssdk.crt:aws-crt:0.39.4,org.apache.hadoop:hadoop-aws:3.4.2,io.delta:delta-spark_2.13:4.1.0,io.delta:delta-storage:4.1.0,org.apache.iceberg:iceberg-spark-runtime-4.1_2.13:1.11.0,org.apache.iceberg:iceberg-aws-bundle:1.11.0,org.apache.polaris:polaris-spark-3.5_2.13:1.2.0-incubating,org.apache.hudi:hudi-spark4.1-bundle_2.13:1.2.0'
-      SPARK_INSTALL_PYTHON_PACKAGES: ' delta-spark==4.1.0'
-      SPARK_DEFAULTS_CONF_spark_jars: /opt/spark/jars/iceberg-spark-runtime-4.1_2.13-1.11.0.jar
-      MAVEN_DOWNLOAD_REPO: central
-      SPARK_DEFAULTS_CONF_spark_jars_ivySettings:
+      # specifies the JARs to be downloaded to the jars folder by maven-download-sh script (triggered in the init script)
+      SPARK_INSTALL_JAVA_PACKAGES: ',software.amazon.awssdk:bundle:2.35.4,software.amazon.awssdk:s3-transfer-manager:2.35.4,software.amazon.awssdk.crt:aws-crt:0.39.4,org.apache.hadoop:hadoop-aws:3.4.2,io.delta:delta-spark_2.13:4.1.0,io.delta:delta-storage:4.1.0,org.apache.iceberg:iceberg-spark-runtime-4.1_2.13:1.11.0,org.apache.iceberg:iceberg-aws-bundle:1.11.0,org.apache.polaris:polaris-spark-3.5_2.13:1.2.0-incubating,org.apache.hudi:hudi-spark4.1-bundle_2.13:1.2.0,io.acryl:acryl-spark-lineage_2.13:0.2.18'
+      SPARK_INSTALL_PYTHON_PACKAGES: ''
+      SPARK_DEFAULTS_CONF_spark_jars: /opt/spark/jars/iceberg-spark-runtime-4.1_2.13-1.11.0.jar,/opt/spark/jars/acryl-spark-lineage_2.13-0.2.18.jar
+      MAVEN_DOWNLOAD_REPO: nexus
+      MAVEN_DOWNLOAD_REPO_NEXUS: http://nexus:8081/repository/maven-public
+      MAVEN_DOWNLOAD_REPO_NEXUS_USER: admin
+      MAVEN_DOWNLOAD_REPO_NEXUS_PASSWORD: ${PLATYS_NEXUS_ADMIN_PASSWORD:-abc123!abc123!}
+      PIP_INDEX_URL: http://nexus:8081/repository/pypi-proxy/simple/
+      PIP_TRUSTED_HOST: nexus
+      SPARK_DEFAULTS_CONF_spark_jars_ivySettings: /opt/spark/conf/ivy-settings.xml
       SPARK_DEFAULTS_CONF_spark_jars_ivy: /opt/ivy-cache
     volumes:
       - ./data-transfer:/data-transfer:z
@@ -394,6 +441,7 @@ services:
       - ./conf/spark/hive-site.xml:/opt/spark/conf.default/hive-site.xml:z
       - ./conf/spark/spark-defaults.conf:/opt/spark/conf.default/spark-defaults.conf:z
       - ./init/spark:/docker-entrypoint-initdb.d:z
+      - ./conf/spark/ivy-settings.xml:/opt/spark/conf/ivy-settings.xml:z
       - ./scripts/docker/maven-download.sh:/maven-download.sh:z
       - ./container-volume/spark/logs/:/var/log/spark/logs:z
       - ./scripts/docker/wait-for-it.sh:/usr/src/app/wait-for-it.sh:z
@@ -435,6 +483,9 @@ services:
       SPARK_DEFAULTS_CONF_spark_driver_extraJavaOptions:
       SPARK_DEFAULTS_CONF_spark_executor_extraJavaOptions:
       SPARK_DEFAULTS_CONF_spark_cores_max: 2
+      SPARK_DEFAULTS_CONF_spark_extraListeners: datahub.spark.DatahubSparkListener
+      SPARK_DEFAULTS_CONF_spark_datahub_rest_server: http://${DOCKER_HOST_IP}:28142
+      SPARK_DEFAULTS_CONF_spark_datahub_metadata_dataset_env: ${PLATYS_ENV}
       SPARK_DEFAULTS_CONF_spark_sql_hive_metastore_jars: builtin
       # SPARK_DEFAULTS_CONF_spark_sql_hive_metastore_version: 3.1.2    
       SPARK_DEFAULTS_CONF_spark_sql_catalogImplementation: hive
@@ -459,12 +510,17 @@ services:
       SPARK_DEFAULTS_CONF_spark_jars_repositories:
       SPARK_DEFAULTS_CONF_spark_jars_packages: io.delta:delta-spark_2.13:4.1.0,io.delta:delta-storage:4.1.0
       SPARK_DEFAULTS_CONF_spark_jars_excludes:
-      # specifies the JARs to be downloaded to the jars folder by maven-download-sh script
-      SPARK_INSTALL_JAVA_PACKAGES: ',software.amazon.awssdk:bundle:2.35.4,software.amazon.awssdk:s3-transfer-manager:2.35.4,software.amazon.awssdk.crt:aws-crt:0.39.4,org.apache.hadoop:hadoop-aws:3.4.2,io.delta:delta-spark_2.13:4.1.0,io.delta:delta-storage:4.1.0,org.apache.iceberg:iceberg-spark-runtime-4.1_2.13:1.11.0,org.apache.iceberg:iceberg-aws-bundle:1.11.0,org.apache.polaris:polaris-spark-3.5_2.13:1.2.0-incubating,org.apache.hudi:hudi-spark4.1-bundle_2.13:1.2.0'
-      SPARK_INSTALL_PYTHON_PACKAGES: ' delta-spark==4.1.0'
-      SPARK_DEFAULTS_CONF_spark_jars: /opt/spark/jars/iceberg-spark-runtime-4.1_2.13-1.11.0.jar
-      MAVEN_DOWNLOAD_REPO: central
-      SPARK_DEFAULTS_CONF_spark_jars_ivySettings:
+      # specifies the JARs to be downloaded to the jars folder by maven-download-sh script (triggered in the init script)
+      SPARK_INSTALL_JAVA_PACKAGES: ',software.amazon.awssdk:bundle:2.35.4,software.amazon.awssdk:s3-transfer-manager:2.35.4,software.amazon.awssdk.crt:aws-crt:0.39.4,org.apache.hadoop:hadoop-aws:3.4.2,io.delta:delta-spark_2.13:4.1.0,io.delta:delta-storage:4.1.0,org.apache.iceberg:iceberg-spark-runtime-4.1_2.13:1.11.0,org.apache.iceberg:iceberg-aws-bundle:1.11.0,org.apache.polaris:polaris-spark-3.5_2.13:1.2.0-incubating,org.apache.hudi:hudi-spark4.1-bundle_2.13:1.2.0,io.acryl:acryl-spark-lineage_2.13:0.2.18'
+      SPARK_INSTALL_PYTHON_PACKAGES: ''
+      SPARK_DEFAULTS_CONF_spark_jars: /opt/spark/jars/iceberg-spark-runtime-4.1_2.13-1.11.0.jar,/opt/spark/jars/acryl-spark-lineage_2.13-0.2.18.jar
+      MAVEN_DOWNLOAD_REPO: nexus
+      MAVEN_DOWNLOAD_REPO_NEXUS: http://nexus:8081/repository/maven-public
+      MAVEN_DOWNLOAD_REPO_NEXUS_USER: admin
+      MAVEN_DOWNLOAD_REPO_NEXUS_PASSWORD: ${PLATYS_NEXUS_ADMIN_PASSWORD:-abc123!abc123!}
+      PIP_INDEX_URL: http://nexus:8081/repository/pypi-proxy/simple/
+      PIP_TRUSTED_HOST: nexus
+      SPARK_DEFAULTS_CONF_spark_jars_ivySettings: /opt/spark/conf/ivy-settings.xml
       SPARK_DEFAULTS_CONF_spark_jars_ivy: /opt/ivy-cache
     volumes:
       - ./data-transfer:/data-transfer:z
@@ -472,6 +528,7 @@ services:
       - ./conf/spark/hive-site.xml:/opt/spark/conf.default/hive-site.xml:z
       - ./conf/spark/spark-defaults.conf:/opt/spark/conf.default/spark-defaults.conf:z
       - ./init/spark:/docker-entrypoint-initdb.d:z
+      - ./conf/spark/ivy-settings.xml:/opt/spark/conf/ivy-settings.xml:z
       # we override the run.sh script to start thriftserver instead of master/worker
       # - ./scripts/spark/run-thriftserver.sh:/opt/bitnami/scripts/spark/run.sh
       - ./scripts/docker/maven-download.sh:/maven-download.sh:z
@@ -616,6 +673,8 @@ services:
       AWS_ACCESS_KEY_ID: ${PLATYS_AWS_ACCESS_KEY:-admin}
       AWS_SECRET_ACCESS_KEY: ${PLATYS_AWS_SECRET_ACCESS_KEY:-abc123abc123!}
       AIRFLOW__OPENLINEAGE__DISABLED: true
+      PIP_INDEX_URL: http://nexus:8081/repository/pypi-proxy/simple/
+      PIP_TRUSTED_HOST: nexus
     volumes:
       - ./data-transfer:/data-transfer:z
       - ./scripts/airflow/dags:/opt/airflow/dags:Z
@@ -691,6 +750,8 @@ services:
       AWS_ACCESS_KEY_ID: ${PLATYS_AWS_ACCESS_KEY:-admin}
       AWS_SECRET_ACCESS_KEY: ${PLATYS_AWS_SECRET_ACCESS_KEY:-abc123abc123!}
       AIRFLOW__OPENLINEAGE__DISABLED: true
+      PIP_INDEX_URL: http://nexus:8081/repository/pypi-proxy/simple/
+      PIP_TRUSTED_HOST: nexus
     volumes:
       - ./data-transfer:/data-transfer:z
       - ./scripts/airflow/dags:/opt/airflow/dags:Z
@@ -766,6 +827,8 @@ services:
       AWS_ACCESS_KEY_ID: ${PLATYS_AWS_ACCESS_KEY:-admin}
       AWS_SECRET_ACCESS_KEY: ${PLATYS_AWS_SECRET_ACCESS_KEY:-abc123abc123!}
       AIRFLOW__OPENLINEAGE__DISABLED: true
+      PIP_INDEX_URL: http://nexus:8081/repository/pypi-proxy/simple/
+      PIP_TRUSTED_HOST: nexus
     volumes:
       - ./data-transfer:/data-transfer:z
       - ./scripts/airflow/dags:/opt/airflow/dags:Z
@@ -951,6 +1014,8 @@ services:
       AWS_ACCESS_KEY_ID: ${PLATYS_AWS_ACCESS_KEY:-admin}
       AWS_SECRET_ACCESS_KEY: ${PLATYS_AWS_SECRET_ACCESS_KEY:-abc123abc123!}
       AIRFLOW__OPENLINEAGE__DISABLED: true
+      PIP_INDEX_URL: http://nexus:8081/repository/pypi-proxy/simple/
+      PIP_TRUSTED_HOST: nexus
     volumes:
       - ./data-transfer:/data-transfer:z
     user: 0:0
@@ -977,7 +1042,7 @@ services:
       GRANT_SUDO: "'yes'"
       JUPYTER_TOKEN: ${PLATYS_JUPYTER_TOKEN:-abc123!}
       DOCKER_STACKS_JUPYTER_CMD: lab
-      MAVEN_DOWNLOAD_REPO: central
+      MAVEN_DOWNLOAD_REPO: nexus
       MAVEN_DOWNLOAD_REPO_NEXUS: http://nexus:8081/repository/maven-public
       MAVEN_DOWNLOAD_REPO_NEXUS_USER: admin
       MAVEN_DOWNLOAD_REPO_NEXUS_PASSWORD: ${PLATYS_NEXUS_ADMIN_PASSWORD:-abc123!abc123!}
@@ -992,6 +1057,9 @@ services:
       AWS_DEFAULT_REGION: us-east-1
       #PYSPARK_PYTHON: /opt/bitnami/python/bin/python3.12
       #PYSPARK_DRIVER_PYTHON: /usr/bin/python3.12   
+    depends_on:
+      nexus:
+        condition: service_healthy
     volumes:
       - ./data-transfer:/data-transfer:z
       - ./init/jupyter/on-startup-jupyter/:/usr/local/bin/start-notebook.d/:z
@@ -1007,6 +1075,8 @@ services:
         conda create -y --name py310 python=3.10.12
         source /opt/conda/etc/profile.d/conda.sh
         conda activate py310
+        NEXUS_PASS=$$(python3 -c "import urllib.parse, os; print(urllib.parse.quote(os.environ.get('MAVEN_DOWNLOAD_REPO_NEXUS_PASSWORD', 'abc123!abc123!')))")
+        NEXUS_INDEX_URL="http://admin:$${NEXUS_PASS}@nexus:8081/repository/pypi-proxy/simple/"
         pip install ipykernel
         python -m ipykernel install --user --name py310 --display-name "Python 3.10.12 (ipykernel)"
         conda run -n py310 pip install pyspark==4.1.1 numpy graphframes-py typing_extensions jupysql "zstandard>=0.25.0" pandas arrow pyarrow grpcio-status boto3
@@ -1087,6 +1157,13 @@ services:
       ICEBERG_POLARIS_CATALOG_WAREHOUSE: polaris_catalog
       CLIENT_ID: admin
       CLIENT_SECRET: ${PLATYS_POLARIS_CLIENT_SECRET:-abc123!}
+      KAFKA_NODES: ${DOCKER_HOST_IP}:9095
+      KAFKA_SCHEMA_REGISTRY_URL: http://${DOCKER_HOST_IP}:8081
+      KAFKA_CONFIG_RESOURCES: /etc/trino/kafka-configuration.properties
+      KAFKA_SECURITY_PROTOCOL: None
+      KAFKA_TABLE_NAMES:
+      KAFKA_DEFAULT_SCHEMA: default
+      KAFKA_TABLE_DESCRIPTOR_DIR: /etc/trino/kafka/
       POSTGRESQL_DATABASE: postgres
       POSTGRESQL_USER: postgres
       POSTGRESQL_PASSWORD: abc123!
@@ -1483,11 +1560,37 @@ services:
       - ./data-transfer:/data-transfer:z
       - /var/run/docker.sock:/var/run/docker.sock:z
     restart: unless-stopped
+  #  ================================== Sonatype Nexus ========================================== #
+  nexus:
+    image: docker.io/sonatype/nexus3:3.90.5
+    container_name: nexus
+    hostname: nexus
+    labels:
+      com.platys.name: nexus
+      com.platys.description: Sonatype Nexus Repository Manager
+      com.platys.webui.title: Nexus UI
+      com.platys.webui.url: http://dataplatform:28426
+      com.platys.password.envvars: PLATYS_NEXUS_ADMIN_PASSWORD
+    ports:
+      - 28426:8081
+    environment:
+      INSTALL4J_ADD_JVM_PARAMS: -Xms512m -Xmx2g -XX:MaxDirectMemorySize=2g
+      NEXUS_ADMIN_PASSWORD: ${PLATYS_NEXUS_ADMIN_PASSWORD:-abc123!abc123!}
+    volumes:
+      - ./data-transfer:/data-transfer:z
+      - ./init/nexus:/nexus-init:ro
+    entrypoint: [/bin/sh, /nexus-init/entrypoint.sh]
+    restart: unless-stopped
+    healthcheck:
+      interval: 1s
+      timeout: 10s
+      retries: 240
+      test: [CMD, test, -f, /tmp/.setup-complete]
   #  ================================== Wetty ========================================== #
-  wetty:
+  wetty-env1:
     image: docker.io/wettyoss/wetty:2
-    container_name: wetty
-    hostname: wetty
+    container_name: wetty-env1
+    hostname: wetty-env1
     labels:
       com.platys.name: wetty
       com.platys.description: A terminal window in Web-Browser
@@ -1505,104 +1608,11 @@ services:
     volumes:
       - ./data-transfer:/data-transfer:z
     restart: unless-stopped
-  #  ================================== Forgejo ========================================== #
-  forgejo:
-    image: codeberg.org/forgejo/forgejo:9
-    container_name: forgejo
-    hostname: forgejo
-    labels:
-      com.platys.name: forgejo
-      com.platys.description: Lightweight self-hosted Git service
-      com.platys.webui.title: Forgejo UI
-      com.platys.webui.url: http://dataplatform:3004
-    ports:
-      - 3004:3000
-      - 222:22
-    environment:
-      - USER_UID=1000
-      - USER_GID=1000
-    volumes:
-      - ./container-volume/forgejo:/data:z
-      - ./data-transfer:/data-transfer:z
-    restart: unless-stopped
-  #  ================================== dbt Workbench ========================================== #
-  dbt-workbench-backend:
-    image: ghcr.io/rezer-bleede/dbt-workbench-backend:latest
-    container_name: dbt-workbench-backend
-    hostname: dbt-workbench-backend
-    platform: linux/amd64
-    labels:
-      com.platys.name: dbt-workbench
-      com.platys.description: dbt Workbench backend
-    depends_on:
-      postgresql:
-        condition: service_healthy
-    ports:
-      - 28496:8000
-    environment:
-      - AUTH_ENABLED=false
-      - CORS_ORIGINS=http://localhost:28497,http://${PUBLIC_IP:-dataplatform}:28497
-      - POSTGRES_HOST=postgresql
-      - POSTGRES_USER=dbt_workbench
-      - POSTGRES_PASSWORD=${PLATYS_DBT_WORKBENCH_DB_PASSWORD:-abc123!}
-      - POSTGRES_DB=dbt_workbench
-      - DBT_ARTIFACTS_PATH=/app/data/artifacts
-      - DBT_PROJECT_PATH=/app/data/repos/default
-      - BACKEND_PORT=8000
-      - SQL_WORKSPACE_DEFAULT_CONNECTION_URL=postgresql://dbt_workbench:${PLATYS_DBT_WORKBENCH_DB_PASSWORD:-abc123!}@postgresql:5432/dbt_workbench
-      - AI_ENABLED=false
-      - AI_DEFAULT_MODE=direct
-      - AI_DEFAULT_DIRECT_PROVIDER=openai
-      - AI_DEFAULT_DIRECT_MODEL_OPENAI=
-      - AI_DEFAULT_DIRECT_MODEL_ANTHROPIC
-      - AI_ALLOW_SESSION_PROVIDER_OVERRIDE=true
-      - AI_MCP_LOCAL_ALLOWLIST_JSON={}
-    volumes:
-      - ./data-transfer:/data-transfer:z
-    restart: unless-stopped
-    healthcheck:
-      test: [CMD, curl, -f, http://localhost:8000/health]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-      start_period: 30s
-  dbt-workbench-frontend:
-    image: ghcr.io/rezer-bleede/dbt-workbench-frontend:latest
-    container_name: dbt-workbench-frontend
-    hostname: dbt-workbench-frontend
-    platform: linux/amd64
-    labels:
-      com.platys.name: dbt-workbench
-      com.platys.description: dbt Workbench — web-based IDE for dbt projects
-      com.platys.webui.title: dbt Workbench UI
-      com.platys.webui.url: http://dataplatform:28497
-    depends_on:
-      dbt-workbench-backend:
-        condition: service_healthy
-    ports:
-      - 28497:3000
-    environment:
-      - VITE_API_BASE_URL=http://${PUBLIC_IP:-dataplatform}:28496
-    entrypoint:
-      - /bin/sh
-      - -c
-      - |
-        find /app/dist -name '*.js' -exec sed -i "s|http://localhost:8000|$$VITE_API_BASE_URL|g" {} \;
-        exec serve -s dist -l 3000
-    volumes:
-      - ./data-transfer:/data-transfer:z
-    restart: unless-stopped
-    healthcheck:
-      test: [CMD, wget, --no-verbose, --tries=1, --spider, http://localhost:3000]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-      start_period: 10s
   #  ================================== markdown-viewer ========================================== #
-  markdown-viewer:
+  markdown-viewer-env1:
     image: docker.io/dannyben/madness:1.2.5
-    container_name: markdown-viewer
-    hostname: markdown-viewer
+    container_name: markdown-viewer-env1
+    hostname: markdown-viewer-env1
     labels:
       com.platys.name: markdown-viewer
       com.platys.description: Platys Platform homepage viewer
@@ -1622,10 +1632,10 @@ services:
       timeout: 10s
       retries: 3
       start_period: 1m
-  markdown-renderer:
+  markdown-renderer-env1:
     image: docker.io/trivadis/jinja2-renderer:0.8.1
-    container_name: markdown-renderer
-    hostname: markdown-renderer
+    container_name: markdown-renderer-env1
+    hostname: markdown-renderer-env1
     labels:
       com.platys.name: markdown-renderer
       com.platys.description: Platys Platform homepage rendering
@@ -1638,7 +1648,7 @@ services:
       PLATYS_PLATFORM_STACK: trivadis/platys-modern-data-platform
       PLATYS_PLATFORM_STACK_VERSION: develop
       PLATYS_COPY_COOKBOOK_DATA: 'True'
-      PLATYS_DATACENTER:
+      PLATYS_DATACENTER: env1
       SERVICE_LIST_VERSION: 2
     volumes:
       - ./artefacts/templates:/templates:z

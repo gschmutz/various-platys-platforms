@@ -33,8 +33,8 @@
       # Allowed values (taken from DataHub): dev, test, qa, uat, ei, pre, non_prod, prod, corp
       env: ${PLATYS_ENV}
       
-      data_centers: dc1,dc2,dc3
-      data_center_to_use: 0
+      environments: 'env1,env2,env3'
+      environment_to_use: 1
       
       # either 'minio' or 'rustfs' or `seaweedfs`
       s3_service_to_use: rustfs
@@ -55,8 +55,8 @@
         #
         # ===== Apache Kafka ========
         #
-        KAFKA_enable: false
-        KAFKA_bootstrap_servers: 
+        KAFKA_enable: true
+        KAFKA_bootstrap_servers: ${DOCKER_HOST_IP}:9095
         # either 'PLAINTEXT', 'SASL_PLAINTEXT', 'SSL' ('SASL_SSL' not yet supported)
         KAFKA_security_protocol: 
         # either 'PLAIN', 'SCRAM-SHA-256' or 'SCRAM-SHA-512'
@@ -66,8 +66,8 @@
         KAFKA_sasl_username: null
         KAFKA_sasl_password: null
         
-        SCHEMA_REGISTRY_enable: false
-        SCHEMA_REGISTRY_url: null
+        SCHEMA_REGISTRY_enable: true
+        SCHEMA_REGISTRY_url: http://${DOCKER_HOST_IP}:8081
         
         SPARK_enable: false
         SPARK_master_url: spark://spark-master:7077
@@ -108,8 +108,8 @@
         SNOWFLAKE_role: null
         SNOWFLAKE_warehouse: null
         
-        DATAHUB_enable: false
-        DATAHUB_gms_url: null
+        DATAHUB_enable: true
+        DATAHUB_gms_url: http://${DOCKER_HOST_IP}:28142
         
         OLLAMA_enable: false
         OLLAMA_url: http://${PUBLIC_IP}:11434
@@ -783,7 +783,7 @@
       SPARK_sql_warehouse_dir: ''
       SPARK_cores_max: 2
       SPARK_executor_memory:
-      SPARK_datahub_agent_enabled: false
+      SPARK_datahub_agent_enabled: true
       
       SPARK_sql_default_catalog: polaris
   
@@ -3851,7 +3851,7 @@
       #
       # ===== Sonatype Nexus ========
       #
-      NEXUS_enable: false
+      NEXUS_enable: true
       NEXUS_volume_map_data: false
       NEXUS_jvm_min_heap: 512m
       NEXUS_jvm_max_heap: 2g
@@ -3912,12 +3912,12 @@
       #
       # ===== Forgejo ========
       #
-      FORGEJO_enable: true
+      FORGEJO_enable: false
 
       #
       # ===== dbt Workbench ========
       #
-      DBT_WORKBENCH_enable: true
+      DBT_WORKBENCH_enable: false
       DBT_WORKBENCH_volume_map_data: false
       DBT_WORKBENCH_db_user: dbt_workbench
       DBT_WORKBENCH_db_password: abc123!
