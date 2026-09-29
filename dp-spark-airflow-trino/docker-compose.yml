@@ -1312,7 +1312,7 @@ services:
     healthcheck:
       disable: true
   superset-db:
-    image: docker.io/postgres:10
+    image: docker.io/postgres:17
     hostname: superset-db
     container_name: superset-db
     labels:
@@ -1361,7 +1361,7 @@ services:
       - ./init/superset/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d:z
     restart: unless-stopped
   superset-redis:
-    image: docker.io/redis:3.2
+    image: docker.io/redis:7
     hostname: superset-redis
     container_name: superset-redis
     labels:
@@ -1447,10 +1447,10 @@ services:
       - POSTGRES_USER=postgres
       - POSTGRES_DB=postgres
 #      - POSTGRES_INITDB_ARGS=--encoding=UTF8 --data-checksums      
-      - POSTGRES_MULTIPLE_DATABASES=demodb,polaris,nimtabledb,dbt_workbench
-      - POSTGRES_MULTIPLE_USERS=demo,postgres,nimtable,dbt_workbench
-      - POSTGRES_MULTIPLE_PASSWORDS=${PLATYS_POSTGRESQL_MULTIPLE_PASSWORD:-abc123!,abc123!,abc123!,abc123!}
-      - POSTGRES_MULTIPLE_SCHEMAS=public,polaris_schema,public,public
+      - POSTGRES_MULTIPLE_DATABASES=demodb,polaris,nimtabledb
+      - POSTGRES_MULTIPLE_USERS=demo,postgres,nimtable
+      - POSTGRES_MULTIPLE_PASSWORDS=${PLATYS_POSTGRESQL_MULTIPLE_PASSWORD:-abc123!,abc123!,abc123!}
+      - POSTGRES_MULTIPLE_SCHEMAS=public,polaris_schema,public
       - POSTGRES_MULTIPLE_ADDL_ROLES=
       - PGDATA=/var/lib/postgresql/data/pgdata
       - DB_SCHEMA=demo
@@ -1459,11 +1459,11 @@ services:
       - ./init/postgresql:/docker-entrypoint-initdb.d/:z
     restart: unless-stopped
     healthcheck:
-      test: [CMD-SHELL, "pg_isready -U postgres && psql -U postgres -c 'SELECT 1' -q --no-align -t > /dev/null"]
+      test: [CMD-SHELL, pg_isready -U postgres && psql -U postgres -c 'SELECT 1' -q --no-align -t > /dev/null]
       interval: 10s
       timeout: 5s
       retries: 15
-      start_period: 60s
+      start_period: 30s
   #  ================================== Trino ========================================== #
   trino-1:
     image: docker.io/trinodb/trino:483
