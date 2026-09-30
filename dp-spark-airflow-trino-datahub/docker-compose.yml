@@ -1841,7 +1841,12 @@ services:
     volumes:
       - ./data-transfer:/data-transfer:z
       - ./conf/superset:/app/docker:z
-    command: [/app/docker/docker-bootstrap.sh, worker]
+    command:
+      - /bin/bash
+      - -c
+      - |
+        echo 'psycopg2-binary' >> /app/docker/requirements-local.txt
+        /app/docker/docker-bootstrap.sh worker
     restart: unless-stopped
     healthcheck:
       test: [CMD-SHELL, celery -A superset.tasks.celery_app:app inspect ping -d celery@$$HOSTNAME]
