@@ -160,7 +160,7 @@ services:
     hostname: kafka-init
     depends_on:
       kafka-1:
-        condition: service_started
+        condition: service_healthy
     environment:
       BOOTSTRAP_SERVERS: kafka-1:19092,kafka-2:19093,kafka-3:19094
       KAFKA_TIMEOUT: 120
@@ -205,10 +205,11 @@ services:
       - ./plugins/opentelemetry/agents:/otel:z
     restart: unless-stopped
     healthcheck:
-      start_period: 10s
-      interval: 15s
-      retries: 25
-      test: [CMD-SHELL, "echo > /dev/tcp/localhost/8081"]
+      test: [CMD, python3, -c, "import urllib.request, sys; sys.exit(0) if urllib.request.urlopen('http://localhost:8081/subjects', timeout=5).status == 200 else sys.exit(1)"]
+      interval: 30s
+      timeout: 10s
+      retries: 30
+      start_period: 30s
   #  ================================== Apache Kafka HQ (AKHQ) ========================================== #
   akhq:
     image: docker.io/tchiotludo/akhq:latest
@@ -1028,10 +1029,10 @@ services:
     command: --character-set-server=utf8mb4 --collation-server=utf8mb4_bin --default-authentication-plugin=caching_sha2_password
     restart: unless-stopped
     healthcheck:
-      test: [CMD-SHELL, "mysqladmin ping -h localhost -u $$MYSQL_USER --password=$$MYSQL_PASSWORD && mysql -h localhost -u $$MYSQL_USER --password=$$MYSQL_PASSWORD -e 'SELECT 1' $$MYSQL_DATABASE"]
-      timeout: 10s
+      test: [CMD-SHELL, mysqladmin ping -h localhost -u $$MYSQL_USER --password=$$MYSQL_PASSWORD && mysql -h localhost -u $$MYSQL_USER --password=$$MYSQL_PASSWORD -e 'SELECT 1' $$MYSQL_DATABASE]
+      timeout: 15s
       interval: 10s
-      retries: 20
+      retries: 40
       start_period: 60s
   datahub-neo4j:
     image: docker.io/neo4j:4.4.28-community
