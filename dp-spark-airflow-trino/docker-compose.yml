@@ -1138,7 +1138,13 @@ services:
     volumes:
       - ./data-transfer:/data-transfer:z
       - ./conf/superset:/app/docker:z
-    command: [/app/docker/docker-bootstrap.sh, app-gunicorn]
+    command:
+      - /bin/bash
+      - -c
+      - |
+        echo 'psycopg2-binary' >> /app/docker/requirements-local.txt
+        for pkg in apache-superset[trino]; do echo "$pkg" >> /app/docker/requirements-local.txt; done
+        /app/docker/docker-bootstrap.sh app-gunicorn
     healthcheck:
       test: [CMD-SHELL, /app/docker/docker-healthcheck.sh]
       interval: 30s
@@ -1249,7 +1255,13 @@ services:
     volumes:
       - ./data-transfer:/data-transfer:z
       - ./conf/superset:/app/docker:z
-    command: [/app/docker/docker-bootstrap.sh, worker]
+    command:
+      - /bin/bash
+      - -c
+      - |
+        echo 'psycopg2-binary' >> /app/docker/requirements-local.txt
+        for pkg in apache-superset[trino]; do echo "$pkg" >> /app/docker/requirements-local.txt; done
+        /app/docker/docker-bootstrap.sh worker
     restart: unless-stopped
     healthcheck:
       test: [CMD-SHELL, celery -A superset.tasks.celery_app:app inspect ping -d celery@$$HOSTNAME]
@@ -1302,7 +1314,13 @@ services:
     volumes:
       - ./data-transfer:/data-transfer:z
       - ./conf/superset:/app/docker:z
-    command: [/app/docker/docker-bootstrap.sh, beat]
+    command:
+      - /bin/bash
+      - -c
+      - |
+        echo 'psycopg2-binary' >> /app/docker/requirements-local.txt
+        for pkg in apache-superset[trino]; do echo "$pkg" >> /app/docker/requirements-local.txt; done
+        /app/docker/docker-bootstrap.sh beat
     restart: unless-stopped
     healthcheck:
       disable: true
