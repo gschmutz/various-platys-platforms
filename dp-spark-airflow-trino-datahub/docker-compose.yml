@@ -1029,9 +1029,11 @@ services:
     command: --character-set-server=utf8mb4 --collation-server=utf8mb4_bin --default-authentication-plugin=caching_sha2_password
     restart: unless-stopped
     healthcheck:
-      test: [CMD-SHELL, mysqladmin ping -h localhost -u $$MYSQL_USER --password=$$MYSQL_PASSWORD && mysql -h localhost -u $$MYSQL_USER --password=$$MYSQL_PASSWORD -e 'SELECT 1' $$MYSQL_DATABASE]
+      test:
+        - CMD-SHELL
+        - "mysqladmin ping -h localhost -u $$MYSQL_USER --password=$$MYSQL_PASSWORD && mysql -h localhost -u $$MYSQL_USER --password=$$MYSQL_PASSWORD -e 'SELECT 1' $$MYSQL_DATABASE"
       timeout: 15s
-      interval: 10s
+      interval: 15s
       retries: 40
       start_period: 60s
   datahub-neo4j:
