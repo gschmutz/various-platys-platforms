@@ -1085,7 +1085,7 @@ services:
       start_period: 30s
   #  ================================== Superset ========================================== #
   superset:
-    image: apachesuperset.docker.scarf.sh/apache/superset:6.1.0
+    image: apachesuperset.docker.scarf.sh/apache/superset:latest
     hostname: superset
     container_name: superset
     labels:
@@ -1147,7 +1147,7 @@ services:
       start_period: 60s
     restart: unless-stopped
   superset-init:
-    image: apachesuperset.docker.scarf.sh/apache/superset:6.1.0
+    image: apachesuperset.docker.scarf.sh/apache/superset:latest
     hostname: superset-init
     container_name: superset-init
     user: root
@@ -1201,7 +1201,7 @@ services:
     healthcheck:
       disable: true
   superset-worker:
-    image: apachesuperset.docker.scarf.sh/apache/superset:6.1.0
+    image: apachesuperset.docker.scarf.sh/apache/superset:latest
     hostname: superset-worker
     container_name: superset-worker
     labels:
@@ -1254,7 +1254,7 @@ services:
     healthcheck:
       test: [CMD-SHELL, celery -A superset.tasks.celery_app:app inspect ping -d celery@$$HOSTNAME]
   superset-worker-beat:
-    image: apachesuperset.docker.scarf.sh/apache/superset:6.1.0
+    image: apachesuperset.docker.scarf.sh/apache/superset:latest
     hostname: superset-worker-beat
     container_name: superset-worker-beat
     labels:
