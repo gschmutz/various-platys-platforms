@@ -1125,7 +1125,7 @@ services:
       - SUPERSET_LOG_LEVEL=info
       - SUPERSET_ENV=development
       - SUPERSET_ENABLE_SWAGGER_UI=true
-      - SUPERSET_LOAD_EXAMPLES=no
+      - SUPERSET_LOAD_EXAMPLES=yes
       - CYPRESS_CONFIG=false
       - SUPERSET_PORT=8088
       - SUPERSET_APP_ROOT=/
@@ -1183,7 +1183,7 @@ services:
       - SUPERSET_LOG_LEVEL=info
       - SUPERSET_ENV=development
       - SUPERSET_ENABLE_SWAGGER_UI=true
-      - SUPERSET_LOAD_EXAMPLES=no
+      - SUPERSET_LOAD_EXAMPLES=yes
       - CYPRESS_CONFIG=false
       - SUPERSET_PORT=8088
       - SUPERSET_APP_ROOT=/
@@ -1236,7 +1236,7 @@ services:
       - SUPERSET_LOG_LEVEL=info
       - SUPERSET_ENV=development
       - SUPERSET_ENABLE_SWAGGER_UI=true
-      - SUPERSET_LOAD_EXAMPLES=no
+      - SUPERSET_LOAD_EXAMPLES=yes
       - CYPRESS_CONFIG=false
       - SUPERSET_PORT=8088
       - SUPERSET_APP_ROOT=/
@@ -1289,7 +1289,7 @@ services:
       - SUPERSET_LOG_LEVEL=info
       - SUPERSET_ENV=development
       - SUPERSET_ENABLE_SWAGGER_UI=true
-      - SUPERSET_LOAD_EXAMPLES=no
+      - SUPERSET_LOAD_EXAMPLES=yes
       - CYPRESS_CONFIG=false
       - SUPERSET_PORT=8088
       - SUPERSET_APP_ROOT=/
@@ -1341,7 +1341,7 @@ services:
       - REDIS_HOST=superset-redis
       - REDIS_PORT=6379
       - SUPERSET_ENV=development
-      - SUPERSET_LOAD_EXAMPLES=no
+      - SUPERSET_LOAD_EXAMPLES=yes
       - CYPRESS_CONFIG=false
       - SUPERSET_PORT=8088
       - SUPERSET_APP_ROOT=/
