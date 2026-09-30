@@ -84,7 +84,6 @@ class CeleryConfig:
     broker_url = f"redis://{REDIS_HOST}:{REDIS_PORT}/{REDIS_CELERY_DB}"
     imports = (
         "superset.sql_lab",
-        "superset.tasks.deletion_retention",
         "superset.tasks.scheduler",
         "superset.tasks.thumbnails",
         "superset.tasks.cache",
