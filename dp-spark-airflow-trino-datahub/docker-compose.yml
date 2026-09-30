@@ -1032,9 +1032,9 @@ services:
         - CMD-SHELL
         - mysqladmin ping -h localhost -u $$MYSQL_USER --password=$$MYSQL_PASSWORD
       timeout: 10s
-      interval: 2s
-      retries: 5
-      start_period: 20s
+      interval: 10s
+      retries: 20
+      start_period: 60s
   datahub-neo4j:
     image: docker.io/neo4j:4.4.28-community
     hostname: datahub-neo4j
@@ -1056,11 +1056,11 @@ services:
       - ./data-transfer:/data-transfer:z
     restart: unless-stopped
     healthcheck:
-      interval: 5s
-      retries: 5
-      start_period: 10s
+      interval: 10s
+      retries: 20
+      start_period: 60s
       test: wget http://datahub-neo4j:7474
-      timeout: 5s
+      timeout: 10s
   datahub-opensearch:
     image: docker.io/opensearchproject/opensearch:2.19.3
     hostname: datahub-opensearch
@@ -1094,6 +1094,12 @@ services:
     volumes:
       - ./data-transfer:/data-transfer:z
     restart: unless-stopped
+    healthcheck:
+      interval: 10s
+      retries: 20
+      start_period: 60s
+      test: curl -sS --fail "http://datahub-opensearch:9200/_cluster/health?wait_for_status=yellow&timeout=0s"
+      timeout: 10s
   datahub-upgrade:
     image: docker.io/acryldata/datahub-upgrade:v1.7.0
     hostname: datahub-upgrade
@@ -1102,9 +1108,14 @@ services:
       datahub_setup_job: true
       com.platys.name: datahub
     depends_on:
-      - datahub-opensearch
-      - schema-registry-1
-      - datahub-mysql
+      datahub-opensearch:
+        condition: service_healthy
+      datahub-mysql:
+        condition: service_healthy
+      datahub-neo4j:
+        condition: service_healthy
+      schema-registry-1:
+        condition: service_healthy
     environment:
       - BACKFILL_BROWSE_PATHS_V2=true
       - CREATE_USER=false
@@ -1707,7 +1718,7 @@ services:
       - SUPERSET_LOG_LEVEL=info
       - SUPERSET_ENV=development
       - SUPERSET_ENABLE_SWAGGER_UI=true
-      - SUPERSET_LOAD_EXAMPLES=no
+      - SUPERSET_LOAD_EXAMPLES=yes
       - CYPRESS_CONFIG=false
       - SUPERSET_PORT=8088
       - SUPERSET_APP_ROOT=/
@@ -1765,7 +1776,7 @@ services:
       - SUPERSET_LOG_LEVEL=info
       - SUPERSET_ENV=development
       - SUPERSET_ENABLE_SWAGGER_UI=true
-      - SUPERSET_LOAD_EXAMPLES=no
+      - SUPERSET_LOAD_EXAMPLES=yes
       - CYPRESS_CONFIG=false
       - SUPERSET_PORT=8088
       - SUPERSET_APP_ROOT=/
@@ -1818,7 +1829,7 @@ services:
       - SUPERSET_LOG_LEVEL=info
       - SUPERSET_ENV=development
       - SUPERSET_ENABLE_SWAGGER_UI=true
-      - SUPERSET_LOAD_EXAMPLES=no
+      - SUPERSET_LOAD_EXAMPLES=yes
       - CYPRESS_CONFIG=false
       - SUPERSET_PORT=8088
       - SUPERSET_APP_ROOT=/
@@ -1871,7 +1882,7 @@ services:
       - SUPERSET_LOG_LEVEL=info
       - SUPERSET_ENV=development
       - SUPERSET_ENABLE_SWAGGER_UI=true
-      - SUPERSET_LOAD_EXAMPLES=no
+      - SUPERSET_LOAD_EXAMPLES=yes
       - CYPRESS_CONFIG=false
       - SUPERSET_PORT=8088
       - SUPERSET_APP_ROOT=/
@@ -1923,7 +1934,7 @@ services:
       - REDIS_HOST=superset-redis
       - REDIS_PORT=6379
       - SUPERSET_ENV=development
-      - SUPERSET_LOAD_EXAMPLES=no
+      - SUPERSET_LOAD_EXAMPLES=yes
       - CYPRESS_CONFIG=false
       - SUPERSET_PORT=8088
       - SUPERSET_APP_ROOT=/
