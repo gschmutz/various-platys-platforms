@@ -1031,7 +1031,7 @@ services:
     healthcheck:
       test:
         - CMD-SHELL
-        - "mysqladmin ping -h localhost -u $$MYSQL_USER --password=$$MYSQL_PASSWORD && mysql -h localhost -u $$MYSQL_USER --password=$$MYSQL_PASSWORD -e 'SELECT 1' $$MYSQL_DATABASE"
+        - "mysql -h localhost -u $$MYSQL_USER --password=$$MYSQL_PASSWORD -e 'SELECT 1' $$MYSQL_DATABASE"
       timeout: 15s
       interval: 15s
       retries: 40
