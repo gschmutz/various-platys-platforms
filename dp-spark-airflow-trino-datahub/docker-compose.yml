@@ -1730,7 +1730,12 @@ services:
     volumes:
       - ./data-transfer:/data-transfer:z
       - ./conf/superset:/app/docker:z
-    command: [/app/docker/docker-bootstrap.sh, app-gunicorn]
+    command:
+      - /bin/bash
+      - -c
+      - |
+        echo 'psycopg2-binary' >> /app/docker/requirements-local.txt
+        /app/docker/docker-bootstrap.sh app-gunicorn
     healthcheck:
       test: [CMD-SHELL, /app/docker/docker-healthcheck.sh]
       interval: 30s
@@ -1899,7 +1904,12 @@ services:
     volumes:
       - ./data-transfer:/data-transfer:z
       - ./conf/superset:/app/docker:z
-    command: [/app/docker/docker-bootstrap.sh, beat]
+    command:
+      - /bin/bash
+      - -c
+      - |
+        echo 'psycopg2-binary' >> /app/docker/requirements-local.txt
+        /app/docker/docker-bootstrap.sh beat
     restart: unless-stopped
     healthcheck:
       disable: true

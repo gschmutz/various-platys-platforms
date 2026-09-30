@@ -2009,8 +2009,10 @@
       #
       SUPERSET_enable: true
       SUPERSET_volume_map_superset_home: false
-      SUPERSET_admin_password: abc123!      
+      SUPERSET_admin_password: abc123!    
+      SUPERSET_additional_requirements: 'apache-superset[trino]'  
       SUPERSET_provision_examples: false
+      SUPERSET_mcp_enabled: false      
       
       #
       # ===== Redash ========
