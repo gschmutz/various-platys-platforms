@@ -1734,7 +1734,7 @@ services:
       - /bin/bash
       - -c
       - |
-        echo 'psycopg2-binary' >> /app/docker/requirements-local.txt
+        uv pip install psycopg2-binary
         /app/docker/docker-bootstrap.sh app-gunicorn
     healthcheck:
       test: [CMD-SHELL, /app/docker/docker-healthcheck.sh]
@@ -1769,7 +1769,7 @@ services:
       - POSTGRES_USER=superset
       - POSTGRES_PASSWORD=abc123!
       - EXAMPLES_DB=examples
-      - EXAMPLES_HOST=db
+      - EXAMPLES_HOST=superset-db
       - EXAMPLES_USER=examples
       # Make sure you set this to a unique secure random value on production
       - EXAMPLES_PASSWORD=examples
@@ -1822,7 +1822,7 @@ services:
       - POSTGRES_USER=superset
       - POSTGRES_PASSWORD=abc123!
       - EXAMPLES_DB=examples
-      - EXAMPLES_HOST=db
+      - EXAMPLES_HOST=superset-db
       - EXAMPLES_USER=examples
       # Make sure you set this to a unique secure random value on production
       - EXAMPLES_PASSWORD=examples
@@ -1850,7 +1850,7 @@ services:
       - /bin/bash
       - -c
       - |
-        echo 'psycopg2-binary' >> /app/docker/requirements-local.txt
+        uv pip install psycopg2-binary
         /app/docker/docker-bootstrap.sh worker
     restart: unless-stopped
     healthcheck:
@@ -1880,7 +1880,7 @@ services:
       - POSTGRES_USER=superset
       - POSTGRES_PASSWORD=abc123!
       - EXAMPLES_DB=examples
-      - EXAMPLES_HOST=db
+      - EXAMPLES_HOST=superset-db
       - EXAMPLES_USER=examples
       # Make sure you set this to a unique secure random value on production
       - EXAMPLES_PASSWORD=examples
@@ -1908,7 +1908,7 @@ services:
       - /bin/bash
       - -c
       - |
-        echo 'psycopg2-binary' >> /app/docker/requirements-local.txt
+        uv pip install psycopg2-binary
         /app/docker/docker-bootstrap.sh beat
     restart: unless-stopped
     healthcheck:
@@ -1934,13 +1934,13 @@ services:
       - POSTGRES_USER=superset
       - POSTGRES_PASSWORD=abc123!
       - EXAMPLES_DB=examples
-      - EXAMPLES_HOST=db
+      - EXAMPLES_HOST=superset-db
       - EXAMPLES_USER=examples
       # Make sure you set this to a unique secure random value on production
       - EXAMPLES_PASSWORD=examples
       - EXAMPLES_PORT=5432
       - EXAMPLES_DB=examples
-      - EXAMPLES_HOST=db
+      - EXAMPLES_HOST=superset-db
       - EXAMPLES_USER=examples
       # Make sure you set this to a unique secure random value on production
       - EXAMPLES_PASSWORD=examples
@@ -1963,7 +1963,7 @@ services:
       - ./init/superset/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d:z
     restart: unless-stopped
     healthcheck:
-      test: [CMD-SHELL, pg_isready -U superset -h localhost && psql -U superset -h localhost -d superset -c 'SELECT 1' -q --no-align -t > /dev/null]
+      test: [CMD-SHELL, pg_isready -U superset -h localhost -d superset && psql -U superset -h localhost -d superset -c 'SELECT 1' -q --no-align -t > /dev/null]
       interval: 10s
       timeout: 5s
       retries: 15
