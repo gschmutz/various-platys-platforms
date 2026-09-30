@@ -856,7 +856,7 @@ services:
       - ./data-transfer:/data-transfer:z
     restart: unless-stopped
     healthcheck:
-      test: [CMD-SHELL, pg_isready -U airflow -h localhost && psql -U airflow -h localhost -d airflowdb -c 'SELECT 1' -q --no-align -t > /dev/null]
+      test: [CMD-SHELL, pg_isready -U airflow -h localhost -d airflowdb && psql -U airflow -h localhost -d airflowdb -c 'SELECT 1' -q --no-align -t > /dev/null]
       interval: 10s
       timeout: 5s
       retries: 15
