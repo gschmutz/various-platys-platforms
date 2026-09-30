@@ -1719,7 +1719,7 @@ services:
       - SUPERSET_LOG_LEVEL=info
       - SUPERSET_ENV=development
       - SUPERSET_ENABLE_SWAGGER_UI=true
-      - SUPERSET_LOAD_EXAMPLES=yes
+      - SUPERSET_LOAD_EXAMPLES=no
       - CYPRESS_CONFIG=false
       - SUPERSET_PORT=8088
       - SUPERSET_APP_ROOT=/
@@ -1770,7 +1770,6 @@ services:
       # Make sure you set this to a unique secure random value on production
       - EXAMPLES_PASSWORD=examples
       - EXAMPLES_PORT=5432
-      - SUPERSET_SQLALCHEMY_DATABASE_URI="postgresql+psycopg2://superset:abc123!@superset-db:5432/superset"
       - PYTHONPATH=/app/pythonpath:/app/docker/pythonpath_dev
       - REDIS_HOST=superset-redis
       - REDIS_PORT=6379
@@ -1778,7 +1777,7 @@ services:
       - SUPERSET_LOG_LEVEL=info
       - SUPERSET_ENV=development
       - SUPERSET_ENABLE_SWAGGER_UI=true
-      - SUPERSET_LOAD_EXAMPLES=yes
+      - SUPERSET_LOAD_EXAMPLES=no
       - CYPRESS_CONFIG=false
       - SUPERSET_PORT=8088
       - SUPERSET_APP_ROOT=/
@@ -1831,7 +1830,7 @@ services:
       - SUPERSET_LOG_LEVEL=info
       - SUPERSET_ENV=development
       - SUPERSET_ENABLE_SWAGGER_UI=true
-      - SUPERSET_LOAD_EXAMPLES=yes
+      - SUPERSET_LOAD_EXAMPLES=no
       - CYPRESS_CONFIG=false
       - SUPERSET_PORT=8088
       - SUPERSET_APP_ROOT=/
@@ -1884,7 +1883,7 @@ services:
       - SUPERSET_LOG_LEVEL=info
       - SUPERSET_ENV=development
       - SUPERSET_ENABLE_SWAGGER_UI=true
-      - SUPERSET_LOAD_EXAMPLES=yes
+      - SUPERSET_LOAD_EXAMPLES=no
       - CYPRESS_CONFIG=false
       - SUPERSET_PORT=8088
       - SUPERSET_APP_ROOT=/
@@ -1936,7 +1935,7 @@ services:
       - REDIS_HOST=superset-redis
       - REDIS_PORT=6379
       - SUPERSET_ENV=development
-      - SUPERSET_LOAD_EXAMPLES=yes
+      - SUPERSET_LOAD_EXAMPLES=no
       - CYPRESS_CONFIG=false
       - SUPERSET_PORT=8088
       - SUPERSET_APP_ROOT=/
