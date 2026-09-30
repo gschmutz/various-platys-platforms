@@ -1770,6 +1770,7 @@ services:
       # Make sure you set this to a unique secure random value on production
       - EXAMPLES_PASSWORD=examples
       - EXAMPLES_PORT=5432
+      - SUPERSET_SQLALCHEMY_DATABASE_URI="postgresql+psycopg2://superset:abc123!@superset-db:5432/superset"
       - PYTHONPATH=/app/pythonpath:/app/docker/pythonpath_dev
       - REDIS_HOST=superset-redis
       - REDIS_PORT=6379
