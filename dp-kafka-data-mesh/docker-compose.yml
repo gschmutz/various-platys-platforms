@@ -705,6 +705,24 @@ services:
       - ./data-transfer:/data-transfer:z
     command: [api, --host, 0.0.0.0]
     restart: unless-stopped
+  #  ================================== Portainer ========================================== #
+  docker-exec-webconsole:
+    image: docker.io/bitbull/docker-exec-web-console:latest
+    container_name: docker-exec-webconsole
+    hostname: docker-exec-webconsole
+    labels:
+      com.platys.name: docker-exec-webconsole
+      com.platys.description: Docker Exec Web Console
+      com.platys.webui.title: Docker Exec Web Console
+      com.platys.webui.url: http://dataplatform:28375
+    ports:
+      - 28375:8888
+    environment:
+      DUMMY: 1
+    volumes:
+      - ./data-transfer:/data-transfer:z
+      - /var/run/docker.sock:/var/run/docker.sock:z
+    restart: unless-stopped
   #  ================================== markdown-viewer ========================================== #
   markdown-viewer:
     image: docker.io/dannyben/madness:1.2.5
