@@ -3809,11 +3809,17 @@
       # ===== Portainer Container UI ========
       #
       PORTAINER_enable: false
+
+      #
+      # ===== Dockhand ========
+      #
+      DOCKHAND_enable: true
+      DOCKHAND_volume_map_data: false
       
       #
       # ===== Docker Exec Web Console ========
       #
-      DOCKER_EXEC_WEBCONSOLE_enable: true
+      DOCKER_EXEC_WEBCONSOLE_enable: false
       DOCKER_EXEC_WEBCONSOLE_context_path: null
       
       #
