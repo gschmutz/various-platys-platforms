@@ -221,7 +221,7 @@ services:
         sleep infinity
     restart: unless-stopped
     healthcheck:
-      test: [CMD, curl, -f, http://localhost:8083/connectors]
+      test: [CMD, python3, -c, "import urllib.request, sys; sys.exit(0) if urllib.request.urlopen('http://localhost:8083/connectors', timeout=5).status == 200 else sys.exit(1)"]
       interval: 30s
       timeout: 10s
       retries: 20
