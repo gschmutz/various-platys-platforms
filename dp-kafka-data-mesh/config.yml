@@ -3787,7 +3787,7 @@
       #
       # ===== Data Contract Editor ========
       #
-      DATA_CONTRACT_EDITOR_enable: false
+      DATA_CONTRACT_EDITOR_enable: true
       
       #
       # ===== Data Contract CLI ========
@@ -3798,7 +3798,7 @@
       #
       # ===== Data Contract CLI API ========
       #
-      DATA_CONTRACT_CLI_API_enable: false
+      DATA_CONTRACT_CLI_API_enable: true
       
       #
       # ===== Microcks ========
