@@ -253,7 +253,7 @@ services:
       - ./data-transfer:/data-transfer:z
     restart: unless-stopped
     healthcheck:
-      test: [CMD, curl, -f, http://akhq:28081/health]
+      test: [CMD, curl, -f, http://localhost:28081/health]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -2586,7 +2586,7 @@ services:
     command: server
     restart: unless-stopped
     healthcheck:
-      test: [CMD-SHELL, curl -f http://markdown-viewer:3000 || exit 1]
+      test: [CMD-SHELL, curl -f http://localhost:3000 || exit 1]
       interval: 1m30s
       timeout: 10s
       retries: 3
