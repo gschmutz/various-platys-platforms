@@ -214,6 +214,12 @@ services:
       - bash
       - -c
       - |
+        echo "Installing Connectors"
+        mkdir -p /etc/kafka-connect/cflthub-plugins
+        for i in $$(echo "debezium/debezium-connector-postgresql:3.2.6-3" | sed "s/,/ /g")
+        do
+          confluent-hub install --no-prompt --component-dir /etc/kafka-connect/cflthub-plugins --verbose "$$i"
+        done
         #
         echo "Launching Kafka Connect worker"
         /etc/confluent/docker/run &
@@ -717,6 +723,9 @@ services:
       com.platys.webui.url: http://dataplatform:28498
     ports:
       - 28498:3000
+    environment:
+      DISABLE_WHATS_NEW: true
+      EXPORT_METRICS: false
     volumes:
       - ./data-transfer:/data-transfer:z
       - /var/run/docker.sock:/var/run/docker.sock:z
