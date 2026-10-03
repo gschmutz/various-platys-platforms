@@ -422,6 +422,14 @@ services:
     volumes:
       - ./data-transfer:/data-transfer:z
       - ./init/postgresql:/docker-entrypoint-initdb.d/:z
+    command:
+      - postgres
+      - -c
+      - wal_level=logical
+      - -c
+      - max_replication_slots=10
+      - -c
+      - max_wal_senders=10
     restart: unless-stopped
     healthcheck:
       test: [CMD-SHELL, pg_isready -U postgres -h localhost && psql -U postgres -h localhost -c 'SELECT 1' -q --no-align -t > /dev/null]

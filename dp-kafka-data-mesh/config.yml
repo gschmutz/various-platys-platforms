@@ -2748,7 +2748,7 @@
       POSTGRESQL_multiple_addl_roles: ''
       POSTGRESQL_multiple_schemas: ''
       # one of the valid Postgresql wal_levels: "replica", "minimal", "logical". Use logical if you want to work with Debezium.
-      POSTGRESQL_wal_level: null
+      POSTGRESQL_wal_level: logical
       #POSTGRESQL_anon_role: appuser
       
       #
