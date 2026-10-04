@@ -430,7 +430,7 @@ services:
       VECTOR_WATCH_CONFIG: true    # Watch for changes in the configuration file and reload accordingly
       VECTOR_WATCH_CONFIG_POLL_INTERVAL_SECONDS: 30
     healthcheck:
-      test: [CMD, curl, -s, http://localhost:9598/health]
+      test: [CMD-SHELL, cat /dev/null > /dev/tcp/localhost/9598]
       interval: 30s
       timeout: 10s
       retries: 5
