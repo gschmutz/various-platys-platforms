@@ -410,7 +410,7 @@ services:
       start_period: 30s
   #  ================================== Vector ========================================== #
   vector:
-    image: docker.io/timberio/vector:0.58.X-debian
+    image: docker.io/timberio/vector:0.58.X-alpine
     container_name: vector
     hostname: vector
     labels:
