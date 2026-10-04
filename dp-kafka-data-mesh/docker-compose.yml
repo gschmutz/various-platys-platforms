@@ -8,6 +8,7 @@ networks:
     name: platys-platform
 # enforce some dependencies
 # enforce some dependencies
+# enforce some dependencies
 services:
 #  ================================== Kafka ========================================== #
   kafka-1:
@@ -49,8 +50,10 @@ services:
       KAFKA_JMX_HOSTNAME: kafka-1 #'${PUBLIC_IP:-127.0.0.1}'
       KAFKA_LOG4J_ROOT_LOGLEVEL: INFO
       KAFKA_TOOLS_LOG4J_LOGLEVEL: INFO
+      EXTRA_ARGS: -javaagent:/usr/share/jmx-exporter/jmx_prometheus_javaagent-1.1.0.jar=1234:/usr/share/jmx-exporter/kafka_broker.yml
     volumes:
       - ./data-transfer:/data-transfer:z
+      - ./scripts/kafka/jmx-exporter/:/usr/share/jmx-exporter:z
     restart: unless-stopped
     healthcheck:
       test: kafka-metadata-quorum --bootstrap-server kafka-1:19092 describe --replication
@@ -97,8 +100,10 @@ services:
       KAFKA_JMX_HOSTNAME: kafka-2 #'${PUBLIC_IP:-127.0.0.1}'
       KAFKA_LOG4J_ROOT_LOGLEVEL: INFO
       KAFKA_TOOLS_LOG4J_LOGLEVEL: INFO
+      EXTRA_ARGS: -javaagent:/usr/share/jmx-exporter/jmx_prometheus_javaagent-1.1.0.jar=1234:/usr/share/jmx-exporter/kafka_broker.yml
     volumes:
       - ./data-transfer:/data-transfer:z
+      - ./scripts/kafka/jmx-exporter/:/usr/share/jmx-exporter:z
     restart: unless-stopped
     healthcheck:
       test: kafka-metadata-quorum --bootstrap-server kafka-2:19093 describe --replication
@@ -145,8 +150,10 @@ services:
       KAFKA_JMX_HOSTNAME: kafka-3 #'${PUBLIC_IP:-127.0.0.1}'
       KAFKA_LOG4J_ROOT_LOGLEVEL: INFO
       KAFKA_TOOLS_LOG4J_LOGLEVEL: INFO
+      EXTRA_ARGS: -javaagent:/usr/share/jmx-exporter/jmx_prometheus_javaagent-1.1.0.jar=1234:/usr/share/jmx-exporter/kafka_broker.yml
     volumes:
       - ./data-transfer:/data-transfer:z
+      - ./scripts/kafka/jmx-exporter/:/usr/share/jmx-exporter:z
     restart: unless-stopped
     healthcheck:
       test: kafka-metadata-quorum --bootstrap-server kafka-3:19094 describe --replication
@@ -204,11 +211,13 @@ services:
       # See https://docs.confluent.io/current/connect/security.html#externalizing-secrets
       CONNECT_CONFIG_PROVIDERS: file
       CONNECT_CONFIG_PROVIDERS_FILE_CLASS: org.apache.kafka.common.config.provider.FileConfigProvider
+      EXTRA_ARGS: -javaagent:/usr/share/jmx-exporter/jmx_prometheus_javaagent-1.1.0.jar=1234:/usr/share/jmx-exporter/kafka_connect.yml
     volumes:
       - ./data-transfer:/data-transfer:z
       - ./plugins/kafka-connect/connectors:/etc/kafka-connect/addl-plugins:z
       - ./plugins/kafka-connect/jars:/etc/kafka-connect/jars:z
       - ./plugins/opentelemetry/agents:/otel:z
+      - ./scripts/kafka/jmx-exporter/:/usr/share/jmx-exporter:z
     command:
       # In the command section, $ are replaced with $$ to avoid the error 'Invalid interpolation format for "command" option'
       - bash
@@ -261,9 +270,11 @@ services:
       SCHEMA_REGISTRY_LOG4J_ROOT_LOGLEVEL: info
       SCHEMA_REGISTRY_DEBUG: 'False'
       SCHEMA_REGISTRY_KAFKASTORE_SECURITY_PROTOCOL: PLAINTEXT
+      EXTRA_ARGS: -javaagent:/usr/share/jmx-exporter/jmx_prometheus_javaagent-1.1.0.jar=1234:/usr/share/jmx-exporter/confluent_schemaregistry.yml
     volumes:
       - ./data-transfer:/data-transfer:z
       - ./plugins/opentelemetry/agents:/otel:z
+      - ./scripts/kafka/jmx-exporter/:/usr/share/jmx-exporter:z
     restart: unless-stopped
     healthcheck:
       test: [CMD, python3, -c, "import urllib.request, sys; sys.exit(0) if urllib.request.urlopen('http://localhost:8081/subjects', timeout=5).status == 200 else sys.exit(1)"]
@@ -425,6 +436,36 @@ services:
       retries: 5
       start_period: 30s
     restart: unless-stopped
+  #  ================================== Prometheus ========================================== #
+  prometheus-1:
+    image: docker.io/prom/prometheus:v3.13.4
+    container_name: prometheus-1
+    hostname: prometheus-1
+    labels:
+      com.platys.name: prometheus
+      com.platys.description: Monitoring system and time series database
+      com.platys.webui.title: Prometheus UI
+      com.platys.webui.url: http://dataplatform:9090/graph
+      com.platys.restapi.title: Prometheus Rest API
+      com.platys.restapi.url: http://dataplatform:9090/api/v1
+    extra_hosts:
+      - host.docker.internal:host-gateway
+    ports:
+      - 9090:9090
+    volumes:
+      - ./data-transfer:/data-transfer:z
+      - ./conf/prometheus/prometheus-config/prometheus.yml:/etc/prometheus/prometheus.yml:z
+    command:
+      - --config.file=/etc/prometheus/prometheus.yml
+      - --storage.tsdb.path=/prometheus
+      - --web.enable-lifecycle
+      - --web.enable-remote-write-receiver
+      - --web.console.libraries=/usr/share/prometheus/console_libraries
+      - --web.console.templates=/usr/share/prometheus/consoles
+      - --web.listen-address=0.0.0.0:9090
+      - --storage.tsdb.retention.time=30d
+      - --log.level=info
+    restart: unless-stopped
   #  ================================== PostgreSQL ========================================== #
   postgresql:
     image: docker.io/postgres:18
@@ -465,6 +506,25 @@ services:
       timeout: 5s
       retries: 15
       start_period: 30s
+  postgresql-exporter:
+    image: quay.io/prometheuscommunity/postgres-exporter
+    container_name: postgresql-exporter
+    hostname: postgresql-exporter
+    labels:
+      com.platys.name: postgresql-exporter
+      com.platys.description: PostgreSQL Exporter for Prometheus
+    depends_on:
+      prometheus-1:
+        condition: service_started
+      postgresql:
+        condition: service_healthy
+    environment:
+      DATA_SOURCE_URI: postgresql:5432/postgres?sslmode=disable
+      DATA_SOURCE_USER: postgres
+      DATA_SOURCE_PASS: ${PLATYS_POSTGRESQL_PASSWORD:-abc123!}
+    volumes:
+      - ./data-transfer:/data-transfer:z
+    restart: unless-stopped
   #  ================================== Hasura ========================================== #
   hasura:
     image: docker.io/hasura/graphql-engine:v2.50.3-ce
@@ -747,6 +807,64 @@ services:
       - ./data-transfer:/data-transfer:z
     command: [api, --host, 0.0.0.0]
     restart: unless-stopped
+  #  ================================== Grafana ========================================== #
+  grafana:
+    image: docker.io/grafana/grafana:13.0.10-ubuntu
+    hostname: grafana
+    container_name: grafana
+    labels:
+      com.platys.name: grafana
+      com.platys.description: Data visualization and dashboarding
+      com.platys.webui.title: Grafana UI
+      com.platys.webui.url: http://dataplatform:3000
+      com.platys.restapi.title: Grafana API
+      com.platys.restapi.url: http://dataplatform:3000/api/org
+    expose:
+      - 3000
+    ports:
+      - 3000:3000
+    environment:
+      - GF_SERVER_HTTP_ADDR=0.0.0.0
+      - GF_SERVER_HTTP_PORT=3000
+      - GF_AUTH_ANONYMOUS_ENABLED=False
+      - GF_AUTH_ANONYMOUS_ORG_ROLE=Admin
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=abc123!
+      - GF_USERS_ALLOW_SIGN_UP=false
+    volumes:
+      - ./data-transfer:/data-transfer:z
+      - ./scripts/grafana/dashboards/dashboard.yml:/etc/grafana/provisioning/dashboards/dashboard.yml:z
+      - ./scripts/grafana/dashboards/docker/monitor_services.json:/etc/grafana/provisioning/dashboards/docker/monitor_services.json:z
+      - ./scripts/grafana/dashboards/kafka/confluent-platform-kraft.json:/etc/grafana/provisioning/dashboards/kafka/confluent-platform-kraft.json:z
+      - ./scripts/grafana/dashboards/kafka/kafka-cluster-kraft.json:/etc/grafana/provisioning/dashboards/kafka/kafka-cluster-kraft.json:z
+      - ./scripts/grafana/dashboards/kafka/kafka-topics-kraft.json:/etc/grafana/provisioning/dashboards/kafka/kafka-topics-kraft.json:z
+      - ./scripts/grafana/dashboards/kafka/kraft.json:/etc/grafana/provisioning/dashboards/kafka/kraft.json:z
+      - ./scripts/grafana/dashboards/kafka/cluster-linking.json:/etc/grafana/provisioning/dashboards/kafka/cluster-linking.json:z
+      - ./scripts/grafana/dashboards/kafka-transaction-coordinator.json:/etc/grafana/provisioning/dashboards/kafka/kafka-transaction-coordinator.json:z
+      - ./scripts/grafana/dashboards/kafka/kafka-connect-cluster.json:/etc/grafana/provisioning/dashboards/kafka/kafka-connect-cluster.json:z
+      - ./scripts/grafana/dashboards/kafka/confluent-oracle-cdc.json:/etc/grafana/provisioning/dashboards/kafka/confluent-oracle-cdc.json:z
+      - ./scripts/grafana/dashboards/kafka/ksqldb-cluster.json:/etc/grafana/provisioning/dashboards/kafka/ksqldb-cluster.json:z
+      - ./scripts/grafana/dashboards/kafka/schema-registry-cluster.json:/etc/grafana/provisioning/dashboards/kafka/schema-registry-cluster.json:z
+      - ./scripts/grafana/dashboards/kafka/kafka-topics.json:/etc/grafana/provisioning/dashboards/kafka/kafka-topics.json:z
+      - ./scripts/grafana/dashboards/kafka/kafka-lag-exporter.json:/etc/grafana/provisioning/dashboards/kafka/kafka-lag-exporter.json:z
+      - ./scripts/grafana/dashboards/kafka/kafka-consumer.json:/etc/grafana/provisioning/dashboards/kafka/kafka-consumer.json:z
+      - ./scripts/grafana/dashboards/kafka/kafka-producer.json:/etc/grafana/provisioning/dashboards/kafka/kafka-producer.json:z
+      - ./scripts/grafana/dashboards/kafka/kafka-quotas.json:/etc/grafana/provisioning/dashboards/kafka/kafka-quotas.json:z
+      - ./scripts/grafana/dashboards/kafka/kafka-stream.json:/etc/grafana/provisioning/dashboards/kafka/kafka-stream.json:z
+      - ./scripts/grafana/dashboards/kafka/kafka-streams-rocksdb.json:/etc/grafana/provisioning/dashboards/kafka/kafka-streams-rocksdb.json:z
+      - ./scripts/grafana/dashboards/kafka/OTel_kafkametrics.json:/etc/grafana/provisioning/dashboards/kafka/OTel_kafkametrics.json:z
+      - ./scripts/grafana/dashboards/postgresql:/etc/grafana/provisioning/dashboards/postgresql:z
+      - ./scripts/grafana/dashboards/zammad:/etc/grafana/provisioning/dashboards/zammad:z
+      - ./scripts/grafana/datasources/prometheus-datasource.yml:/etc/grafana/provisioning/datasources/prometheus-datasource.yml:z
+      - ./scripts/grafana/datasources/zammad-elasticsearch.yml:/etc/grafana/provisioning/datasources/zammad-elasticsearch.yml:z
+#        restart: unless-stopped
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - bash -c 'printf \"GET / HTTP/1.1\n\n\" > /dev/tcp/127.0.0.1/3000; exit $$?;'
+      interval: 1s
+      timeout: 5s
+      retries: 5
   #  ================================== Dockhand ========================================== #
   dockhand:
     image: docker.io/fnsys/dockhand:latest

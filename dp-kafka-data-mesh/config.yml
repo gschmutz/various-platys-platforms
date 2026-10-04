@@ -42,7 +42,7 @@
       table_formats_to_use: ''
       
       # enable jmx monitoring with prometheus
-      jmx_monitoring_with_prometheus_enable: false
+      jmx_monitoring_with_prometheus_enable: true
       
       # use nexus to retrieve container images?
       use_nexus_for_docker_images: false
@@ -1957,7 +1957,7 @@
       #
       # ===== Grafana ========
       #
-      GRAFANA_enable: false
+      GRAFANA_enable: true
       # list of preview features to enable (tempoSearch, tempoServiceGraph, ... see https://grafana.com/docs/grafana/latest/setup-grafana/configure-grafana/feature-toggles/)
       GRAFANA_feature_toggles: ''
       # list of plugins to install (see here: https://grafana.com/grafana/plugins/)
@@ -2582,7 +2582,7 @@
       #
       # ===== Prometheus ========
       #
-      PROMETHEUS_enable: false
+      PROMETHEUS_enable: true
       PROMETHEUS_volume_map_data: false
       PROMETHEUS_volume_map_custom_config: false
       
