@@ -430,7 +430,7 @@ services:
       VECTOR_WATCH_CONFIG: true    # Watch for changes in the configuration file and reload accordingly
       VECTOR_WATCH_CONFIG_POLL_INTERVAL_SECONDS: 30
     healthcheck:
-      test: [CMD, python3, -c, "import urllib.request, sys; sys.exit(0) if urllib.request.urlopen('http://localhost:9598/health', timeout=5).status == 200 else sys.exit(1)"]
+      test: [CMD, curl, -s, http://localhost:9598/health]
       interval: 30s
       timeout: 10s
       retries: 5
@@ -855,6 +855,7 @@ services:
       - ./scripts/grafana/dashboards/kafka/OTel_kafkametrics.json:/etc/grafana/provisioning/dashboards/kafka/OTel_kafkametrics.json:z
       - ./scripts/grafana/dashboards/postgresql:/etc/grafana/provisioning/dashboards/postgresql:z
       - ./scripts/grafana/dashboards/zammad:/etc/grafana/provisioning/dashboards/zammad:z
+      - ./scripts/grafana/dashboards/vector:/etc/grafana/provisioning/dashboards/vector:z
       - ./scripts/grafana/datasources/prometheus-datasource.yml:/etc/grafana/provisioning/datasources/prometheus-datasource.yml:z
       - ./scripts/grafana/datasources/zammad-elasticsearch.yml:/etc/grafana/provisioning/datasources/zammad-elasticsearch.yml:z
 #        restart: unless-stopped
