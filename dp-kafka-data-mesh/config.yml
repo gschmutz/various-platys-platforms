@@ -3353,7 +3353,16 @@
       #
       FILESTASH_enable: false
       FILESTASH_set_default_config: true
-      
+
+      #
+      # ===== Vector ========
+      #
+      VECTOR_enable: true
+      VECTOR_volume_map_data: false
+      # one of 'trace', 'debug', 'info', 'warn', 'error'
+      VECTOR_log_level: 'info'
+      VECTOR_watch_config_enabled: true
+
       #
       #=====  Minio Web ========
       #
