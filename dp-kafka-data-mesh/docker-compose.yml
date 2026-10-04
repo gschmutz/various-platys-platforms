@@ -410,6 +410,7 @@ services:
     volumes:
       - ./data-transfer:/data-transfer:z
       - ./conf/vector/vector.yaml:/etc/vector/vector.yaml:z
+      - /var/run/docker.sock:/var/run/docker.sock:z
     environment:
       VECTOR_DANGEROUSLY_ALLOW_ENV_VAR_INTERPOLATION: true
       VECTOR_ALLOW_EMPTY_CONFIG: true
