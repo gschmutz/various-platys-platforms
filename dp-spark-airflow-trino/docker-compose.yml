@@ -666,10 +666,10 @@ services:
       - ./scripts/airflow/dags:/opt/airflow/dags:Z
       - ./plugins/airflow/:/opt/airflow/plugins:Z
       - ./scripts/docker/wait-for-it.sh:/usr/src/app/wait-for-it.sh:z
-      - spark-4-1-1-python3-vol:/opt/spark:RO
-      - spark-4-1-1-python3-java-vol:/opt/java:RO
+      - spark-4-1-1-python3-vol:/opt/spark:ro
+      - spark-4-1-1-python3-java-vol:/opt/java:ro
       - ./container-volume/spark/logs/:/var/log/spark/logs:z
-    #  - aws-credentials-vol:/home/airflow/.aws:RO
+    #  - aws-credentials-vol:/home/airflow/.aws:ro
     user: ${AIRFLOW_UID:-50000}:${AIRFLOW_GID:-0}
     restart: unless-stopped
     healthcheck:
@@ -747,10 +747,10 @@ services:
       - ./scripts/airflow/dags:/opt/airflow/dags:Z
       - ./plugins/airflow/:/opt/airflow/plugins:Z
       - ./scripts/docker/wait-for-it.sh:/usr/src/app/wait-for-it.sh:z
-      - spark-4-1-1-python3-vol:/opt/spark:RO
-      - spark-4-1-1-python3-java-vol:/opt/java:RO
+      - spark-4-1-1-python3-vol:/opt/spark:ro
+      - spark-4-1-1-python3-java-vol:/opt/java:ro
       - ./container-volume/spark/logs/:/var/log/spark/logs:z
-    #  - aws-credentials-vol:/home/airflow/.aws:RO
+    #  - aws-credentials-vol:/home/airflow/.aws:ro
     user: ${AIRFLOW_UID:-50000}:${AIRFLOW_GID:-0}
     restart: unless-stopped
     healthcheck:
@@ -828,10 +828,10 @@ services:
       - ./scripts/airflow/dags:/opt/airflow/dags:Z
       - ./plugins/airflow/:/opt/airflow/plugins:Z
       - ./scripts/docker/wait-for-it.sh:/usr/src/app/wait-for-it.sh:z
-      - spark-4-1-1-python3-vol:/opt/spark:RO
-      - spark-4-1-1-python3-java-vol:/opt/java:RO
+      - spark-4-1-1-python3-vol:/opt/spark:ro
+      - spark-4-1-1-python3-java-vol:/opt/java:ro
       - ./container-volume/spark/logs/:/var/log/spark/logs:z
-    #  - aws-credentials-vol:/home/airflow/.aws:RO
+    #  - aws-credentials-vol:/home/airflow/.aws:ro
     user: ${AIRFLOW_UID:-50000}:${AIRFLOW_GID:-0}
     restart: unless-stopped
     healthcheck:
@@ -1061,7 +1061,7 @@ services:
       - ./init/jupyter/on-startup-jupyter-finished/:/usr/local/bin/before-notebook.d/:z
       - ./init/jupyter/on-startup-notebook-kernel:/home/jovyan/.ipython/profile_default/startup/:z
       - ./scripts/docker/maven-download.sh:/maven-download.sh:z
-#      - spark-4-1-1-python3-vol:/opt/spark:RO
+#      - spark-4-1-1-python3-vol:/opt/spark:ro
     command:
       # In the command section, $ are replaced with $$ to avoid the error 'Invalid interpolation format for "command" option'
       - bash
