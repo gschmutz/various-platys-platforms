@@ -1717,7 +1717,7 @@ services:
       - --realm=POLARIS
       - --credential=POLARIS,admin,${PLATYS_POLARIS_CLIENT_SECRET:-abc123!}
     init: true
-    restart: "no"
+    # restart: "no"  # do be podman compatible, it has to be "no" which did not work, but no is default    
   polaris-catalog-setup:
     image: docker.io/alpine/curl
     container_name: polaris-catalog-setup
