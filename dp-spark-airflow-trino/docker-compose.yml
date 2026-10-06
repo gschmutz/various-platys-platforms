@@ -1928,7 +1928,7 @@ services:
       CODER_ACCESS_URL: http://${PUBLIC_IP:-dataplatform}:7080
     volumes:
       - ./data-transfer:/data-transfer:z
-      - /var/run/docker.sock:/var/run/docker.sock:z
+      - ${DOCKER_HOST:-/var/run/docker.sock}:/var/run/docker.sock:z
     restart: unless-stopped
   #  ================================== Dockhand ========================================== #
   dockhand:
@@ -1947,7 +1947,7 @@ services:
       EXPORT_METRICS: false
     volumes:
       - ./data-transfer:/data-transfer:z
-      - /var/run/docker.sock:/var/run/docker.sock:z
+      - ${DOCKER_HOST:-/var/run/docker.sock}:/var/run/docker.sock:z
     restart: unless-stopped
   #  ================================== Sonatype Nexus ========================================== #
   nexus:

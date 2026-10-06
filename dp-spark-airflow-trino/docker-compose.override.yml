@@ -1,4 +1,0 @@
-services:
-  markdown-viewer-env2:
-    ports: !reset
-      - 28631:3000  
