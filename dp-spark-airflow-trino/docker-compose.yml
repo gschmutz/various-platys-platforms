@@ -1827,7 +1827,6 @@ services:
         touch /tmp/polaris-setup-done
         tail -f /dev/null
     init: true
-    restart: no
     healthcheck:
       interval: 1s
       timeout: 10s
