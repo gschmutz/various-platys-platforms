@@ -34,7 +34,7 @@
       env: ${PLATYS_ENV}
       
       environments: 'env1,env2,env3'
-      environment_to_use: 1
+      environment_to_use: 2
       
       # either 'minio' or 'rustfs' or `seaweedfs`
       s3_service_to_use: rustfs

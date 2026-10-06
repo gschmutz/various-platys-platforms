@@ -294,6 +294,7 @@ Container Port(s) | Internal Port(s)           | Service (alternatives) |
 9002 | 9000 | minio-3 |
 9003 | 9000 | minio-4 |
 9005 | 9000 | rustfs-1 |
+9008 | 9009 | mimir |
 9009 | 9009 | questdb |
 9010 | 9010 | minio-1 ui |
 9011 | 9011 | minio-2 ui |
@@ -352,6 +353,7 @@ Container Port(s) | Internal Port(s)           | Service (alternatives) |
 9492 | 9492 | automq-1     |
 9493 | 9493 | automq-2     |
 9494 | 9494 | automq-3     |
+9598 | 9598 | vector |
 9600 | 9600 | zeebe-1 |
 9601 | 9600 | langwatch-opensearch  |
 9851 | 9851 | tile38 |
@@ -859,7 +861,7 @@ Container Port(s) | Internal Port(s)           | Service (alternatives) |
 28465 | 8080 | ehrbase |
 28466 | 9000 | openehr-tool |
 28467 | 8182 | janusgraph |
-28468 |  |  |
+28468 | 8080 | kafka-datagen |
 28469 | 8090 | gravitino |
 28470 | 9001 | gravitino-iceberg-rest |
 28471 | 8000 | gravitino-mcp-server |
@@ -889,7 +891,8 @@ Container Port(s) | Internal Port(s)           | Service (alternatives) |
 28495 | 3002 | cosmo-router |
 28496 | 8000 | dbt-workbench (backend API) |
 28497 | 3000 | dbt-workbench (frontend UI) |
-
+28498 | 3000 | dockhand |
+28499 | 8888 | klag |
 
 ## Ports > 28700
 

@@ -1942,6 +1942,9 @@ services:
       com.platys.webui.url: http://dataplatform:28498
     ports:
       - 28498:3000
+    environment:
+      DISABLE_WHATS_NEW: true
+      EXPORT_METRICS: false
     volumes:
       - ./data-transfer:/data-transfer:z
       - /var/run/docker.sock:/var/run/docker.sock:z
@@ -1973,17 +1976,17 @@ services:
       retries: 240
       test: [CMD, test, -f, /tmp/.setup-complete]
   #  ================================== Wetty ========================================== #
-  wetty-env1:
+  wetty-env2:
     image: docker.io/wettyoss/wetty:2
-    container_name: wetty-env1
-    hostname: wetty-env1
+    container_name: wetty-env2
+    hostname: wetty-env2
     labels:
       com.platys.name: wetty
       com.platys.description: A terminal window in Web-Browser
       com.platys.webui.title: WeTTY UI
-      com.platys.webui.url: http://dataplatform:3001
+      com.platys.webui.url: http://dataplatform:3002
     ports:
-      - 3001:3000
+      - 3002:3000
     environment:
       - SSHHOST=${DOCKER_HOST_IP:-localhost}
       - SSHPORT=22
@@ -1995,17 +1998,17 @@ services:
       - ./data-transfer:/data-transfer:z
     restart: unless-stopped
   #  ================================== markdown-viewer ========================================== #
-  markdown-viewer-env1:
+  markdown-viewer-env2:
     image: docker.io/dannyben/madness:1.2.5
-    container_name: markdown-viewer-env1
-    hostname: markdown-viewer-env1
+    container_name: markdown-viewer-env2
+    hostname: markdown-viewer-env2
     labels:
       com.platys.name: markdown-viewer
       com.platys.description: Platys Platform homepage viewer
       com.platys.webui.title: Markdown Viewer UI
-      com.platys.webui.url: http://dataplatform:80
+      com.platys.webui.url: http://dataplatform:81
     ports:
-      - 80:3000
+      - 81:3000
     volumes:
       - ./artefacts:/docs
       - ./conf/markdown-viewer/markdown-madness.yml:/docs/.madness.yml:z
@@ -2018,10 +2021,10 @@ services:
       timeout: 10s
       retries: 3
       start_period: 1m
-  markdown-renderer-env1:
+  markdown-renderer-env2:
     image: docker.io/trivadis/jinja2-renderer:0.8.1
-    container_name: markdown-renderer-env1
-    hostname: markdown-renderer-env1
+    container_name: markdown-renderer-env2
+    hostname: markdown-renderer-env2
     labels:
       com.platys.name: markdown-renderer
       com.platys.description: Platys Platform homepage rendering
@@ -2034,7 +2037,7 @@ services:
       PLATYS_PLATFORM_STACK: trivadis/platys-modern-data-platform
       PLATYS_PLATFORM_STACK_VERSION: develop
       PLATYS_COPY_COOKBOOK_DATA: 'True'
-      PLATYS_DATACENTER: env1
+      PLATYS_DATACENTER: env2
       SERVICE_LIST_VERSION: 2
     volumes:
       - ./artefacts/templates:/templates:z
