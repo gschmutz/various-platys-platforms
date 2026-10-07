@@ -1,11 +1,11 @@
 # =======================================================================
-# Platform Name            platys-platform
+# Platform Name            datahub-platform
 # Platform Stack:          trivadis/platys-modern-data-platform
 # Platform Stack Version:  develop
 # =======================================================================
 networks:
   default:
-    name: platys-platform
+    name: datahub-platform
 # enforce some dependencies
 services:
 #  ================================== Kafka ========================================== #
@@ -652,7 +652,7 @@ services:
       PUBLIC_IP: ${PUBLIC_IP:-127.0.0.1}
       DOCKER_HOST_IP: ${DOCKER_HOST_IP:-localhost}
       DATAPLATFORM_HOME: ${DATAPLATFORM_HOME}
-      PLATYS_PLATFORM_NAME: platys-platform
+      PLATYS_PLATFORM_NAME: datahub-platform
       PLATYS_PLATFORM_STACK: trivadis/platys-modern-data-platform
       PLATYS_PLATFORM_STACK_VERSION: develop
       PLATYS_COPY_COOKBOOK_DATA: 'True'
