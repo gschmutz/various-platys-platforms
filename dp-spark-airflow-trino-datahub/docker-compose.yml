@@ -1258,10 +1258,10 @@ services:
       - ./scripts/airflow/dags:/opt/airflow/dags:Z
       - ./plugins/airflow/:/opt/airflow/plugins:Z
       - ./scripts/docker/wait-for-it.sh:/usr/src/app/wait-for-it.sh:z
-      - spark-4-1-1-python3-vol:/opt/spark:RO
-      - spark-4-1-1-python3-java-vol:/opt/java:RO
+      - spark-4-1-1-python3-vol:/opt/spark:ro
+      - spark-4-1-1-python3-java-vol:/opt/java:ro
       - ./container-volume/spark/logs/:/var/log/spark/logs:z
-    #  - aws-credentials-vol:/home/airflow/.aws:RO
+    #  - aws-credentials-vol:/home/airflow/.aws:ro
     user: ${AIRFLOW_UID:-50000}:${AIRFLOW_GID:-0}
     restart: unless-stopped
     healthcheck:
@@ -1339,10 +1339,10 @@ services:
       - ./scripts/airflow/dags:/opt/airflow/dags:Z
       - ./plugins/airflow/:/opt/airflow/plugins:Z
       - ./scripts/docker/wait-for-it.sh:/usr/src/app/wait-for-it.sh:z
-      - spark-4-1-1-python3-vol:/opt/spark:RO
-      - spark-4-1-1-python3-java-vol:/opt/java:RO
+      - spark-4-1-1-python3-vol:/opt/spark:ro
+      - spark-4-1-1-python3-java-vol:/opt/java:ro
       - ./container-volume/spark/logs/:/var/log/spark/logs:z
-    #  - aws-credentials-vol:/home/airflow/.aws:RO
+    #  - aws-credentials-vol:/home/airflow/.aws:ro
     user: ${AIRFLOW_UID:-50000}:${AIRFLOW_GID:-0}
     restart: unless-stopped
     healthcheck:
@@ -1420,10 +1420,10 @@ services:
       - ./scripts/airflow/dags:/opt/airflow/dags:Z
       - ./plugins/airflow/:/opt/airflow/plugins:Z
       - ./scripts/docker/wait-for-it.sh:/usr/src/app/wait-for-it.sh:z
-      - spark-4-1-1-python3-vol:/opt/spark:RO
-      - spark-4-1-1-python3-java-vol:/opt/java:RO
+      - spark-4-1-1-python3-vol:/opt/spark:ro
+      - spark-4-1-1-python3-java-vol:/opt/java:ro
       - ./container-volume/spark/logs/:/var/log/spark/logs:z
-    #  - aws-credentials-vol:/home/airflow/.aws:RO
+    #  - aws-credentials-vol:/home/airflow/.aws:ro
     user: ${AIRFLOW_UID:-50000}:${AIRFLOW_GID:-0}
     restart: unless-stopped
     healthcheck:
@@ -1653,7 +1653,7 @@ services:
       - ./init/jupyter/on-startup-jupyter-finished/:/usr/local/bin/before-notebook.d/:z
       - ./init/jupyter/on-startup-notebook-kernel:/home/jovyan/.ipython/profile_default/startup/:z
       - ./scripts/docker/maven-download.sh:/maven-download.sh:z
-#      - spark-4-1-1-python3-vol:/opt/spark:RO
+#      - spark-4-1-1-python3-vol:/opt/spark:ro
     command:
       # In the command section, $ are replaced with $$ to avoid the error 'Invalid interpolation format for "command" option'
       - bash
@@ -2306,7 +2306,7 @@ services:
       - --realm=POLARIS
       - --credential=POLARIS,admin,${PLATYS_POLARIS_CLIENT_SECRET:-abc123!}
     init: true
-    restart: no
+    # restart: "no"  # do be podman compatible, it has to be "no" which did not work, but no is default    
   polaris-catalog-setup:
     image: docker.io/alpine/curl
     container_name: polaris-catalog-setup
@@ -2517,7 +2517,7 @@ services:
       CODER_ACCESS_URL: http://${PUBLIC_IP:-dataplatform}:7080
     volumes:
       - ./data-transfer:/data-transfer:z
-      - /var/run/docker.sock:/var/run/docker.sock:z
+      - ${DOCKER_HOST:-/var/run/docker.sock}:/var/run/docker.sock:z
     restart: unless-stopped
   #  ================================== Dockhand ========================================== #
   dockhand:
@@ -2531,9 +2531,12 @@ services:
       com.platys.webui.url: http://dataplatform:28498
     ports:
       - 28498:3000
+    environment:
+      DISABLE_WHATS_NEW: true
+      EXPORT_METRICS: false
     volumes:
       - ./data-transfer:/data-transfer:z
-      - /var/run/docker.sock:/var/run/docker.sock:z
+      - ${DOCKER_HOST:-/var/run/docker.sock}:/var/run/docker.sock:z
     restart: unless-stopped
   #  ================================== Sonatype Nexus ========================================== #
   nexus:

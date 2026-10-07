@@ -627,7 +627,7 @@ services:
       com.platys.webui.title: Markdown Viewer UI
       com.platys.webui.url: http://dataplatform:80
     ports:
-      - 80:3000
+      - 28630:3000
     volumes:
       - ./artefacts:/docs
       - ./conf/markdown-viewer/markdown-madness.yml:/docs/.madness.yml:z

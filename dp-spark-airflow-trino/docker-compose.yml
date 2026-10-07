@@ -1827,6 +1827,7 @@ services:
         touch /tmp/polaris-setup-done
         tail -f /dev/null
     init: true
+    restart: no
     healthcheck:
       interval: 1s
       timeout: 10s
@@ -2007,7 +2008,7 @@ services:
       com.platys.webui.title: Markdown Viewer UI
       com.platys.webui.url: http://dataplatform:81
     ports:
-      - 81:3000
+      - 28632:3000
     volumes:
       - ./artefacts:/docs
       - ./conf/markdown-viewer/markdown-madness.yml:/docs/.madness.yml:z
