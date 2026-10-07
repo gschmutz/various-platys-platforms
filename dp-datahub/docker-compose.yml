@@ -475,7 +475,7 @@ services:
       interval: 10s
       retries: 20
       start_period: 60s
-      test: wget http://localhost:7474
+      test: wget --no-proxy -1 -O /dev/null http://localhost:7474
       timeout: 10s
   datahub-opensearch:
     image: docker.io/opensearchproject/opensearch:2.19.3
@@ -514,7 +514,7 @@ services:
       interval: 10s
       retries: 20
       start_period: 60s
-      test: curl -sS --fail "http://localhost:9200/_cluster/health?wait_for_status=yellow&timeout=0s"
+      test: curl --noproxy '*' -sS --fail "http://localhost:9200/_cluster/health?wait_for_status=yellow&timeout=0s"
       timeout: 10s
   datahub-upgrade:
     image: docker.io/acryldata/datahub-upgrade:v1.7.0
