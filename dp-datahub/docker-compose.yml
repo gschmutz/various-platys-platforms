@@ -205,7 +205,7 @@ services:
       - ./plugins/opentelemetry/agents:/otel:z
     restart: unless-stopped
     healthcheck:
-      test: [CMD, python3, -c, "import urllib.request, sys; sys.exit(0) if urllib.request.urlopen('http://localhost:8081/subjects', timeout=5).status == 200 else sys.exit(1)"]
+      test: [CMD, python3, -c, "import http.client, sys; c=http.client.HTTPConnection('localhost',8081,timeout=5); c.request('GET','/subjects'); sys.exit(0) if c.getresponse().status==200 else sys.exit(1)"]
       interval: 30s
       timeout: 10s
       retries: 30
