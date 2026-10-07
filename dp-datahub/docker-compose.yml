@@ -475,7 +475,7 @@ services:
       interval: 10s
       retries: 20
       start_period: 60s
-      test: wget http://datahub-neo4j:7474
+      test: wget http://localhost:7474
       timeout: 10s
   datahub-opensearch:
     image: docker.io/opensearchproject/opensearch:2.19.3
