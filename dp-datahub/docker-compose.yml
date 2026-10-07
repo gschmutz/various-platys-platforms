@@ -514,7 +514,7 @@ services:
       interval: 10s
       retries: 20
       start_period: 60s
-      test: curl -sS --fail "http://datahub-opensearch:9200/_cluster/health?wait_for_status=yellow&timeout=0s"
+      test: curl -sS --fail "http://localhost:9200/_cluster/health?wait_for_status=yellow&timeout=0s"
       timeout: 10s
   datahub-upgrade:
     image: docker.io/acryldata/datahub-upgrade:v1.7.0
