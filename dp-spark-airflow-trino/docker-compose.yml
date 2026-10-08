@@ -1078,7 +1078,7 @@ services:
         start-notebook.sh
     restart: unless-stopped
     healthcheck:
-      test: [CMD, wget, -qO-, http://localhost:8888/api]
+      test: [CMD, wget, --no-proxy, -q, -O, /dev/null, http://localhost:8888/api]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -1447,6 +1447,7 @@ services:
     image: docker.io/cubejs/cubestore:latest
     container_name: cubestore
     hostname: cubestore
+    platform: linux/amd64
     labels:
       com.platys.name: cubejs
       com.platys.description: Cube Store — high-performance distributed SQL storage for Cube.js pre-aggregations
@@ -1589,7 +1590,7 @@ services:
       - ./data-transfer:/data-transfer:z
     restart: unless-stopped
     healthcheck:
-      test: [CMD, sh, -c, curl -f http://127.0.0.1:9000/health && curl -f http://127.0.0.1:9010/rustfs/console/health]
+      test: [CMD, sh, -c, curl --noproxy '*' -f http://127.0.0.1:9000/health && curl -f http://127.0.0.1:9010/rustfs/console/health]
       interval: 30s
       timeout: 10s
       retries: 3
@@ -1928,7 +1929,7 @@ services:
       CODER_ACCESS_URL: http://${PUBLIC_IP:-dataplatform}:7080
     volumes:
       - ./data-transfer:/data-transfer:z
-      - ${DOCKER_HOST:-/var/run/docker.sock}:/var/run/docker.sock:z
+      - ${PLATYS_DOCKER_SOCKET:-/var/run/docker.sock}:/var/run/docker.sock:z
     restart: unless-stopped
   #  ================================== Dockhand ========================================== #
   dockhand:
@@ -1947,7 +1948,7 @@ services:
       EXPORT_METRICS: false
     volumes:
       - ./data-transfer:/data-transfer:z
-      - ${DOCKER_HOST:-/var/run/docker.sock}:/var/run/docker.sock:z
+      - ${PLATYS_DOCKER_SOCKET:-/var/run/docker.sock}:/var/run/docker.sock:z
     restart: unless-stopped
   #  ================================== Sonatype Nexus ========================================== #
   nexus:
@@ -2016,7 +2017,7 @@ services:
     command: server
     restart: unless-stopped
     healthcheck:
-      test: [CMD-SHELL, curl -f http://localhost:3000 || exit 1]
+      test: [CMD-SHELL, curl --noproxy '*' -f http://localhost:3000 || exit 1]
       interval: 1m30s
       timeout: 10s
       retries: 3
