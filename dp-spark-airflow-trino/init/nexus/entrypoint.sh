@@ -18,15 +18,19 @@ if [ ! -f "${PASSWORD_FILE}" ] && [ ! -f "/nexus-data/.setup-complete" ]; then
 fi
 
 mkdir -p /nexus-data/etc
-cat > /nexus-data/etc/nexus.properties << 'EOF'
-nexus.httpclient.proxy.http.enabled=false
-nexus.httpclient.proxy.http.host=your-proxy-host
-nexus.httpclient.proxy.http.port=3128
-nexus.httpclient.proxy.https.enabled=false
-nexus.httpclient.proxy.https.host=your-proxy-host
-nexus.httpclient.proxy.https.port=3128
+if [ -n "${HTTP_PROXY}" ]; then
+  PROXY_HOST=$(echo "${HTTP_PROXY}" | sed 's|https\?://||' | cut -d: -f1)
+  PROXY_PORT=$(echo "${HTTP_PROXY}" | sed 's|https\?://||' | cut -d: -f2 | tr -d '/')
+  cat > /nexus-data/etc/nexus.properties << EOF
+nexus.httpclient.proxy.http.enabled=true
+nexus.httpclient.proxy.http.host=${PROXY_HOST}
+nexus.httpclient.proxy.http.port=${PROXY_PORT}
+nexus.httpclient.proxy.https.enabled=true
+nexus.httpclient.proxy.https.host=${PROXY_HOST}
+nexus.httpclient.proxy.https.port=${PROXY_PORT}
 nexus.httpclient.proxy.http.nonProxyHosts=localhost|127.0.0.1|10.89.*
 EOF
+fi
 
 /opt/sonatype/nexus/bin/nexus run &
 NEXUS_PID=$!
