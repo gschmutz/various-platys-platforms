@@ -29,6 +29,8 @@ NEXUS_PID=$!
 echo "Waiting for Nexus to be writable..."
 until curl -sf -u "admin:${ADMIN_PASS}" \
     "${NEXUS_URL}/service/rest/v1/status/writable" > /dev/null 2>&1; do
+  STATUS=$(curl -s -o /dev/null -w "%{http_code}" -u "admin:${ADMIN_PASS}" "${NEXUS_URL}/service/rest/v1/status/writable" 2>&1 || echo "no-response")
+  echo "  still waiting... HTTP=${STATUS}, nexus pid=${NEXUS_PID} alive=$(kill -0 ${NEXUS_PID} 2>/dev/null && echo yes || echo NO)"
   sleep 5
 done
 echo "Nexus is up."
