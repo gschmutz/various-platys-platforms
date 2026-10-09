@@ -1952,7 +1952,7 @@ services:
     restart: unless-stopped
   #  ================================== Sonatype Nexus ========================================== #
   nexus:
-    image: docker.io/sonatype/nexus3:3.90.5
+    image: docker.io/sonatype/nexus3:3.96.4
     container_name: nexus
     hostname: nexus
     labels:
@@ -1969,6 +1969,7 @@ services:
     volumes:
       - ./data-transfer:/data-transfer:z
       - ./init/nexus:/nexus-init:ro
+      - ./nexus.properties:/nexus-data/etc/nexus.properties:z
     entrypoint: [/bin/sh, /nexus-init/entrypoint.sh]
     restart: unless-stopped
     healthcheck:
@@ -2009,7 +2010,7 @@ services:
       com.platys.webui.title: Markdown Viewer UI
       com.platys.webui.url: http://dataplatform:81
     ports:
-      - 28632:3000
+      - 28631:3000
     volumes:
       - ./artefacts:/docs
       - ./conf/markdown-viewer/markdown-madness.yml:/docs/.madness.yml:z
