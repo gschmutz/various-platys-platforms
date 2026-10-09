@@ -65,13 +65,12 @@ services:
       SPARK_DEFAULTS_CONF_spark_jars_repositories:
       SPARK_DEFAULTS_CONF_spark_jars_packages: io.delta:delta-spark_2.13:4.1.0,io.delta:delta-storage:4.1.0
       SPARK_DEFAULTS_CONF_spark_jars_excludes:
-      SPARK_DEFAULTS_CONF_spark_driver_extraJavaOptions: -Djavax.net.ssl.trustAll=true
       # specifies the JARs to be downloaded to the jars folder by maven-download-sh script
       SPARK_INSTALL_JAVA_PACKAGES: ',software.amazon.awssdk:bundle:2.35.4,software.amazon.awssdk:s3-transfer-manager:2.35.4,software.amazon.awssdk.crt:aws-crt:0.39.4,org.apache.hadoop:hadoop-aws:3.4.2,io.delta:delta-spark_2.13:4.1.0,io.delta:delta-storage:4.1.0,org.apache.iceberg:iceberg-spark-runtime-4.1_2.13:1.11.0,org.apache.iceberg:iceberg-aws-bundle:1.11.0,org.apache.polaris:polaris-spark-3.5_2.13:1.2.0-incubating,org.apache.hudi:hudi-spark4.1-bundle_2.13:1.2.0'
       SPARK_INSTALL_PYTHON_PACKAGES: ' delta-spark==4.1.0'
       SPARK_DEFAULTS_CONF_spark_jars: /opt/spark/jars/iceberg-spark-runtime-4.1_2.13-1.11.0.jar
       MAVEN_DOWNLOAD_REPO: central
-      MAVEN_DOWNLOAD_SSL_VERIFY: "false"
+      MAVEN_DOWNLOAD_SSL_VERIFY: 'false'
       SPARK_DEFAULTS_CONF_spark_jars_ivySettings:
       SPARK_DEFAULTS_CONF_spark_jars_ivy: /opt/ivy-cache
     volumes:
@@ -155,7 +154,7 @@ services:
       SPARK_INSTALL_PYTHON_PACKAGES: ' delta-spark==4.1.0'
       SPARK_DEFAULTS_CONF_spark_jars: /opt/spark/jars/iceberg-spark-runtime-4.1_2.13-1.11.0.jar
       MAVEN_DOWNLOAD_REPO: central
-      MAVEN_DOWNLOAD_SSL_VERIFY: "false"
+      MAVEN_DOWNLOAD_SSL_VERIFY: 'false'
       SPARK_DEFAULTS_CONF_spark_jars_ivySettings:
       SPARK_DEFAULTS_CONF_spark_jars_ivy: /opt/ivy-cache
     volumes:
@@ -234,7 +233,7 @@ services:
       SPARK_INSTALL_PYTHON_PACKAGES: ' delta-spark==4.1.0'
       SPARK_DEFAULTS_CONF_spark_jars: /opt/spark/jars/iceberg-spark-runtime-4.1_2.13-1.11.0.jar
       MAVEN_DOWNLOAD_REPO: central
-      MAVEN_DOWNLOAD_SSL_VERIFY: "false"
+      MAVEN_DOWNLOAD_SSL_VERIFY: 'false'
       SPARK_DEFAULTS_CONF_spark_jars_ivySettings:
       SPARK_DEFAULTS_CONF_spark_jars_ivy: /opt/ivy-cache
     volumes:
@@ -315,7 +314,7 @@ services:
       SPARK_INSTALL_PYTHON_PACKAGES: ' delta-spark==4.1.0'
       SPARK_DEFAULTS_CONF_spark_jars: /opt/spark/jars/iceberg-spark-runtime-4.1_2.13-1.11.0.jar
       MAVEN_DOWNLOAD_REPO: central
-      MAVEN_DOWNLOAD_SSL_VERIFY: "false"
+      MAVEN_DOWNLOAD_SSL_VERIFY: 'false'
       SPARK_DEFAULTS_CONF_spark_jars_ivySettings:
       SPARK_DEFAULTS_CONF_spark_jars_ivy: /opt/ivy-cache
     volumes:
@@ -391,7 +390,7 @@ services:
       SPARK_INSTALL_PYTHON_PACKAGES: ' delta-spark==4.1.0'
       SPARK_DEFAULTS_CONF_spark_jars: /opt/spark/jars/iceberg-spark-runtime-4.1_2.13-1.11.0.jar
       MAVEN_DOWNLOAD_REPO: central
-      MAVEN_DOWNLOAD_SSL_VERIFY: "false"
+      MAVEN_DOWNLOAD_SSL_VERIFY: 'false'
       SPARK_DEFAULTS_CONF_spark_jars_ivySettings:
       SPARK_DEFAULTS_CONF_spark_jars_ivy: /opt/ivy-cache
     volumes:
@@ -470,7 +469,7 @@ services:
       SPARK_INSTALL_PYTHON_PACKAGES: ' delta-spark==4.1.0'
       SPARK_DEFAULTS_CONF_spark_jars: /opt/spark/jars/iceberg-spark-runtime-4.1_2.13-1.11.0.jar
       MAVEN_DOWNLOAD_REPO: central
-      MAVEN_DOWNLOAD_SSL_VERIFY: "false"
+      MAVEN_DOWNLOAD_SSL_VERIFY: 'false'
       SPARK_DEFAULTS_CONF_spark_jars_ivySettings:
       SPARK_DEFAULTS_CONF_spark_jars_ivy: /opt/ivy-cache
     volumes:
@@ -986,7 +985,7 @@ services:
       JUPYTER_TOKEN: ${PLATYS_JUPYTER_TOKEN:-abc123!}
       DOCKER_STACKS_JUPYTER_CMD: lab
       MAVEN_DOWNLOAD_REPO: central
-      MAVEN_DOWNLOAD_SSL_VERIFY: "false"
+      MAVEN_DOWNLOAD_SSL_VERIFY: 'false'
       MAVEN_DOWNLOAD_REPO_NEXUS: http://nexus:8081/repository/maven-public
       MAVEN_DOWNLOAD_REPO_NEXUS_USER: admin
       MAVEN_DOWNLOAD_REPO_NEXUS_PASSWORD: ${PLATYS_NEXUS_ADMIN_PASSWORD:-abc123!abc123!}
@@ -1016,6 +1015,8 @@ services:
         conda create -y --name py310 python=3.10.12
         source /opt/conda/etc/profile.d/conda.sh
         conda activate py310
+        # Trust pypi.org to avoid SSL Error in pip install
+        pip config set global.trusted-host "pypi.org files.pythonhosted.org pypi.python.org"        
         pip install ipykernel
         python -m ipykernel install --user --name py310 --display-name "Python 3.10.12 (ipykernel)"
         conda run -n py310 pip install pyspark==4.1.1 numpy graphframes-py typing_extensions jupysql "zstandard>=0.25.0" pandas arrow pyarrow grpcio-status boto3
@@ -1086,6 +1087,8 @@ services:
       - /bin/bash
       - -c
       - |
+        # Trust pypi.org to avoid SSL Error in pip install
+        uv pip config set global.trusted-host "pypi.org files.pythonhosted.org pypi.python.org"
         uv pip install psycopg2-binary
         uv pip install apache-superset[trino]
         /app/docker/docker-bootstrap.sh app-gunicorn
@@ -1203,6 +1206,8 @@ services:
       - /bin/bash
       - -c
       - |
+        # Trust pypi.org to avoid SSL Error in pip install
+        uv pip config set global.trusted-host "pypi.org files.pythonhosted.org pypi.python.org"      
         uv pip install psycopg2-binary
         uv pip install apache-superset[trino]
         /app/docker/docker-bootstrap.sh worker
@@ -1262,6 +1267,8 @@ services:
       - /bin/bash
       - -c
       - |
+        # Trust pypi.org to avoid SSL Error in pip install
+        uv pip config set global.trusted-host "pypi.org files.pythonhosted.org pypi.python.org"
         uv pip install psycopg2-binary
         uv pip install apache-superset[trino]
         /app/docker/docker-bootstrap.sh beat

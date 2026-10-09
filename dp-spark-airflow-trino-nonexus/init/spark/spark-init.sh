@@ -169,13 +169,15 @@ done
 # Trust pypi.org to avoid SSL Error in pip install
 pip config set global.trusted-host "pypi.org files.pythonhosted.org pypi.python.org"
 
-if [ ${SPARK_INSTALL_JAVA_PACKAGES} ]
-then
+if [ -n "${SPARK_INSTALL_JAVA_PACKAGES}" ]
+then 
+  echo "Installing Maven Packages: ${SPARK_INSTALL_JAVA_PACKAGES}"
+
   # using python for the download, as spark docker images don't come with curl installed (with apache/spark this is no longer true, but we use python as it supports Nexus)
   /maven-download.sh ${MAVEN_DOWNLOAD_REPO} ${SPARK_INSTALL_JAVA_PACKAGES} /opt/spark/jars python
 fi
 
-if [ "${SPARK_INSTALL_PYTHON_PACKAGES}" ]
+if [ -n "${SPARK_INSTALL_PYTHON_PACKAGES}" ]
 then
   echo "Installing Python packages: ${SPARK_INSTALL_PYTHON_PACKAGES}"
   pip install ${SPARK_INSTALL_PYTHON_PACKAGES}
