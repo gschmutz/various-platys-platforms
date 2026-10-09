@@ -1969,7 +1969,6 @@ services:
     volumes:
       - ./data-transfer:/data-transfer:z
       - ./init/nexus:/nexus-init:ro
-      - ./nexus.properties:/nexus-data/etc/nexus.properties:z
     entrypoint: [/bin/sh, /nexus-init/entrypoint.sh]
     restart: unless-stopped
     healthcheck:

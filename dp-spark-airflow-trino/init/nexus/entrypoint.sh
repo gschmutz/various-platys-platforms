@@ -56,37 +56,6 @@ if [ ! -f "/nexus-data/.setup-complete" ]; then
     -H "Content-Type: application/json" \
     -d @/nexus-init/docker-proxy.json || true    
 
-  # configure outbound HTTP proxy (only if HTTP_PROXY is set)
-  if [ -n "${HTTP_PROXY}" ]; then
-    PROXY_HOST=$(echo "${HTTP_PROXY}" | sed 's|https\?://||' | cut -d: -f1)
-    PROXY_PORT=$(echo "${HTTP_PROXY}" | sed 's|https\?://||' | cut -d: -f2 | cut -d/ -f1)
-    PROXY_PORT=${PROXY_PORT:-3128}
-
-    NON_PROXY_HOSTS=$(echo "${NO_PROXY:-localhost}" | tr ',' '\n' | awk 'BEGIN{printf "["} NR>1{printf ","} {printf "\"%s\"",$0} END{printf "]"}')
-
-    curl -sf \
-      -u "admin:${ADMIN_PASS}" \
-      -X PUT "${NEXUS_URL}/service/rest/v1/http" \
-      -H "Content-Type: application/json" \
-      -d "{
-        \"userAgent\": \"\",
-        \"timeout\": 20,
-        \"retries\": 2,
-        \"httpProxy\": {
-          \"enabled\": true,
-          \"host\": \"${PROXY_HOST}\",
-          \"port\": ${PROXY_PORT}
-        },
-        \"httpsProxy\": {
-          \"enabled\": true,        
-          \"host\": \"${PROXY_HOST}\",
-          \"port\": ${PROXY_PORT}
-        },
-        \"nonProxyHosts\": ${NON_PROXY_HOSTS}
-      }" || true
-    echo "HTTP proxy configured: ${PROXY_HOST}:${PROXY_PORT}"
-  fi
-
   # Retrieve licence data and update acceptance
   EULA_FILE="$(mktemp)_EULA.json"
   curl -s -X GET -u "admin:${ADMIN_PASS}"  -H "accept: application/json" "$NEXUS_URL/service/rest/v1/system/eula" | sed 's/: false/: true/g' > $EULA_FILE
