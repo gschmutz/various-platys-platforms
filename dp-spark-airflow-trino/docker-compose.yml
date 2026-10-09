@@ -1975,7 +1975,7 @@ services:
       interval: 1s
       timeout: 10s
       retries: 240
-      test: [CMD, test, -f, /tmp/.setup-complete]
+      test: [CMD, test, -f, /nexus-data/.setup-complete]
   #  ================================== Wetty ========================================== #
   wetty-env2:
     image: docker.io/wettyoss/wetty:2

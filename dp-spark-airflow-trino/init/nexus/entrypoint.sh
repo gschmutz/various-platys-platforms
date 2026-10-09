@@ -9,7 +9,7 @@ NEXUS_URL="http://nexus:8081"
 if [ ! -f "${PASSWORD_FILE}" ] && [ ! -f "/nexus-data/.setup-complete" ]; then
   mkdir -p /nexus-data
   echo -n "${ADMIN_PASS}" > "${PASSWORD_FILE}"
-  chown -R nexus:nexus /nexus-data
+  chown -R nexus:nexus /nexus-data 2>/dev/null || true
 fi
 
 /opt/sonatype/nexus/bin/nexus run &
@@ -58,12 +58,12 @@ if [ ! -f "/nexus-data/.setup-complete" ]; then
 
   # Retrieve licence data and update acceptance
   EULA_FILE="$(mktemp)_EULA.json"
-  curl -s -X GET -u "admin:${ADMIN_PASS}"  -H "accept: application/json" "$NEXUS_URL/service/rest/v1/system/eula" | sed 's/: false/: true/g' > $EULA_FILE
+  curl -s -u "admin:${ADMIN_PASS}" -H "accept: application/json" "$NEXUS_URL/service/rest/v1/system/eula" | sed 's/: false/: true/g' > "$EULA_FILE"
   # Send back acceptance
-  curl -v -s -X POST -u "admin:${ADMIN_PASS}" -H "Content-Type: application/json; charset=UTF-8" -d "$(cat $EULA_FILE | sed 's/\n//g')" "$NEXUS_URL/service/rest/v1/system/eula"
+  curl -s -u "admin:${ADMIN_PASS}" -H "Content-Type: application/json; charset=UTF-8" -d "$(cat "$EULA_FILE")" "$NEXUS_URL/service/rest/v1/system/eula" || true
 
   # mark setup as done so restarts skip this block
-  touch /tmp/.setup-complete
+  touch /nexus-data/.setup-complete
   echo "Setup complete."
 
 fi
