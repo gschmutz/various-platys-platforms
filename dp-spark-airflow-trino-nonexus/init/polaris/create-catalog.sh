@@ -84,7 +84,7 @@ curl --fail-with-body \
    -H 'Accept: application/json' \
    -H 'Content-Type: application/json' \
    -H "Polaris-Realm: $realm" \
-   http://localhost:8181/api/management/v1/catalogs \
+   http://polaris:8181/api/management/v1/catalogs \
    -d "$PAYLOAD" -v
 
 echo
@@ -104,7 +104,7 @@ if [ -n "${NAMESPACE}" ]; then
   echo $PAYLOAD
 
   curl -s -X POST \
-    "http://localhost:8181/api/catalog/v1/${CATALOG_NAME}/namespaces" \
+    "http://polaris:8181/api/catalog/v1/${CATALOG_NAME}/namespaces" \
     -H "Authorization: Bearer ${TOKEN}" \
     -H "Content-Type: application/json" \
     -d "$PAYLOAD"
