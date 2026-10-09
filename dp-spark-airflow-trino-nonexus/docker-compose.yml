@@ -1671,7 +1671,7 @@ services:
     init: true
     # restart: "no"  # do be podman compatible, it has to be "no" which did not work, but no is default    
   polaris-catalog-setup:
-    image: badouralix/curl-jq
+    image: docker.io/badouralix/curl-jq
     container_name: polaris-catalog-setup
     hostname: polaris-catalog-setup
     depends_on:
