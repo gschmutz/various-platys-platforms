@@ -168,7 +168,7 @@ done
 
 if [ -n "${SPARK_INSTALL_JAVA_PACKAGES}" ]
 then 
-  echo "Maven Packages: ${SPARK_INSTALL_JAVA_PACKAGES}"
+  echo "Installing Maven Packages: ${SPARK_INSTALL_JAVA_PACKAGES}"
 
   # using python for the download, as spark docker images don't come with curl installed (with apache/spark this is no longer true, but we use python as it supports Nexus)
   /maven-download.sh ${MAVEN_DOWNLOAD_REPO} ${SPARK_INSTALL_JAVA_PACKAGES} /opt/spark/jars python
