@@ -71,6 +71,7 @@ services:
       SPARK_INSTALL_PYTHON_PACKAGES: ' delta-spark==4.1.0'
       SPARK_DEFAULTS_CONF_spark_jars: /opt/spark/jars/iceberg-spark-runtime-4.1_2.13-1.11.0.jar
       MAVEN_DOWNLOAD_REPO: central
+      MAVEN_DOWNLOAD_SSL_VERIFY: "false"
       SPARK_DEFAULTS_CONF_spark_jars_ivySettings:
       SPARK_DEFAULTS_CONF_spark_jars_ivy: /opt/ivy-cache
     volumes:
@@ -154,6 +155,7 @@ services:
       SPARK_INSTALL_PYTHON_PACKAGES: ' delta-spark==4.1.0'
       SPARK_DEFAULTS_CONF_spark_jars: /opt/spark/jars/iceberg-spark-runtime-4.1_2.13-1.11.0.jar
       MAVEN_DOWNLOAD_REPO: central
+      MAVEN_DOWNLOAD_SSL_VERIFY: "false"
       SPARK_DEFAULTS_CONF_spark_jars_ivySettings:
       SPARK_DEFAULTS_CONF_spark_jars_ivy: /opt/ivy-cache
     volumes:
@@ -232,6 +234,7 @@ services:
       SPARK_INSTALL_PYTHON_PACKAGES: ' delta-spark==4.1.0'
       SPARK_DEFAULTS_CONF_spark_jars: /opt/spark/jars/iceberg-spark-runtime-4.1_2.13-1.11.0.jar
       MAVEN_DOWNLOAD_REPO: central
+      MAVEN_DOWNLOAD_SSL_VERIFY: "false"
       SPARK_DEFAULTS_CONF_spark_jars_ivySettings:
       SPARK_DEFAULTS_CONF_spark_jars_ivy: /opt/ivy-cache
     volumes:
@@ -312,6 +315,7 @@ services:
       SPARK_INSTALL_PYTHON_PACKAGES: ' delta-spark==4.1.0'
       SPARK_DEFAULTS_CONF_spark_jars: /opt/spark/jars/iceberg-spark-runtime-4.1_2.13-1.11.0.jar
       MAVEN_DOWNLOAD_REPO: central
+      MAVEN_DOWNLOAD_SSL_VERIFY: "false"
       SPARK_DEFAULTS_CONF_spark_jars_ivySettings:
       SPARK_DEFAULTS_CONF_spark_jars_ivy: /opt/ivy-cache
     volumes:
@@ -387,6 +391,7 @@ services:
       SPARK_INSTALL_PYTHON_PACKAGES: ' delta-spark==4.1.0'
       SPARK_DEFAULTS_CONF_spark_jars: /opt/spark/jars/iceberg-spark-runtime-4.1_2.13-1.11.0.jar
       MAVEN_DOWNLOAD_REPO: central
+      MAVEN_DOWNLOAD_SSL_VERIFY: "false"
       SPARK_DEFAULTS_CONF_spark_jars_ivySettings:
       SPARK_DEFAULTS_CONF_spark_jars_ivy: /opt/ivy-cache
     volumes:
@@ -465,6 +470,7 @@ services:
       SPARK_INSTALL_PYTHON_PACKAGES: ' delta-spark==4.1.0'
       SPARK_DEFAULTS_CONF_spark_jars: /opt/spark/jars/iceberg-spark-runtime-4.1_2.13-1.11.0.jar
       MAVEN_DOWNLOAD_REPO: central
+      MAVEN_DOWNLOAD_SSL_VERIFY: "false"
       SPARK_DEFAULTS_CONF_spark_jars_ivySettings:
       SPARK_DEFAULTS_CONF_spark_jars_ivy: /opt/ivy-cache
     volumes:
@@ -980,6 +986,7 @@ services:
       JUPYTER_TOKEN: ${PLATYS_JUPYTER_TOKEN:-abc123!}
       DOCKER_STACKS_JUPYTER_CMD: lab
       MAVEN_DOWNLOAD_REPO: central
+      MAVEN_DOWNLOAD_SSL_VERIFY: "false"
       MAVEN_DOWNLOAD_REPO_NEXUS: http://nexus:8081/repository/maven-public
       MAVEN_DOWNLOAD_REPO_NEXUS_USER: admin
       MAVEN_DOWNLOAD_REPO_NEXUS_PASSWORD: ${PLATYS_NEXUS_ADMIN_PASSWORD:-abc123!abc123!}
