@@ -166,6 +166,9 @@ do
     wait_for_it ${i}
 done
 
+# Trust pypi.org to avoid SSL Error in pip install
+pip config set global.trusted-host "pypi.org files.pythonhosted.org pypi.python.org"
+
 if [ ${SPARK_INSTALL_JAVA_PACKAGES} ]
 then
   # using python for the download, as spark docker images don't come with curl installed (with apache/spark this is no longer true, but we use python as it supports Nexus)
