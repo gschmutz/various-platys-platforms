@@ -12,6 +12,7 @@ if [ ! -f "${PASSWORD_FILE}" ] && [ ! -f "/nexus-data/.setup-complete" ]; then
   chown -R nexus:nexus /nexus-data 2>/dev/null || true
 fi
 
+mkdir -p /nexus-data/etc
 cat > /nexus-data/etc/nexus.properties << 'EOF'
 nexus.httpclient.proxy.http.enabled=false
 nexus.httpclient.proxy.http.host=your-proxy-host
