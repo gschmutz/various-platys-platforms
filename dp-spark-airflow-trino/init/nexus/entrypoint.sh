@@ -3,7 +3,7 @@ set -e
 
 ADMIN_PASS="${NEXUS_ADMIN_PASSWORD:-admin123}"
 PASSWORD_FILE="/nexus-data/admin.password"
-NEXUS_URL="http://nexus:8081"
+NEXUS_URL="http://localhost:8081"
 
 # pre-seed password file on very first boot
 if [ ! -f "${PASSWORD_FILE}" ] && [ ! -f "/nexus-data/.setup-complete" ]; then
@@ -11,6 +11,16 @@ if [ ! -f "${PASSWORD_FILE}" ] && [ ! -f "/nexus-data/.setup-complete" ]; then
   echo -n "${ADMIN_PASS}" > "${PASSWORD_FILE}"
   chown -R nexus:nexus /nexus-data 2>/dev/null || true
 fi
+
+cat > /nexus-data/etc/nexus.properties << 'EOF'
+nexus.httpclient.proxy.http.enabled=false
+nexus.httpclient.proxy.http.host=your-proxy-host
+nexus.httpclient.proxy.http.port=3128
+nexus.httpclient.proxy.https.enabled=false
+nexus.httpclient.proxy.https.host=your-proxy-host
+nexus.httpclient.proxy.https.port=3128
+nexus.httpclient.proxy.http.nonProxyHosts=localhost|127.0.0.1|10.89.*
+EOF
 
 /opt/sonatype/nexus/bin/nexus run &
 NEXUS_PID=$!
