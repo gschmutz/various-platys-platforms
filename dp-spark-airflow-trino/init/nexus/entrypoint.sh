@@ -5,6 +5,11 @@ ADMIN_PASS="${NEXUS_ADMIN_PASSWORD:-admin123}"
 PASSWORD_FILE="/nexus-data/admin.password"
 NEXUS_URL="http://localhost:8081"
 
+# ensure curl never routes Nexus API calls through an outbound proxy
+NO_PROXY="${NO_PROXY},localhost,127.0.0.1"
+no_proxy="${no_proxy},localhost,127.0.0.1"
+export NO_PROXY no_proxy
+
 # pre-seed password file on very first boot
 if [ ! -f "${PASSWORD_FILE}" ] && [ ! -f "/nexus-data/.setup-complete" ]; then
   mkdir -p /nexus-data
