@@ -3487,7 +3487,7 @@
       #
       #===== Nimtable ========
       #
-      NIMTABLE_enable: true
+      NIMTABLE_enable: false
       NIMTABLE_admin_password: abc123!      
       
       #
@@ -3679,7 +3679,7 @@
       #
       # ===== Coder ========
       #
-      CODER_enable: true
+      CODER_enable: false
       CODER_mount_docker_socket: true
       CODER_volume_mount_data: false
       CODER_postgres_dbname: 'postgres'

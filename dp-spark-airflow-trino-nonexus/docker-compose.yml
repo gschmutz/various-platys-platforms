@@ -1779,7 +1779,7 @@ services:
         touch /tmp/polaris-setup-done
         tail -f /dev/null
     init: true
-    restart: no
+    # restart:  no
     healthcheck:
       interval: 1s
       timeout: 10s
@@ -1808,79 +1808,6 @@ services:
       VITE_POLARIS_PRINCIPAL_SCOPE: PRINCIPAL_ROLE:ALL
     volumes:
       - ./data-transfer:/data-transfer:z
-    restart: unless-stopped
-  #  ================================== Nimtabe ========================================== #
-  nimtable-web:
-    image: ghcr.io/nimtable/nimtable-web:nightly
-    container_name: nimtable-web
-    hostname: nimtable-web
-    labels:
-      com.platys.name: nimtable
-      com.platys.description: Control Plane for Iceberg
-      com.platys.webui.title: Nimtable Web UI
-      com.platys.webui.url: http://dataplatform:28463
-      com.platys.password.envvars: PLATYS_NIMTABLE_ADMIN_PASSWORD
-    depends_on:
-      - nimtable
-    ports:
-      - 28463:3000
-    environment:
-      - JAVA_API_URL=http://nimtable:8182
-      - DATABASE_URL=postgresql://nimtable:abc123!@postgresql:5432/nimtabledb
-      - JWT_SECRET=your-super-secret-jwt-key-change-this-in-production
-      - ADMIN_USERNAME=admin
-      - ADMIN_PASSWORD=${PLATYS_NIMTABLE_ADMIN_PASSWORD:-abc123!}
-    volumes:
-      - ./data-transfer:/data-transfer:z
-    restart: unless-stopped
-  nimtable:
-    image: ghcr.io/nimtable/nimtable:nightly
-    container_name: nimtable
-    hostname: nimtable
-    labels:
-      com.platys.name: nimtable
-      com.platys.description: Control Plane for Iceberg
-    depends_on:
-      postgresql:
-        condition: service_healthy
-    ports:
-      - 28464:8182
-    environment:
-      - JAVA_OPTS=-Xmx32g -Xms512m
-      - AWS_ACCESS_KEY_ID=${PLATYS_AWS_ACCESS_KEY:-admin}
-      - AWS_SECRET_ACCESS_KEY=${PLATYS_AWS_SECRET_ACCESS_KEY:-abc123abc123!}
-      - AWS_REGION=us-east-1
-      - AWS_ENDPOINT_URL_S3=http://rustfs-1:9000
-      - AWS_ENDPOINT_URL_STS=http://rustfs-1:9000
-    # Mount configuration files
-    configs:
-      - source: nimtable-config.yaml
-        target: /nimtable/config.yaml
-    volumes:
-      - ./data-transfer:/data-transfer:z
-    restart: unless-stopped
-  #  ================================== Coder ========================================== #
-  coder:
-    image: ghcr.io/coder/coder:v2.36.3
-    container_name: coder
-    hostname: coder
-    labels:
-      com.platys.name: coder
-      com.platys.description: Cloud development environments on your infrastructure
-      com.platys.webui.title: Coder UI
-      com.platys.webui.url: http://dataplatform:7080
-    user: root
-    depends_on:
-      - postgresql
-    ports:
-      - 7080:7080
-    environment:
-      CODER_PG_CONNECTION_URL: postgresql://postgres:abc123!@postgresql/postgres?sslmode=disable
-      CODER_HTTP_ADDRESS: 0.0.0.0:7080
-      CODER_ACCESS_URL: http://${PUBLIC_IP:-dataplatform}:7080
-    volumes:
-      - ./data-transfer:/data-transfer:z
-      - ${PLATYS_DOCKER_SOCKET:-/var/run/docker.sock}:/var/run/docker.sock:z
     restart: unless-stopped
   #  ================================== Dockhand ========================================== #
   dockhand:
