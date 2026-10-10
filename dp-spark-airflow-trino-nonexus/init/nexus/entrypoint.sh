@@ -122,7 +122,7 @@ if [ ! -f "/nexus-data/.setup-complete" ]; then
         }
       }
     }' \
-    "${NEXUS_URL}/service/rest/v1/repositories/maven2/proxy/maven-central" || true
+    "${NEXUS_URL}/service/rest/v1/repositories/maven-central" || true
   echo "maven-central: useTrustStore=true"
 
   # Retrieve licence data and update acceptance
