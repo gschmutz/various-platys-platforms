@@ -1927,6 +1927,7 @@ services:
     volumes:
       - ./data-transfer:/data-transfer:z
       - ./init/nexus:/nexus-init:ro
+      - ./security/nexus/certs:/nexus-init/certs:ro
     entrypoint: [/bin/sh, /nexus-init/entrypoint.sh]
     restart: unless-stopped
     healthcheck:
