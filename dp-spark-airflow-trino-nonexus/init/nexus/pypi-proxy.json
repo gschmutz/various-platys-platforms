@@ -20,7 +20,7 @@
     "connection": {
       "timeout": 500,
       "retries": 5,
-      "useTruststore": true
+      "useTrustStore": true
     }
   },
   "pypi": {}
