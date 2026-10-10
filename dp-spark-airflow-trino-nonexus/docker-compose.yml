@@ -1078,7 +1078,7 @@ services:
         source /opt/conda/etc/profile.d/conda.sh
         conda activate py310
         # Trust pypi.org to avoid SSL Error in pip install
-        pip config set global.trusted-host "pypi.org files.pythonhosted.org pypi.python.org"        
+        pip config set global.trusted-host "nexus pypi.org files.pythonhosted.org pypi.python.org"        
         NEXUS_PASS=$$(python3 -c "import urllib.parse, os; print(urllib.parse.quote(os.environ.get('MAVEN_DOWNLOAD_REPO_NEXUS_PASSWORD', 'abc123!abc123!')))")
         NEXUS_INDEX_URL="http://admin:$${NEXUS_PASS}@nexus:8081/repository/pypi-proxy/simple/"
         pip install ipykernel
@@ -1101,10 +1101,10 @@ services:
       com.platys.name: superset
       com.platys.description: modern data exploration and visualization platform
       com.platys.webui.title: Superset UI
-      com.platys.webui.url: http://dataplatform:28151
+      com.platys.webui.url: http://dataplatform:28463
       com.platys.password.envvars: PLATYS_SUPERSET_ADMIN_PASSWORD
     ports:
-      - 28151:8088
+      - 28463:8088
     user: root
     depends_on:
       superset-init:
@@ -1155,7 +1155,8 @@ services:
       - /bin/bash
       - -c
       - |
-        uv pip config set global.trusted-host "nexus"
+        # Trust pypi.org to avoid SSL Error in pip install
+        uv pip config set global.trusted-host "nexus pypi.org files.pythonhosted.org pypi.python.org"
         uv pip install psycopg2-binary
         uv pip install apache-superset[trino]
         /app/docker/docker-bootstrap.sh app-gunicorn
@@ -1281,7 +1282,8 @@ services:
       - /bin/bash
       - -c
       - |
-        uv pip config set global.trusted-host "nexus"
+        # Trust pypi.org to avoid SSL Error in pip install
+        uv pip config set global.trusted-host "nexus pypi.org files.pythonhosted.org pypi.python.org"      
         uv pip install psycopg2-binary
         uv pip install apache-superset[trino]
         /app/docker/docker-bootstrap.sh worker
@@ -1345,7 +1347,8 @@ services:
       - /bin/bash
       - -c
       - |
-        uv pip config set global.trusted-host "nexus"
+        # Trust pypi.org to avoid SSL Error in pip install
+        uv pip config set global.trusted-host "nexus pypi.org files.pythonhosted.org pypi.python.org"
         uv pip install psycopg2-binary
         uv pip install apache-superset[trino]
         /app/docker/docker-bootstrap.sh beat
@@ -1432,11 +1435,11 @@ services:
       com.platys.name: cubejs
       com.platys.description: Headless Business Intelligence platform
       com.platys.webui.title: Cube.js Playground
-      com.platys.webui.url: http://dataplatform:4003
+      com.platys.webui.url: http://dataplatform:28464
       com.platys.restapi.title: Cube.js API
-      com.platys.restapi.url: http://dataplatform:4003/cubejs-api/v1
+      com.platys.restapi.url: http://dataplatform:28464/cubejs-api/v1
     ports:
-      - 4003:4000
+      - 28464:4000
     environment:
       CUBEJS_DEV_MODE: 'true'
       # Data sources defined here can be used to decorate CUBEJS_DB_* environment variables. 
@@ -1895,9 +1898,9 @@ services:
       com.platys.name: dockhand
       com.platys.description: Docker container management UI
       com.platys.webui.title: Dockhand UI
-      com.platys.webui.url: http://dataplatform:28498
+      com.platys.webui.url: http://dataplatform:28349
     ports:
-      - 28498:3000
+      - 28349:3000
     environment:
       DISABLE_WHATS_NEW: true
       EXPORT_METRICS: false
