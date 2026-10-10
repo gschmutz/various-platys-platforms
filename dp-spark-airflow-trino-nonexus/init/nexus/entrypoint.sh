@@ -106,7 +106,7 @@ if [ ! -f "/nexus-data/.setup-complete" ]; then
     fi
     curl -sf -o /dev/null \
       -u "admin:${ADMIN_PASS}" \
-      -X PUT "${NEXUS_URL}/service/rest/v1/repositories/maven/proxy/${repo}" \
+      -X PUT "${NEXUS_URL}/service/rest/v1/repositories/${repo}" \
       -H "Content-Type: application/json" \
       -d "$PATCHED" || echo "  WARNING: failed to patch $repo"
     echo "  Done."
