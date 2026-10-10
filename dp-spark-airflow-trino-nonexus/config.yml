@@ -3912,7 +3912,7 @@
       #
       # ===== Wetty ========
       #
-      WETTY_enable: true
+      WETTY_enable: false
       WETTY_version: 2
 
       #

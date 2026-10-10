@@ -1934,28 +1934,6 @@ services:
       timeout: 10s
       retries: 240
       test: [CMD, test, -f, /nexus-data/.setup-complete]
-  #  ================================== Wetty ========================================== #
-  wetty-env2:
-    image: docker.io/wettyoss/wetty:2
-    container_name: wetty-env2
-    hostname: wetty-env2
-    labels:
-      com.platys.name: wetty
-      com.platys.description: A terminal window in Web-Browser
-      com.platys.webui.title: WeTTY UI
-      com.platys.webui.url: http://dataplatform:3002
-    ports:
-      - 3002:3000
-    environment:
-      - SSHHOST=${DOCKER_HOST_IP:-localhost}
-      - SSHPORT=22
-      - SSHUSER=
-      - SSHAUTH=password
-      - PORT=3000
-      - BASE=/
-    volumes:
-      - ./data-transfer:/data-transfer:z
-    restart: unless-stopped
   #  ================================== markdown-viewer ========================================== #
   markdown-viewer-env2:
     image: docker.io/dannyben/madness:1.2.5
