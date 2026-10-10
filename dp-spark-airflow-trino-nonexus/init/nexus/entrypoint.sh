@@ -92,39 +92,6 @@ if [ ! -f "/nexus-data/.setup-complete" ]; then
     -H "Content-Type: application/json" \
     -d @/nexus-init/docker-proxy.json || true    
 
-
-  # enable useTrustStore on maven-central (pre-configured by Nexus)
-  curl -sf -o /dev/null \
-    -u "admin:${ADMIN_PASS}" \
-    -X PUT \
-    -H "Content-Type: application/json" \
-    -d '{
-      "name": "maven-central",
-      "online": true,
-      "storage": {
-        "blobStoreName": "default",
-        "strictContentTypeValidation": false
-      },
-      "proxy": {
-        "remoteUrl": "https://repo1.maven.org/maven2",
-        "contentMaxAge": 1440,
-        "metadataMaxAge": 1440
-      },
-      "negativeCache": {
-        "enabled": true,
-        "timeToLive": 1440
-      },
-      "httpClient": {
-        "blocked": false,
-        "autoBlock": true,
-        "connection": {
-          "useTrustStore": true
-        }
-      }
-    }' \
-    "${NEXUS_URL}/service/rest/v1/repositories/maven-central" || true
-  echo "maven-central: useTrustStore=true"
-
   # Retrieve licence data and update acceptance
   EULA_FILE="$(mktemp)_EULA.json"
   curl -s -u "admin:${ADMIN_PASS}" -H "accept: application/json" "$NEXUS_URL/service/rest/v1/system/eula" | sed 's/: false/: true/g' > "$EULA_FILE"
