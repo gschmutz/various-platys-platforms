@@ -92,25 +92,38 @@ if [ ! -f "/nexus-data/.setup-complete" ]; then
     -H "Content-Type: application/json" \
     -d @/nexus-init/docker-proxy.json || true    
 
-  # enable useTrustStore on pre-configured repos (e.g. maven-central)
-  for repo in maven-central; do
-    echo "Patching useTrustStore on repo: $repo"
-    REPO_JSON=$(curl -sf \
-      -u "admin:${ADMIN_PASS}" \
-      -H "Accept: application/json" \
-      "${NEXUS_URL}/service/rest/v1/repositories/${repo}" 2>/dev/null) || { echo "  WARNING: could not fetch $repo config"; continue; }
-    PATCHED=$(printf '%s' "$REPO_JSON" | sed 's/"useTrustStore"\s*:\s*false/"useTrustStore": true/g')
-    # inject useTrustStore if not present at all
-    if ! printf '%s' "$PATCHED" | grep -q '"useTrustStore"'; then
-      PATCHED=$(printf '%s' "$PATCHED" | sed 's/"proxy"\s*:\s*{/"proxy": { "useTrustStore": true,/g')
-    fi
-    curl -sf -o /dev/null \
-      -u "admin:${ADMIN_PASS}" \
-      -X PUT "${NEXUS_URL}/service/rest/v1/repositories/${repo}" \
-      -H "Content-Type: application/json" \
-      -d "$PATCHED" || echo "  WARNING: failed to patch $repo"
-    echo "  Done."
-  done
+
+  # enable useTrustStore on maven-central (pre-configured by Nexus)
+  curl -sf -o /dev/null \
+    -u "admin:${ADMIN_PASS}" \
+    -X PUT \
+    -H "Content-Type: application/json" \
+    -d '{
+      "name": "maven-central",
+      "online": true,
+      "storage": {
+        "blobStoreName": "default",
+        "strictContentTypeValidation": false
+      },
+      "proxy": {
+        "remoteUrl": "https://repo1.maven.org/maven2",
+        "contentMaxAge": 1440,
+        "metadataMaxAge": 1440
+      },
+      "negativeCache": {
+        "enabled": true,
+        "timeToLive": 1440
+      },
+      "httpClient": {
+        "blocked": false,
+        "autoBlock": true,
+        "connection": {
+          "useTrustStore": true
+        }
+      }
+    }' \
+    "${NEXUS_URL}/service/rest/v1/repositories/maven2/proxy/maven-central" || true
+  echo "maven-central: useTrustStore=true"
 
   # Retrieve licence data and update acceptance
   EULA_FILE="$(mktemp)_EULA.json"
