@@ -1906,7 +1906,7 @@ services:
     ports:
       - 28426:8081
     environment:
-      INSTALL4J_ADD_JVM_PARAMS: -Xms512m -Xmx2g -XX:MaxDirectMemorySize=2g -Dhttp.proxyHost=${PLATYS_HTTP_PROXY_HOST:-} -Dhttp.proxyPort=${PLATYS_HTTP_PROXY_PORT:-}-Dhttps.proxyHost=${PLATYS_HTTPS_PROXY_HOST:-} -Dhttps.proxyHost=${PLATYS_HTTPS_PROXY_PORT:-} -Dhttp.nonProxyHosts="localhost|127.0.0.1"
+      INSTALL4J_ADD_JVM_PARAMS: -Xms512m -Xmx2g -XX:MaxDirectMemorySize=2g -Dhttp.proxyHost=${PLATYS_HTTP_PROXY_HOST:-} -Dhttp.proxyPort=${PLATYS_HTTP_PROXY_PORT:-} -Dhttps.proxyHost=${PLATYS_HTTPS_PROXY_HOST:-} -Dhttps.proxyHost=${PLATYS_HTTPS_PROXY_PORT:-} -Dhttp.nonProxyHosts=${NO_PROXY:-}
       NEXUS_ADMIN_PASSWORD: ${PLATYS_NEXUS_ADMIN_PASSWORD:-abc123!abc123!}
     volumes:
       - ./data-transfer:/data-transfer:z
