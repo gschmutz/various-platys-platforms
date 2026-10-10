@@ -1144,6 +1144,8 @@ services:
       - ENABLE_PLAYWRIGHT=false
       - PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
       - BUILD_SUPERSET_FRONTEND_IN_DOCKER=true
+      - PIP_INDEX_URL=http://nexus:8081/repository/pypi-proxy/simple/
+      - PIP_TRUSTED_HOST=nexus
     volumes:
       - ./data-transfer:/data-transfer:z
       - ./conf/superset:/app/docker:z
@@ -1151,8 +1153,7 @@ services:
       - /bin/bash
       - -c
       - |
-        # Trust pypi.org to avoid SSL Error in pip install
-        uv pip config set global.trusted-host "pypi.org files.pythonhosted.org pypi.python.org"
+        uv pip config set global.trusted-host "nexus"
         uv pip install psycopg2-binary
         uv pip install apache-superset[trino]
         /app/docker/docker-bootstrap.sh app-gunicorn
@@ -1210,6 +1211,8 @@ services:
       - ENABLE_PLAYWRIGHT=false
       - PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
       - BUILD_SUPERSET_FRONTEND_IN_DOCKER=true
+      - PIP_INDEX_URL=http://nexus:8081/repository/pypi-proxy/simple/
+      - PIP_TRUSTED_HOST=nexus
     volumes:
       - ./data-transfer:/data-transfer:z
       - ./conf/superset:/app/docker:z
@@ -1263,6 +1266,8 @@ services:
       - ENABLE_PLAYWRIGHT=false
       - PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
       - BUILD_SUPERSET_FRONTEND_IN_DOCKER=true
+      - PIP_INDEX_URL=http://nexus:8081/repository/pypi-proxy/simple/
+      - PIP_TRUSTED_HOST=nexus
     volumes:
       - ./data-transfer:/data-transfer:z
       - ./conf/superset:/app/docker:z
@@ -1270,8 +1275,7 @@ services:
       - /bin/bash
       - -c
       - |
-        # Trust pypi.org to avoid SSL Error in pip install
-        uv pip config set global.trusted-host "pypi.org files.pythonhosted.org pypi.python.org"      
+        uv pip config set global.trusted-host "nexus"
         uv pip install psycopg2-binary
         uv pip install apache-superset[trino]
         /app/docker/docker-bootstrap.sh worker
@@ -1324,6 +1328,8 @@ services:
       - ENABLE_PLAYWRIGHT=false
       - PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
       - BUILD_SUPERSET_FRONTEND_IN_DOCKER=true
+      - PIP_INDEX_URL=http://nexus:8081/repository/pypi-proxy/simple/
+      - PIP_TRUSTED_HOST=nexus
     volumes:
       - ./data-transfer:/data-transfer:z
       - ./conf/superset:/app/docker:z
@@ -1331,8 +1337,7 @@ services:
       - /bin/bash
       - -c
       - |
-        # Trust pypi.org to avoid SSL Error in pip install
-        uv pip config set global.trusted-host "pypi.org files.pythonhosted.org pypi.python.org"
+        uv pip config set global.trusted-host "nexus"
         uv pip install psycopg2-binary
         uv pip install apache-superset[trino]
         /app/docker/docker-bootstrap.sh beat
@@ -1906,12 +1911,11 @@ services:
     ports:
       - 28426:8081
     environment:
-      INSTALL4J_ADD_JVM_PARAMS: -Xms512m -Xmx2g -XX:MaxDirectMemorySize=2g -Dhttp.proxyHost=${PLATYS_HTTP_PROXY_HOST:-} -Dhttp.proxyPort=${PLATYS_HTTP_PROXY_PORT:-} -Dhttps.proxyHost=${PLATYS_HTTPS_PROXY_HOST:-} -Dhttps.proxyHost=${PLATYS_HTTPS_PROXY_PORT:-} -Dhttp.nonProxyHosts=${NO_PROXY:-}
+      INSTALL4J_ADD_JVM_PARAMS: -Xms512m -Xmx2g -XX:MaxDirectMemorySize=2g
       NEXUS_ADMIN_PASSWORD: ${PLATYS_NEXUS_ADMIN_PASSWORD:-abc123!abc123!}
     volumes:
       - ./data-transfer:/data-transfer:z
       - ./init/nexus:/nexus-init:ro
-      - ./security/nexus/certs/:/nexus-init/certs/:z
     entrypoint: [/bin/sh, /nexus-init/entrypoint.sh]
     restart: unless-stopped
     healthcheck:
