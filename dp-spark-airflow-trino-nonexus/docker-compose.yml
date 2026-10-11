@@ -1051,6 +1051,7 @@ services:
       MAVEN_DOWNLOAD_JARS: software.amazon.awssdk:bundle:2.35.4,org.apache.hadoop:hadoop-aws:3.4.2
       # remove some JARS if they are conflicting with the ones installed above
       REMOVE_JARS: guava-14.0.1.jar
+      CONDA_SSL_VERIFY: 'false'
       # for awscli & s3cmd
       AWS_ACCESS_KEY_ID: ${PLATYS_AWS_ACCESS_KEY:-admin}
       AWS_SECRET_ACCESS_KEY: ${PLATYS_AWS_SECRET_ACCESS_KEY:-${PLATYS_AWS_SECRET_ACCESS_KEY:-abc123abc123!}}
@@ -1074,14 +1075,15 @@ services:
       - bash
       - -c
       - |
-        conda config --set ssl_verify false
         conda create -y --name py310 python=3.10.12
         source /opt/conda/etc/profile.d/conda.sh
         conda activate py310
+        # Trust pypi.org to avoid SSL Error in pip install
+        pip config set global.trusted-host "nexus pypi.org files.pythonhosted.org pypi.python.org"        
         NEXUS_PASS=$$(python3 -c "import urllib.parse, os; print(urllib.parse.quote(os.environ.get('MAVEN_DOWNLOAD_REPO_NEXUS_PASSWORD', 'abc123!abc123!')))")
         export PIP_INDEX_URL="http://admin:$${NEXUS_PASS}@nexus:8081/repository/pypi-proxy/simple/"
         export PIP_TRUSTED_HOST="nexus"
-        pip config set global.trusted-host "nexus"
+        pip config set global.trusted-host "nexus"        
         pip install ipykernel
         python -m ipykernel install --user --name py310 --display-name "Python 3.10.12 (ipykernel)"
         conda run -n py310 pip install pyspark==4.1.1 numpy graphframes-py typing_extensions jupysql "zstandard>=0.25.0" pandas arrow pyarrow grpcio-status boto3
@@ -1928,7 +1930,7 @@ services:
     volumes:
       - ./data-transfer:/data-transfer:z
       - ./init/nexus:/nexus-init:ro
-      - ./security/nexus/certs:/nexus-init/certs:ro
+      - ./security/nexus/certs:/nexus-security/certs:ro
     entrypoint: [/bin/sh, /nexus-init/entrypoint.sh]
     restart: unless-stopped
     healthcheck:
