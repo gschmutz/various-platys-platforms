@@ -219,12 +219,12 @@ services:
       com.platys.name: akhq
       com.platys.description: Kafka GUI
       com.platys.webui.title: AKHQ UI
-      com.platys.webui.url: http://dataplatform:28107
+      com.platys.webui.url: http://dataplatform:28345
       com.platys.restapi.title: AKHQ API
-      com.platys.restapi.url: http://dataplatform:28107/api
+      com.platys.restapi.url: http://dataplatform:28345/api
       com.platys.password.envvars: PLATYS_AKHQ_ADMIN_PASSWORD,PLATYS_AKHQ_READER_PASSWORD
     ports:
-      - 28107:8080
+      - 28345:8080
       - 28320:28081
     environment:
       AKHQ_CONFIGURATION: |
@@ -616,6 +616,33 @@ services:
     volumes:
       - ./data-transfer:/data-transfer:z
     restart: unless-stopped
+  #  ================================== Sonatype Nexus ========================================== #
+  nexus:
+    image: docker.io/sonatype/nexus3:3.96.4
+    container_name: nexus
+    hostname: nexus
+    labels:
+      com.platys.name: nexus
+      com.platys.description: Sonatype Nexus Repository Manager
+      com.platys.webui.title: Nexus UI
+      com.platys.webui.url: http://dataplatform:28426
+      com.platys.password.envvars: PLATYS_NEXUS_ADMIN_PASSWORD
+    ports:
+      - 28426:8081
+    environment:
+      INSTALL4J_ADD_JVM_PARAMS: -Xms512m -Xmx2g -XX:MaxDirectMemorySize=2g
+      NEXUS_ADMIN_PASSWORD: ${PLATYS_NEXUS_ADMIN_PASSWORD:-abc123!abc123!}
+    volumes:
+      - ./data-transfer:/data-transfer:z
+      - ./init/nexus:/nexus-init:ro
+      - ./security/nexus/certs:/nexus-security/certs:ro
+    entrypoint: [/bin/sh, /nexus-init/entrypoint.sh]
+    restart: unless-stopped
+    healthcheck:
+      interval: 1s
+      timeout: 10s
+      retries: 240
+      test: [CMD, test, -f, /nexus-data/.setup-complete]
   #  ================================== markdown-viewer ========================================== #
   markdown-viewer:
     image: docker.io/dannyben/madness:1.2.5
