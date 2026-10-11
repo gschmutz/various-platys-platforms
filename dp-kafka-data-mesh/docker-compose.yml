@@ -410,7 +410,7 @@ services:
       start_period: 30s
   #  ================================== NiFi 2 ========================================== #
   nifi2-1:
-    image: docker.io/apache/nifi:2.9.0
+    image: docker.io/apache/nifi:2.12.0
     container_name: nifi2-1
     hostname: nifi2-1
     labels:
