@@ -75,7 +75,7 @@ services:
       MAVEN_DOWNLOAD_REPO_NEXUS_USER: admin
       MAVEN_DOWNLOAD_REPO_NEXUS_PASSWORD: ${PLATYS_NEXUS_ADMIN_PASSWORD:-abc123!abc123!}
       PIP_INDEX_URL: http://${PUBLIC_IP}:28426/repository/pypi-proxy/simple/
-      PIP_TRUSTED_HOST: nexus
+      PIP_TRUSTED_HOST: ${PUBLIC_IP}
       SPARK_DEFAULTS_CONF_spark_jars_ivySettings: /opt/spark/conf/ivy-settings.xml
       SPARK_DEFAULTS_CONF_spark_jars_ivy: /opt/ivy-cache
     volumes:
@@ -165,7 +165,7 @@ services:
       MAVEN_DOWNLOAD_REPO_NEXUS_USER: admin
       MAVEN_DOWNLOAD_REPO_NEXUS_PASSWORD: ${PLATYS_NEXUS_ADMIN_PASSWORD:-abc123!abc123!}
       PIP_INDEX_URL: http://${PUBLIC_IP}:28426/repository/pypi-proxy/simple/
-      PIP_TRUSTED_HOST: nexus
+      PIP_TRUSTED_HOST: ${PUBLIC_IP}
       SPARK_DEFAULTS_CONF_spark_jars_ivySettings: /opt/spark/conf/ivy-settings.xml
       SPARK_DEFAULTS_CONF_spark_jars_ivy: /opt/ivy-cache
     volumes:
@@ -250,7 +250,7 @@ services:
       MAVEN_DOWNLOAD_REPO_NEXUS_USER: admin
       MAVEN_DOWNLOAD_REPO_NEXUS_PASSWORD: ${PLATYS_NEXUS_ADMIN_PASSWORD:-abc123!abc123!}
       PIP_INDEX_URL: http://${PUBLIC_IP}:28426/repository/pypi-proxy/simple/
-      PIP_TRUSTED_HOST: nexus
+      PIP_TRUSTED_HOST: ${PUBLIC_IP}
       SPARK_DEFAULTS_CONF_spark_jars_ivySettings: /opt/spark/conf/ivy-settings.xml
       SPARK_DEFAULTS_CONF_spark_jars_ivy: /opt/ivy-cache
     volumes:
@@ -337,7 +337,7 @@ services:
       MAVEN_DOWNLOAD_REPO_NEXUS_USER: admin
       MAVEN_DOWNLOAD_REPO_NEXUS_PASSWORD: ${PLATYS_NEXUS_ADMIN_PASSWORD:-abc123!abc123!}
       PIP_INDEX_URL: http://${PUBLIC_IP}:28426/repository/pypi-proxy/simple/
-      PIP_TRUSTED_HOST: nexus
+      PIP_TRUSTED_HOST: ${PUBLIC_IP}
       SPARK_DEFAULTS_CONF_spark_jars_ivySettings: /opt/spark/conf/ivy-settings.xml
       SPARK_DEFAULTS_CONF_spark_jars_ivy: /opt/ivy-cache
     volumes:
@@ -419,7 +419,7 @@ services:
       MAVEN_DOWNLOAD_REPO_NEXUS_USER: admin
       MAVEN_DOWNLOAD_REPO_NEXUS_PASSWORD: ${PLATYS_NEXUS_ADMIN_PASSWORD:-abc123!abc123!}
       PIP_INDEX_URL: http://${PUBLIC_IP}:28426/repository/pypi-proxy/simple/
-      PIP_TRUSTED_HOST: nexus
+      PIP_TRUSTED_HOST: ${PUBLIC_IP}
       SPARK_DEFAULTS_CONF_spark_jars_ivySettings: /opt/spark/conf/ivy-settings.xml
       SPARK_DEFAULTS_CONF_spark_jars_ivy: /opt/ivy-cache
     volumes:
@@ -504,7 +504,7 @@ services:
       MAVEN_DOWNLOAD_REPO_NEXUS_USER: admin
       MAVEN_DOWNLOAD_REPO_NEXUS_PASSWORD: ${PLATYS_NEXUS_ADMIN_PASSWORD:-abc123!abc123!}
       PIP_INDEX_URL: http://${PUBLIC_IP}:28426/repository/pypi-proxy/simple/
-      PIP_TRUSTED_HOST: nexus
+      PIP_TRUSTED_HOST: ${PUBLIC_IP}
       SPARK_DEFAULTS_CONF_spark_jars_ivySettings: /opt/spark/conf/ivy-settings.xml
       SPARK_DEFAULTS_CONF_spark_jars_ivy: /opt/ivy-cache
     volumes:
@@ -659,9 +659,9 @@ services:
       AWS_SECRET_ACCESS_KEY: ${PLATYS_AWS_SECRET_ACCESS_KEY:-abc123abc123!}
       AIRFLOW__OPENLINEAGE__DISABLED: true
       PIP_INDEX_URL: http://${PUBLIC_IP}:28426/repository/pypi-proxy/simple/
-      PIP_TRUSTED_HOST: nexus
+      PIP_TRUSTED_HOST: ${PUBLIC_IP}
       _PIP_INDEX_URL: http://${PUBLIC_IP}:28426/repository/pypi-proxy/simple/
-      _PIP_TRUSTED_HOST: nexus
+      _PIP_TRUSTED_HOST: ${PUBLIC_IP}
     volumes:
       - ./data-transfer:/data-transfer:z
       - ./scripts/airflow/dags:/opt/airflow/dags:Z
@@ -738,9 +738,9 @@ services:
       AWS_SECRET_ACCESS_KEY: ${PLATYS_AWS_SECRET_ACCESS_KEY:-abc123abc123!}
       AIRFLOW__OPENLINEAGE__DISABLED: true
       PIP_INDEX_URL: http://${PUBLIC_IP}:28426/repository/pypi-proxy/simple/
-      PIP_TRUSTED_HOST: nexus
+      PIP_TRUSTED_HOST: ${PUBLIC_IP}
       _PIP_INDEX_URL: http://${PUBLIC_IP}:28426/repository/pypi-proxy/simple/
-      _PIP_TRUSTED_HOST: nexus
+      _PIP_TRUSTED_HOST: ${PUBLIC_IP}
     volumes:
       - ./data-transfer:/data-transfer:z
       - ./scripts/airflow/dags:/opt/airflow/dags:Z
@@ -817,9 +817,9 @@ services:
       AWS_SECRET_ACCESS_KEY: ${PLATYS_AWS_SECRET_ACCESS_KEY:-abc123abc123!}
       AIRFLOW__OPENLINEAGE__DISABLED: true
       PIP_INDEX_URL: http://${PUBLIC_IP}:28426/repository/pypi-proxy/simple/
-      PIP_TRUSTED_HOST: nexus
+      PIP_TRUSTED_HOST: ${PUBLIC_IP}
       _PIP_INDEX_URL: http://${PUBLIC_IP}:28426/repository/pypi-proxy/simple/
-      _PIP_TRUSTED_HOST: nexus
+      _PIP_TRUSTED_HOST: ${PUBLIC_IP}
     volumes:
       - ./data-transfer:/data-transfer:z
       - ./scripts/airflow/dags:/opt/airflow/dags:Z
@@ -1007,7 +1007,7 @@ services:
       AWS_SECRET_ACCESS_KEY: ${PLATYS_AWS_SECRET_ACCESS_KEY:-abc123abc123!}
       AIRFLOW__OPENLINEAGE__DISABLED: true
       PIP_INDEX_URL: http://${PUBLIC_IP}:28426/repository/pypi-proxy/simple/
-      PIP_TRUSTED_HOST: nexus
+      PIP_TRUSTED_HOST: ${PUBLIC_IP}
     volumes:
       - ./data-transfer:/data-transfer:z
     user: 0:0
