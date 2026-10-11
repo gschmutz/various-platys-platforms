@@ -425,7 +425,7 @@ services:
       # HTTP
       - 18083:18083
       # Remote Input Socket
-      - 10015:10015/tcp:z
+      - 10015:10015/tcp
       # Prometheus Port
       - 1273:1234
     environment:
