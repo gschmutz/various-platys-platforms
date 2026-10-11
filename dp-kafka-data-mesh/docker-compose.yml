@@ -1,0 +1,1005 @@
+# =======================================================================
+# Platform Name            platys-platform
+# Platform Stack:          trivadis/platys-modern-data-platform
+# Platform Stack Version:  develop
+# =======================================================================
+networks:
+  default:
+    name: platys-platform
+# enforce some dependencies
+# enforce some dependencies
+# enforce some dependencies
+services:
+#  ================================== Kafka ========================================== #
+  kafka-1:
+    image: docker.io/confluentinc/cp-kafka:8.3.2
+    container_name: kafka-1
+    hostname: kafka-1
+    labels:
+      com.platys.name: kafka
+      com.platys.description: Kafka Broker 1
+    ports:
+      - 9092:9092
+      - 19092:19092
+      - 29092:29092
+      - 39092:39092
+      - 9992:9992
+      - 1234:1234
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_BROKER_RACK: rack1
+      KAFKA_INTER_BROKER_LISTENER_NAME: BROKER
+      KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
+      KAFKA_CONTROLLER_QUORUM_VOTERS: 1@kafka-1:49092,2@kafka-2:49093,3@kafka-3:49094
+      KAFKA_PROCESS_ROLES: broker,controller
+      KAFKA_NODE_ID: 1
+      CLUSTER_ID: y4vRIwfDT0SkZ65tD7Ey2A
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: CONTROLLER:PLAINTEXT,BROKER:PLAINTEXT,LOCAL:PLAINTEXT,DOCKERHOST:PLAINTEXT,EXTERNAL:PLAINTEXT
+      KAFKA_LISTENERS: CONTROLLER://kafka-1:49092,BROKER://kafka-1:19092,LOCAL://kafka-1:39092,DOCKERHOST://kafka-1:29092,EXTERNAL://kafka-1:9092
+      KAFKA_ADVERTISED_LISTENERS: BROKER://kafka-1:19092,LOCAL://localhost:39092,DOCKERHOST://${DOCKER_HOST_IP:-127.0.0.1}:29092,EXTERNAL://${PUBLIC_IP:-127.0.0.1}:9092
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 3
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 3
+      KAFKA_MESSAGE_TIMESTAMP_TYPE: CreateTime
+      KAFKA_MIN_INSYNC_REPLICAS: 1
+      KAFKA_DELETE_TOPIC_ENABLE: 'True'
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: 'False'
+      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 100
+      KAFKA_JMX_PORT: 9992
+      KAFKA_JMX_OPTS: -Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -Dcom.sun.management.jmxremote.local.only=false -Dcom.sun.management.jmxremote.rmi.port=9992
+      KAFKA_JMX_HOSTNAME: kafka-1 #'${PUBLIC_IP:-127.0.0.1}'
+      KAFKA_LOG4J_ROOT_LOGLEVEL: INFO
+      KAFKA_TOOLS_LOG4J_LOGLEVEL: INFO
+      EXTRA_ARGS: -javaagent:/usr/share/jmx-exporter/jmx_prometheus_javaagent-1.1.0.jar=1234:/usr/share/jmx-exporter/kafka_broker.yml
+    volumes:
+      - ./data-transfer:/data-transfer:z
+      - ./scripts/kafka/jmx-exporter/:/usr/share/jmx-exporter:z
+    restart: unless-stopped
+    healthcheck:
+      test: kafka-metadata-quorum --bootstrap-server kafka-1:19092 describe --replication
+      interval: 30s
+      timeout: 10s
+      retries: 40
+      start_period: 30s
+  kafka-2:
+    image: docker.io/confluentinc/cp-kafka:8.3.2
+    container_name: kafka-2
+    hostname: kafka-2
+    labels:
+      com.platys.name: kafka
+      com.platys.description: Kafka Broker 2
+    ports:
+      - 9093:9093
+      - 19093:19093
+      - 29093:29093
+      - 39093:39093
+      - 9993:9992
+      - 1235:1234
+    environment:
+      KAFKA_BROKER_ID: 2
+      KAFKA_BROKER_RACK: rack1
+      KAFKA_INTER_BROKER_LISTENER_NAME: BROKER
+      KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
+      KAFKA_CONTROLLER_QUORUM_VOTERS: 1@kafka-1:49092,2@kafka-2:49093,3@kafka-3:49094
+      KAFKA_PROCESS_ROLES: broker,controller
+      KAFKA_NODE_ID: 2
+      CLUSTER_ID: y4vRIwfDT0SkZ65tD7Ey2A
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: CONTROLLER:PLAINTEXT,BROKER:PLAINTEXT,LOCAL:PLAINTEXT,DOCKERHOST:PLAINTEXT,EXTERNAL:PLAINTEXT
+      KAFKA_LISTENERS: CONTROLLER://kafka-2:49093,BROKER://kafka-2:19093,LOCAL://kafka-2:39093,DOCKERHOST://kafka-2:29093,EXTERNAL://kafka-2:9093
+      KAFKA_ADVERTISED_LISTENERS: BROKER://kafka-2:19093,LOCAL://localhost:39093,DOCKERHOST://${DOCKER_HOST_IP:-127.0.0.1}:29093,EXTERNAL://${PUBLIC_IP:-127.0.0.1}:9093
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 3
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 3
+      KAFKA_MESSAGE_TIMESTAMP_TYPE: CreateTime
+      KAFKA_MIN_INSYNC_REPLICAS: 1
+      KAFKA_DELETE_TOPIC_ENABLE: 'True'
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: 'False'
+      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 100
+      KAFKA_JMX_PORT: 9992
+      KAFKA_JMX_OPTS: -Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -Dcom.sun.management.jmxremote.local.only=false -Dcom.sun.management.jmxremote.rmi.port=9992
+      KAFKA_JMX_HOSTNAME: kafka-2 #'${PUBLIC_IP:-127.0.0.1}'
+      KAFKA_LOG4J_ROOT_LOGLEVEL: INFO
+      KAFKA_TOOLS_LOG4J_LOGLEVEL: INFO
+      EXTRA_ARGS: -javaagent:/usr/share/jmx-exporter/jmx_prometheus_javaagent-1.1.0.jar=1234:/usr/share/jmx-exporter/kafka_broker.yml
+    volumes:
+      - ./data-transfer:/data-transfer:z
+      - ./scripts/kafka/jmx-exporter/:/usr/share/jmx-exporter:z
+    restart: unless-stopped
+    healthcheck:
+      test: kafka-metadata-quorum --bootstrap-server kafka-2:19093 describe --replication
+      interval: 30s
+      timeout: 10s
+      retries: 40
+      start_period: 30s
+  kafka-3:
+    image: docker.io/confluentinc/cp-kafka:8.3.2
+    container_name: kafka-3
+    hostname: kafka-3
+    labels:
+      com.platys.name: kafka
+      com.platys.description: Kafka Broker 3
+    ports:
+      - 9094:9094
+      - 19094:19094
+      - 29094:29094
+      - 39094:39094
+      - 9994:9992
+      - 1236:1234
+    environment:
+      KAFKA_BROKER_ID: 3
+      KAFKA_BROKER_RACK: rack1
+      KAFKA_INTER_BROKER_LISTENER_NAME: BROKER
+      KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
+      KAFKA_CONTROLLER_QUORUM_VOTERS: 1@kafka-1:49092,2@kafka-2:49093,3@kafka-3:49094
+      KAFKA_PROCESS_ROLES: broker,controller
+      KAFKA_NODE_ID: 3
+      CLUSTER_ID: y4vRIwfDT0SkZ65tD7Ey2A
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: CONTROLLER:PLAINTEXT,BROKER:PLAINTEXT,LOCAL:PLAINTEXT,DOCKERHOST:PLAINTEXT,EXTERNAL:PLAINTEXT
+      KAFKA_LISTENERS: CONTROLLER://kafka-3:49094,BROKER://kafka-3:19094,LOCAL://kafka-3:39094,DOCKERHOST://kafka-3:29094,EXTERNAL://kafka-3:9094
+      KAFKA_ADVERTISED_LISTENERS: BROKER://kafka-3:19094,LOCAL://localhost:39094,DOCKERHOST://${DOCKER_HOST_IP:-127.0.0.1}:29094,EXTERNAL://${PUBLIC_IP:-127.0.0.1}:9094
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 3
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 3
+      KAFKA_MESSAGE_TIMESTAMP_TYPE: CreateTime
+      KAFKA_MIN_INSYNC_REPLICAS: 1
+      KAFKA_DELETE_TOPIC_ENABLE: 'True'
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: 'False'
+      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 100
+      KAFKA_JMX_PORT: 9992
+      KAFKA_JMX_OPTS: -Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -Dcom.sun.management.jmxremote.local.only=false -Dcom.sun.management.jmxremote.rmi.port=9992
+      KAFKA_JMX_HOSTNAME: kafka-3 #'${PUBLIC_IP:-127.0.0.1}'
+      KAFKA_LOG4J_ROOT_LOGLEVEL: INFO
+      KAFKA_TOOLS_LOG4J_LOGLEVEL: INFO
+      EXTRA_ARGS: -javaagent:/usr/share/jmx-exporter/jmx_prometheus_javaagent-1.1.0.jar=1234:/usr/share/jmx-exporter/kafka_broker.yml
+    volumes:
+      - ./data-transfer:/data-transfer:z
+      - ./scripts/kafka/jmx-exporter/:/usr/share/jmx-exporter:z
+    restart: unless-stopped
+    healthcheck:
+      test: kafka-metadata-quorum --bootstrap-server kafka-3:19094 describe --replication
+      interval: 30s
+      timeout: 10s
+      retries: 40
+      start_period: 30s
+  #  ================================== Kafka Connect ========================================== #
+  kafka-connect-1:
+    image: docker.io/confluentinc/cp-kafka-connect:8.3.2
+    container_name: kafka-connect-1
+    hostname: kafka-connect-1
+    labels:
+      com.platys.name: kafka-connect
+      com.platys.description: Kafka Connect Node 1
+      com.platys.restapi.title: Kafka Connect REST API
+      com.platys.restapi.url: http://dataplatform:8083
+    ports:
+      - 8083:8083
+    depends_on:
+      kafka-1:
+        condition: service_healthy
+    environment:
+      CONNECT_BOOTSTRAP_SERVERS: kafka-1:19092,kafka-2:19093,kafka-3:19094
+      CONNECT_LISTENERS: http://0.0.0.0:8083
+      CONNECT_REST_ADVERTISED_HOST_NAME: kafka-connect-1
+      CONNECT_REST_ADVERTISED_PORT: 8083
+      CONNECT_GROUP_ID: kafka-connect-cluster
+      CONNECT_CONFIG_STORAGE_TOPIC: _connect-configs
+      CONNECT_OFFSET_STORAGE_TOPIC: _connect-offsets
+      CONNECT_STATUS_STORAGE_TOPIC: _connect-status
+      CONNECT_CONFIG_STORAGE_REPLICATION_FACTOR: 3
+      CONNECT_OFFSET_STORAGE_REPLICATION_FACTOR: 3
+      CONNECT_STATUS_STORAGE_REPLICATION_FACTOR: 3
+      CONNECT_OFFSET_FLUSH_INTERVAL_MS: 10000
+      CONNECT_ACCESS_CONTROL_ALLOW_ORIGIN: '*'
+      CONNECT_ACCESS_CONTROL_ALLOW_METHODS: GET,POST,PUT,DELETE
+      CONNECT_ACCESS_CONTROL_ALLOW_HEADERS: origin,content-type,accept,authorization
+      CONNECT_KEY_CONVERTER: io.confluent.connect.avro.AvroConverter
+      CONNECT_KEY_CONVERTER_SCHEMA_REGISTRY_URL: http://schema-registry-1:8081
+      CONNECT_VALUE_CONVERTER: io.confluent.connect.avro.AvroConverter
+      CONNECT_VALUE_CONVERTER_SCHEMA_REGISTRY_URL: http://schema-registry-1:8081
+      CONNECT_INTERNAL_KEY_CONVERTER: org.apache.kafka.connect.json.JsonConverter
+      CONNECT_INTERNAL_VALUE_CONVERTER: org.apache.kafka.connect.json.JsonConverter
+      CONNECT_LOG4J_ROOT_LOGLEVEL: INFO
+      CONNECT_LOG4J_LOGGERS: org.apache.kafka.connect.runtime.rest=WARN,org.reflections=ERROR
+      CONNECT_LOG4J_APPENDER_STDOUT_LAYOUT_CONVERSIONPATTERN: '[%d] %p %X{connector.context}%m (%c:%L)%n'
+      CONNECT_PLUGIN_PATH: /usr/share/java,/etc/kafka-connect/addl-plugins,/etc/kafka-connect/cflthub-plugins
+      CONNECT_CONNECTOR_CLIENT_CONFIG_OVERRIDE_POLICY: All
+      CONNECT_SECURITY_PROTOCOL: PLAINTEXT
+      #CLASSPATH: /usr/share/java/monitoring-interceptors/monitoring-interceptors-4.0.0.jar
+      AWS_ACCESS_KEY_ID: ${PLATYS_AWS_ACCESS_KEY:-admin}
+      AWS_SECRET_ACCESS_KEY: ${PLATYS_AWS_SECRET_ACCESS_KEY:-abc123abc123!}
+      # External secrets config
+      # See https://docs.confluent.io/current/connect/security.html#externalizing-secrets
+      CONNECT_CONFIG_PROVIDERS: file
+      CONNECT_CONFIG_PROVIDERS_FILE_CLASS: org.apache.kafka.common.config.provider.FileConfigProvider
+      EXTRA_ARGS: -javaagent:/usr/share/jmx-exporter/jmx_prometheus_javaagent-1.1.0.jar=1234:/usr/share/jmx-exporter/kafka_connect.yml
+    volumes:
+      - ./data-transfer:/data-transfer:z
+      - ./plugins/kafka-connect/connectors:/etc/kafka-connect/addl-plugins:z
+      - ./plugins/kafka-connect/jars:/etc/kafka-connect/jars:z
+      - ./plugins/opentelemetry/agents:/otel:z
+      - ./scripts/kafka/jmx-exporter/:/usr/share/jmx-exporter:z
+    command:
+      # In the command section, $ are replaced with $$ to avoid the error 'Invalid interpolation format for "command" option'
+      - bash
+      - -c
+      - |
+        echo "Installing Connectors"
+        mkdir -p /etc/kafka-connect/cflthub-plugins
+        for i in $$(echo "confluentinc/kafka-connect-jdbc:10.9.9,debezium/debezium-connector-postgresql:3.2.6-3" | sed "s/,/ /g")
+        do
+          confluent-hub install --no-prompt --component-dir /etc/kafka-connect/cflthub-plugins --verbose "$$i"
+        done
+        #
+        echo "Launching Kafka Connect worker"
+        /etc/confluent/docker/run &
+        #
+        sleep infinity
+    restart: unless-stopped
+    healthcheck:
+      test: [CMD, python3, -c, "import urllib.request, sys; sys.exit(0) if urllib.request.urlopen('http://localhost:8083/connectors', timeout=5).status == 200 else sys.exit(1)"]
+      interval: 30s
+      timeout: 10s
+      retries: 20
+      start_period: 60s
+  #  ================================== Confluent Schema Registry ========================================== #
+  schema-registry-1:
+    image: docker.io/confluentinc/cp-schema-registry:8.3.2
+    hostname: schema-registry-1
+    container_name: schema-registry-1
+    labels:
+      com.platys.name: schema-registry
+      com.platys.description: Confluent Schema Registry
+      com.platys.restapi.title: Schema Registry REST API
+      com.platys.restapi.url: http://dataplatform:8081
+    ports:
+      - 8081:8081
+    depends_on:
+      kafka-1:
+        condition: service_healthy
+    environment:
+      SCHEMA_REGISTRY_HOST_NAME: schema-registry-1
+      SCHEMA_REGISTRY_LISTENERS: http://0.0.0.0:8081
+      SCHEMA_REGISTRY_KAFKASTORE_BOOTSTRAP_SERVERS: kafka-1:19092,kafka-2:19093,kafka-3:19094
+      SCHEMA_REGISTRY_GROUP_ID: schema-registry
+      SCHEMA_REGISTRY_LEADER_ELIGIBILITY: 'True'
+      SCHEMA_REGISTRY_MODE_MUTABILITY: 'True'
+      SCHEMA_REGISTRY_SCHEMA_COMPATIBILITY_LEVEL: backward
+      SCHEMA_REGISTRY_KAFKASTORE_TOPIC_REPLICATION_FACTOR: 1
+      SCHEMA_REGISTRY_ACCESS_CONTROL_ALLOW_ORIGIN: '*'
+      SCHEMA_REGISTRY_ACCESS_CONTROL_ALLOW_METHODS: GET,POST,PUT,OPTIONS
+      SCHEMA_REGISTRY_LOG4J_ROOT_LOGLEVEL: info
+      SCHEMA_REGISTRY_DEBUG: 'False'
+      SCHEMA_REGISTRY_KAFKASTORE_SECURITY_PROTOCOL: PLAINTEXT
+      EXTRA_ARGS: -javaagent:/usr/share/jmx-exporter/jmx_prometheus_javaagent-1.1.0.jar=1234:/usr/share/jmx-exporter/confluent_schemaregistry.yml
+    volumes:
+      - ./data-transfer:/data-transfer:z
+      - ./plugins/opentelemetry/agents:/otel:z
+      - ./scripts/kafka/jmx-exporter/:/usr/share/jmx-exporter:z
+    restart: unless-stopped
+    healthcheck:
+      test: [CMD, python3, -c, "import http.client, sys; c=http.client.HTTPConnection('localhost',8081,timeout=5); c.request('GET','/subjects'); sys.exit(0) if c.getresponse().status==200 else sys.exit(1)"]
+      interval: 30s
+      timeout: 10s
+      retries: 30
+      start_period: 30s
+  #  ================================== Jikkou ========================================== #
+  jikkou:
+    image: docker.io/streamthoughts/jikkou:latest
+    container_name: jikkou
+    hostname: jikkou
+    labels:
+      com.platys.name: jikkou
+      com.platys.description: Resource as Code framework for Apache Kafka
+    environment:
+      JIKKOU_DEFAULT_KAFKA_BOOTSTRAP_SERVERS: kafka-1:19092,kafka-2:19093,kafka-3:19094
+      JIKKOU_DEFAULT_SCHEMA_REGISTRY_URL: http://schema-registry-1:8081
+      JIKKOU_KAFKA_BROKERS_WAIT_FOR_MIN_AVAILABLE: 3
+      JIKKOU_KAFKA_BROKERS_WAIT_FOR_ENABLED: 'true'
+      JIKKOU_KAFKA_BROKERS_WAIT_FOR_RETRY_BACKOFF_MS: 10000
+      JIKKOU_KAFKA_BROKERS_WAIT_FOR_TIMEOUT_MS: 120000
+      VALIDATION_DEFAULT_TOPIC_NAME_REGEX: '[a-zA-Z0-9\._\-]+'
+      VALIDATION_DEFAULT_TOPIC_MIN_NUM_PARTITIONS: 1
+      VALIDATION_DEFAULT_TOPIC_MIN_REPLICATION_FACTOR: 1
+    volumes:
+      - ./data-transfer:/data-transfer:z
+      - ./scripts/jikkou/:/jikkou:z
+      - ./conf/jikkou/application.conf:/appuser/.jikkou/application.conf:z
+      - ./conf/jikkou/config:/etc/jikkou/config:z
+    command:
+      - apply
+      - --files
+      - /jikkou/
+      - --file-name
+      - '**/*.{yaml,yml}'
+    restart: on-failure
+  #  ================================== Apache Kafka HQ (AKHQ) ========================================== #
+  akhq:
+    image: docker.io/tchiotludo/akhq:latest
+    container_name: akhq
+    hostname: akhq
+    labels:
+      com.platys.name: akhq
+      com.platys.description: Kafka GUI
+      com.platys.webui.title: AKHQ UI
+      com.platys.webui.url: http://dataplatform:28345
+      com.platys.restapi.title: AKHQ API
+      com.platys.restapi.url: http://dataplatform:28345/api
+      com.platys.password.envvars: PLATYS_AKHQ_ADMIN_PASSWORD,PLATYS_AKHQ_READER_PASSWORD
+    ports:
+      - 28345:8080
+      - 28320:28081
+    environment:
+      AKHQ_CONFIGURATION: |
+        akhq:
+          pagination.page-size: 25
+          topic-data:
+            size: 50
+            poll-timeout: 1000
+            kafka-max-message-length: 1000000
+          ui-options:
+            topic:
+              default-view: HIDE_INTERNAL
+              skip-consumer-groups: false
+              skip-last-record: true
+              show-all-consumer-groups: true
+            topic-data:
+              sort: OLDEST
+          connections:
+            docker-kafka-server:
+              properties:
+                bootstrap.servers: 'kafka-1:19092,kafka-2:19093,kafka-3:19094'
+              schema-registry:
+                url: "http://schema-registry-1:8081"
+                type: "confluent"
+              connect:
+                - name: "connect-1"
+                  url: "http://kafka-connect-1:8083"
+    volumes:
+      - ./data-transfer:/data-transfer:z
+    restart: unless-stopped
+    healthcheck:
+      test: [CMD, curl, -f, http://localhost:28081/health]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+  #  ================================== Kafbat UI ========================================== #
+  kafbat-ui:
+    image: ghcr.io/kafbat/kafka-ui:latest
+    container_name: kafbat-ui
+    hostname: kafbat-ui
+    labels:
+      com.platys.name: kafbat-ui
+      com.platys.description: Kafbat UI - Kafka GUI
+      com.platys.webui.title: Kafbat UI
+      com.platys.webui.url: http://dataplatform:28183
+      com.platys.restapi.title: Kafbat UI Swagger UI
+      com.platys.restapi.url: http://dataplatform:28183/swagger-ui.html
+      com.platys.mcp.title: Kafbat UI
+      com.platys.mcp.url: http://dataplatform:28183/mcp/sse
+    ports:
+      - 28183:28183
+    environment:
+      SERVER_PORT: 28183
+      KAFKA_CLUSTERS_0_NAME: local
+      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka-1:19092,kafka-2:19093,kafka-3:19094
+      KAFKA_CLUSTERS_0_SCHEMAREGISTRY: http://schema-registry-1:8081
+      KAFKA_CLUSTERS_0_SCHEMAREGISTRYSHOWNULLVALUES: 'true'
+      KAFKA_CLUSTERS_0_SCHEMAREGISTRYUSEFULLYQUALIFIEDNAMES: 'true'
+      KAFKA_CLUSTERS_0_KAFKACONNECT_0_NAME: connect-custer
+      KAFKA_CLUSTERS_0_KAFKACONNECT_0_ADDRESS: http://kafka-connect-1:8083
+      KAFKA_CLUSTERS_0_PROPERTIES_CLIENT_DNS_LOOKUP: use_all_dns_ips
+      KAFKA_CLUSTERS_0_DISABLELOGDIRSCOLLECTION: 'true'
+      KAFKA_CLUSTERS_0_METRICS_PORT: 9992
+      KAFKA_CLUSTERS_0_METRICS_TYPE: jmx
+      KAFKA_CLUSTERS_0_READONLY: 'false'
+      KAFKA_CONFIG_SANITIZER_ENABLED: true
+      DYNAMIC_CONFIG_ENABLED: 'true'
+      LOGGING_LEVEL_ROOT: info
+      LOGGING_LEVEL_IO_KAFBAT_UI: info
+      SWAGGER_UI_ENABLED: 'True'
+      MCP_ENABLED: 'False'
+    volumes:
+      - ./data-transfer:/data-transfer:z
+    restart: unless-stopped
+    healthcheck:
+      test: [CMD, wget, --no-proxy, -q, -O, /dev/null, http://localhost:28183/actuator/health]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+  #  ================================== NiFi 2 ========================================== #
+  nifi2-1:
+    image: docker.io/apache/nifi:2.9.0
+    container_name: nifi2-1
+    hostname: nifi2-1
+    labels:
+      com.platys.name: nifi2
+      com.platys.description: NiFi Data Integration Engine (V2)
+      com.platys.webui.title: Apache NiFi UI
+      com.platys.webui.url: https://dataplatform:18083/nifi
+      com.platys.restapi.title: Apche NiFi REST API
+      com.platys.restapi.url: https://dataplatform:18083/nifi-api
+      com.platys.password.envvars: PLATYS_NIFI2_PASSWORD
+    ports:
+      # HTTP
+      - 18083:18083
+      # Remote Input Socket
+      - 10015:10015/tcp:z
+      # Prometheus Port
+      - 1273:1234
+    environment:
+      NIFI_WEB_HTTPS_PORT: '18083'
+      NIFI_WEB_HTTPS_HOST: 0.0.0.0
+      NIFI_WEB_PROXY_HOST: ${PUBLIC_IP:-127.0.0.1}:18083,${DOCKER_HOST_IP:-localhost}:18083
+      NIFI_SECURITY_USER_AUTHORIZER: single-user-authorizer
+      NIFI_SECURITY_USER_LOGIN_IDENTITY_PROVIDER: single-user-provider
+      NIFI_REMOTE_INPUT_SOCKET_PORT: '10015'
+      NIFI_REMOTE_INPUT_HOST: nifi-1
+      NIFI_SENSITIVE_PROPS_KEY: 12345678901234567890A
+      SINGLE_USER_CREDENTIALS_USERNAME: nifi
+      SINGLE_USER_CREDENTIALS_PASSWORD: ${PLATYS_NIFI2_PASSWORD:-abc123abc123!}
+      INITIAL_ADMIN_IDENTITY: nifi
+      # these config settings are custom ones and treated by the pre-start.sh script before the standard start.sh script of the NiFi docker image
+    volumes:
+      - ./data-transfer:/data-transfer:z
+      - ./init/nifi2/pre-start.sh:/tmp/pre-start.sh:z
+      - ./plugins/nifi2/nar_extensions/:/opt/nifi/nifi-current/nar_extensions/:z
+      - ./plugins/nifi2/python_extensions/:/opt/nifi/nifi-current/python_extensions/:z
+      - nifi-config-vol:/opt/nifi/nifi-current/conf:z
+    entrypoint:
+      # We override the entrypoint from the docker image and therefore have to run ../scripts/start.sh from the NiFi docker image
+      - bash
+      - -c
+      - |
+        grep -q 'nifi.security.user.login.identity.provider.expiration' /opt/nifi/nifi-current/conf/nifi.properties \
+          && sed -i 's/nifi.security.user.login.identity.provider.expiration=.*/nifi.security.user.login.identity.provider.expiration=30 days/' /opt/nifi/nifi-current/conf/nifi.properties \
+          || echo 'nifi.security.user.login.identity.provider.expiration=30 days' >> /opt/nifi/nifi-current/conf/nifi.properties  
+           /tmp/pre-start.sh        
+        ../scripts/start.sh
+    restart: unless-stopped
+  #  ================================== Vector ========================================== #
+  vector:
+    image: docker.io/timberio/vector:0.58.X-alpine
+    container_name: vector
+    hostname: vector
+    labels:
+      com.platys.name: vector
+      com.platys.description: High-performance observability data pipeline
+    ports:
+      - 9598:9598
+    volumes:
+      - ./data-transfer:/data-transfer:z
+      - ./conf/vector/vector.yaml:/etc/vector/vector.yaml:z
+      - ${PLATYS_DOCKER_SOCKET:-/var/run/docker.sock}:/var/run/docker.sock:z
+    environment:
+      VECTOR_DANGEROUSLY_ALLOW_ENV_VAR_INTERPOLATION: true
+      VECTOR_ALLOW_EMPTY_CONFIG: true
+      VECTOR_CONFIG: /etc/vector/vector.yaml
+      VECTOR_LOG: info
+      VECTOR_WATCH_CONFIG: true    # Watch for changes in the configuration file and reload accordingly
+      VECTOR_WATCH_CONFIG_POLL_INTERVAL_SECONDS: 30
+    healthcheck:
+      test: [CMD, wget, --no-proxy, -q, -O, /dev/null, http://localhost:9598/health]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+    restart: unless-stopped
+  #  ================================== Prometheus ========================================== #
+  prometheus-1:
+    image: docker.io/prom/prometheus:v3.13.4
+    container_name: prometheus-1
+    hostname: prometheus-1
+    labels:
+      com.platys.name: prometheus
+      com.platys.description: Monitoring system and time series database
+      com.platys.webui.title: Prometheus UI
+      com.platys.webui.url: http://dataplatform:9090/graph
+      com.platys.restapi.title: Prometheus Rest API
+      com.platys.restapi.url: http://dataplatform:9090/api/v1
+    extra_hosts:
+      - host.docker.internal:host-gateway
+    ports:
+      - 9090:9090
+    volumes:
+      - ./data-transfer:/data-transfer:z
+      - ./conf/prometheus/prometheus-config/prometheus.yml:/etc/prometheus/prometheus.yml:z
+      - ./security/nifi2/nifi_token:/etc/prometheus/nifi_token:ro
+    command:
+      - --config.file=/etc/prometheus/prometheus.yml
+      - --storage.tsdb.path=/prometheus
+      - --web.enable-lifecycle
+      - --web.enable-remote-write-receiver
+      - --web.console.libraries=/usr/share/prometheus/console_libraries
+      - --web.console.templates=/usr/share/prometheus/consoles
+      - --web.listen-address=0.0.0.0:9090
+      - --storage.tsdb.retention.time=30d
+      - --log.level=info
+    restart: unless-stopped
+  #  ================================== PostgreSQL ========================================== #
+  postgresql:
+    image: docker.io/postgres:18
+    container_name: postgresql
+    hostname: postgresql
+    labels:
+      com.platys.name: postgresql
+      com.platys.description: Open-Source object-relational database system
+      com.platys.password.envvars: PLATYS_POSTGRESQL_PASSWORD,PLATYS_POSTGRESQL_MULTIPLE_PASSWORD
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_PASSWORD=${PLATYS_POSTGRESQL_PASSWORD:-abc123!}
+      - POSTGRES_USER=postgres
+      - POSTGRES_DB=postgres
+#      - POSTGRES_INITDB_ARGS=--encoding=UTF8 --data-checksums      
+      - POSTGRES_MULTIPLE_DATABASES=demodb
+      - POSTGRES_MULTIPLE_USERS=demo
+      - POSTGRES_MULTIPLE_PASSWORDS=${PLATYS_POSTGRESQL_MULTIPLE_PASSWORD:-abc123!}
+      - POSTGRES_MULTIPLE_ADDL_ROLES=
+      - PGDATA=/var/lib/postgresql/data/pgdata
+      - DB_SCHEMA=demo
+    volumes:
+      - ./data-transfer:/data-transfer:z
+      - ./init/postgresql:/docker-entrypoint-initdb.d/:z
+    command:
+      - postgres
+      - -c
+      - wal_level=logical
+      - -c
+      - max_replication_slots=10
+      - -c
+      - max_wal_senders=10
+    restart: unless-stopped
+    healthcheck:
+      test: [CMD-SHELL, pg_isready -U postgres -h localhost && psql -U postgres -h localhost -c 'SELECT 1' -q --no-align -t > /dev/null]
+      interval: 10s
+      timeout: 5s
+      retries: 15
+      start_period: 30s
+  postgresql-exporter:
+    image: quay.io/prometheuscommunity/postgres-exporter
+    container_name: postgresql-exporter
+    hostname: postgresql-exporter
+    labels:
+      com.platys.name: postgresql-exporter
+      com.platys.description: PostgreSQL Exporter for Prometheus
+    depends_on:
+      prometheus-1:
+        condition: service_started
+      postgresql:
+        condition: service_healthy
+    environment:
+      DATA_SOURCE_URI: postgresql:5432/postgres?sslmode=disable
+      DATA_SOURCE_USER: postgres
+      DATA_SOURCE_PASS: ${PLATYS_POSTGRESQL_PASSWORD:-abc123!}
+    volumes:
+      - ./data-transfer:/data-transfer:z
+    restart: unless-stopped
+  #  ================================== Hasura ========================================== #
+  hasura:
+    image: docker.io/hasura/graphql-engine:v2.50.3-ce
+    container_name: hasura
+    hostname: hasura
+    labels:
+      com.platys.name: hasura
+      com.platys.description: GraphQL Engine
+      com.platys.webui.title: Hasura UI
+      com.platys.webui.url: http://dataplatform:28177
+    ports:
+      - 28177:8080
+    environment:
+      # postgresql database where the business data is held
+      HASURA_GRAPHQL_DATABASE_URL: postgres://postgres:abc123!@postgresql:5432/postgres
+      # for metadata storage
+      HASURA_GRAPHQL_METADATA_DATABASE_URL: postgres://postgres:abc123!@postgresql:5432/postgres
+      HASURA_GRAPHQL_ENABLE_CONSOLE: 'true' # set to "false" to disable console
+      HASURA_GRAPHQL_DEV_MODE: 'true'
+      HASURA_GRAPHQL_LOG_LEVEL: info
+      HASURA_GRAPHQL_ENABLED_LOG_TYPES: startup, http-log, webhook-log, websocket-log, query-log
+      HASURA_GRAPHQL_LIVE_QUERIES_MULTIPLEXED_REFETCH_INTERVAL: 1000
+    volumes:
+      - ./data-transfer:/data-transfer:z
+    restart: unless-stopped
+  #  ================================== Zammad ========================================== #
+  zammad-railsserver:
+    image: ghcr.io/zammad/zammad:7.1
+    container_name: zammad-railsserver
+    hostname: zammad-railsserver
+    labels:
+      com.platys.name: zammad
+    depends_on:
+      zammad-memcached:
+        condition: service_healthy
+      zammad-postgresql:
+        condition: service_healthy
+      zammad-redis:
+        condition: service_healthy
+    extra_hosts:
+      - host.docker.internal:host-gateway
+    environment:
+      - MEMCACHE_SERVERS=zammad-memcached:11211
+      - POSTGRESQL_DB=zammad_production
+      - POSTGRESQL_HOST=zammad-postgresql
+      - POSTGRESQL_USER=zammad
+      - POSTGRESQL_PASS=zammad
+      - POSTGRESQL_PORT=5432
+      - POSTGRESQL_OPTIONS=?pool=50
+      - REDIS_URL=redis://zammad-redis:6379
+      - BACKUP_DIR=/var/tmp/zammad
+      - BACKUP_TIME=03:00
+      - BACKUP_ON_START=true
+      - HOLD_DAYS=10
+    volumes:
+      - ./data-transfer:/data-transfer:z
+    command: [zammad-railsserver]
+    restart: unless-stopped
+    healthcheck:
+      test: [CMD, curl, -sf, http://127.0.0.1:3000]
+      interval: 30s
+      timeout: 5s
+      start_period: 120s
+      retries: 3
+  zammad-scheduler:
+    image: ghcr.io/zammad/zammad:7.1
+    container_name: zammad-scheduler
+    labels:
+      com.platys.name: zammad
+    command: [zammad-scheduler]
+    depends_on:
+      zammad-memcached:
+        condition: service_healthy
+      zammad-postgresql:
+        condition: service_healthy
+      zammad-redis:
+        condition: service_healthy
+    environment:
+      - MEMCACHE_SERVERS=zammad-memcached:11211
+      - POSTGRESQL_DB=zammad_production
+      - POSTGRESQL_HOST=zammad-postgresql
+      - POSTGRESQL_USER=zammad
+      - POSTGRESQL_PASS=zammad
+      - POSTGRESQL_PORT=5432
+      - POSTGRESQL_OPTIONS=?pool=50
+      - REDIS_URL=redis://zammad-redis:6379
+      - BACKUP_DIR=/var/tmp/zammad
+      - BACKUP_TIME=03:00
+      - BACKUP_ON_START=true
+      - HOLD_DAYS=10
+    volumes:
+      - ./data-transfer:/data-transfer:z
+    hostname: zammad-scheduler
+    restart: unless-stopped
+  zammad-websocket:
+    image: ghcr.io/zammad/zammad:7.1
+    container_name: zammad-websocket
+    hostname: zammad-websocket
+    labels:
+      com.platys.name: zammad
+    depends_on:
+      zammad-memcached:
+        condition: service_healthy
+      zammad-postgresql:
+        condition: service_healthy
+      zammad-redis:
+        condition: service_healthy
+    environment:
+      - MEMCACHE_SERVERS=zammad-memcached:11211
+      - POSTGRESQL_DB=zammad_production
+      - POSTGRESQL_HOST=zammad-postgresql
+      - POSTGRESQL_USER=zammad
+      - POSTGRESQL_PASS=zammad
+      - POSTGRESQL_PORT=5432
+      - POSTGRESQL_OPTIONS=?pool=50
+      - REDIS_URL=redis://zammad-redis:6379
+      - BACKUP_DIR=/var/tmp/zammad
+      - BACKUP_TIME=03:00
+      - BACKUP_ON_START=true
+      - HOLD_DAYS=10
+    volumes:
+      - ./data-transfer:/data-transfer:z
+    command: [zammad-websocket]
+    restart: unless-stopped
+  zammad-nginx:
+    image: ghcr.io/zammad/zammad:7.1
+    container_name: zammad-nginx
+    hostname: zammad-nginx
+    labels:
+      com.platys.name: zammad
+      com.platys.webui.title: Zammad UI
+      com.platys.webui.url: http://dataplatform:28425
+    ports:
+      - 28425:8080
+    depends_on:
+      zammad-memcached:
+        condition: service_healthy
+      zammad-postgresql:
+        condition: service_healthy
+      zammad-redis:
+        condition: service_healthy
+    environment:
+      - MEMCACHE_SERVERS=zammad-memcached:11211
+      - POSTGRESQL_DB=zammad_production
+      - POSTGRESQL_HOST=zammad-postgresql
+      - POSTGRESQL_USER=zammad
+      - POSTGRESQL_PASS=zammad
+      - POSTGRESQL_PORT=5432
+      - POSTGRESQL_OPTIONS=?pool=50
+      - REDIS_URL=redis://zammad-redis:6379
+      - BACKUP_DIR=/var/tmp/zammad
+      - BACKUP_TIME=03:00
+      - BACKUP_ON_START=true
+      - HOLD_DAYS=10
+    volumes:
+      - ./data-transfer:/data-transfer:z
+    command: [zammad-nginx]
+    restart: unless-stopped
+  zammad-elasticsearch:
+    image: docker.io/elasticsearch:9.4.2
+    container_name: zammad-elasticsearch
+    hostname: zammad-elasticsearch
+    labels:
+      com.platys.name: zammad
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+      - ES_JAVA_OPTS=-Xms1g -Xmx1g
+    volumes:
+      - ./data-transfer:/data-transfer:z
+    restart: unless-stopped
+  zammad-memcached:
+    image: docker.io/memcached:1.6.42-alpine
+    container_name: zammad-memcached
+    hostname: zammad-memcached
+    labels:
+      com.platys.name: zammad
+    command: memcached -m 256M
+    restart: unless-stopped
+    healthcheck:
+      test: [CMD, nc, -z, 127.0.0.1, '11211']
+      interval: 10s
+      timeout: 5s
+      start_period: 10s
+      retries: 5
+  zammad-postgresql:
+    image: docker.io/postgres:17.10-alpine
+    container_name: zammad-postgresql
+    hostname: zammad-postgresql
+    labels:
+      com.platys.name: zammad
+    environment:
+      - POSTGRES_DB=zammad_production
+      - POSTGRES_USER=zammad
+      - POSTGRES_PASSWORD=zammad
+    volumes:
+      - ./data-transfer:/data-transfer:z
+    restart: unless-stopped
+    healthcheck:
+      test: [CMD-SHELL, pg_isready -U zammad -d zammad_production]
+      interval: 10s
+      timeout: 5s
+      start_period: 60s
+      retries: 5
+  zammad-redis:
+    image: docker.io/redis:8.8-alpine
+    container_name: zammad-redis
+    hostname: zammad-redis
+    labels:
+      com.platys.name: zammad
+    volumes:
+      - ./data-transfer:/data-transfer:z
+    restart: unless-stopped
+    healthcheck:
+      test: [CMD, redis-cli, ping]
+      interval: 10s
+      timeout: 5s
+      start_period: 10s
+      retries: 5
+  zammad-init:
+    image: ghcr.io/zammad/zammad:7.1
+    container_name: zammad-init
+    hostname: zammad-init
+    labels:
+      com.platys.name: zammad
+    user: 0:0
+    depends_on:
+      zammad-postgresql:
+        condition: service_healthy
+    environment:
+      - MEMCACHE_SERVERS=zammad-memcached:11211
+      - POSTGRESQL_DB=zammad_production
+      - POSTGRESQL_HOST=zammad-postgresql
+      - POSTGRESQL_USER=zammad
+      - POSTGRESQL_PASS=zammad
+      - POSTGRESQL_PORT=5432
+      - POSTGRESQL_OPTIONS=?pool=50
+      - REDIS_URL=redis://zammad-redis:6379
+      - BACKUP_DIR=/var/tmp/zammad
+      - BACKUP_TIME=03:00
+      - BACKUP_ON_START=true
+      - HOLD_DAYS=10
+    volumes:
+      - ./data-transfer:/data-transfer:z
+    command: [zammad-init]
+#    restart: "no"  # do be podman compatible, it has to be "no" which did not work, but no is default    
+    init: true
+  #  ================================== Data Contract Editor ================= #
+  data-contract-editor:
+    image: docker.io/datacontract/editor:latest
+    container_name: data-contract-editor
+    hostname: data-contract-editor
+    platform: linux/amd64
+    labels:
+      com.platys.name: data-contract-editor
+      com.platys.description: Data Contract Editor
+      com.platys.webui.title: Data Contract Editor UI
+      com.platys.webui.url: http://dataplatform:4173
+    ports:
+      - 4173:4173
+    volumes:
+      - ./data-transfer:/data-transfer:z
+    restart: unless-stopped
+  #  ================================== Data Contract CLI API Server ================= #
+  data-contract-api:
+    image: docker.io/datacontract/cli:latest
+    container_name: data-contract-api
+    hostname: data-contract-api
+    platform: linux/amd64
+    labels:
+      com.platys.name: data-contract-api
+      com.platys.description: Data Contract CLI API Server
+      com.platys.restapi.title: Data Contract API REST API
+      com.platys.restapi.url: http://dataplatform:4242
+    ports:
+      - 4242:4242
+    environment:
+      - DATACONTRACT_CLI_API_KEY=a079ce4c-af90-45ab-abe5-a8d7697f60d6
+    volumes:
+      - ./data-transfer:/data-transfer:z
+    command: [api, --host, 0.0.0.0]
+    restart: unless-stopped
+  #  ================================== Grafana ========================================== #
+  grafana:
+    image: docker.io/grafana/grafana:13.0.10-ubuntu
+    hostname: grafana
+    container_name: grafana
+    labels:
+      com.platys.name: grafana
+      com.platys.description: Data visualization and dashboarding
+      com.platys.webui.title: Grafana UI
+      com.platys.webui.url: http://dataplatform:3000
+      com.platys.restapi.title: Grafana API
+      com.platys.restapi.url: http://dataplatform:3000/api/org
+    expose:
+      - 3000
+    ports:
+      - 3000:3000
+    environment:
+      - GF_SERVER_HTTP_ADDR=0.0.0.0
+      - GF_SERVER_HTTP_PORT=3000
+      - GF_AUTH_ANONYMOUS_ENABLED=False
+      - GF_AUTH_ANONYMOUS_ORG_ROLE=Admin
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=abc123!
+      - GF_USERS_ALLOW_SIGN_UP=false
+    volumes:
+      - ./data-transfer:/data-transfer:z
+      - ./scripts/grafana/dashboards/dashboard.yml:/etc/grafana/provisioning/dashboards/dashboard.yml:z
+      - ./scripts/grafana/dashboards/docker/monitor_services.json:/etc/grafana/provisioning/dashboards/docker/monitor_services.json:z
+      - ./scripts/grafana/dashboards/kafka/confluent-platform-kraft.json:/etc/grafana/provisioning/dashboards/kafka/confluent-platform-kraft.json:z
+      - ./scripts/grafana/dashboards/kafka/kafka-cluster-kraft.json:/etc/grafana/provisioning/dashboards/kafka/kafka-cluster-kraft.json:z
+      - ./scripts/grafana/dashboards/kafka/kafka-topics-kraft.json:/etc/grafana/provisioning/dashboards/kafka/kafka-topics-kraft.json:z
+      - ./scripts/grafana/dashboards/kafka/kraft.json:/etc/grafana/provisioning/dashboards/kafka/kraft.json:z
+      - ./scripts/grafana/dashboards/kafka/cluster-linking.json:/etc/grafana/provisioning/dashboards/kafka/cluster-linking.json:z
+      - ./scripts/grafana/dashboards/kafka-transaction-coordinator.json:/etc/grafana/provisioning/dashboards/kafka/kafka-transaction-coordinator.json:z
+      - ./scripts/grafana/dashboards/kafka/kafka-connect-cluster.json:/etc/grafana/provisioning/dashboards/kafka/kafka-connect-cluster.json:z
+      - ./scripts/grafana/dashboards/kafka/confluent-oracle-cdc.json:/etc/grafana/provisioning/dashboards/kafka/confluent-oracle-cdc.json:z
+      - ./scripts/grafana/dashboards/kafka/ksqldb-cluster.json:/etc/grafana/provisioning/dashboards/kafka/ksqldb-cluster.json:z
+      - ./scripts/grafana/dashboards/kafka/schema-registry-cluster.json:/etc/grafana/provisioning/dashboards/kafka/schema-registry-cluster.json:z
+      - ./scripts/grafana/dashboards/kafka/kafka-topics.json:/etc/grafana/provisioning/dashboards/kafka/kafka-topics.json:z
+      - ./scripts/grafana/dashboards/kafka/kafka-lag-exporter.json:/etc/grafana/provisioning/dashboards/kafka/kafka-lag-exporter.json:z
+      - ./scripts/grafana/dashboards/kafka/kafka-consumer.json:/etc/grafana/provisioning/dashboards/kafka/kafka-consumer.json:z
+      - ./scripts/grafana/dashboards/kafka/kafka-producer.json:/etc/grafana/provisioning/dashboards/kafka/kafka-producer.json:z
+      - ./scripts/grafana/dashboards/kafka/kafka-quotas.json:/etc/grafana/provisioning/dashboards/kafka/kafka-quotas.json:z
+      - ./scripts/grafana/dashboards/kafka/kafka-stream.json:/etc/grafana/provisioning/dashboards/kafka/kafka-stream.json:z
+      - ./scripts/grafana/dashboards/kafka/kafka-streams-rocksdb.json:/etc/grafana/provisioning/dashboards/kafka/kafka-streams-rocksdb.json:z
+      - ./scripts/grafana/dashboards/kafka/OTel_kafkametrics.json:/etc/grafana/provisioning/dashboards/kafka/OTel_kafkametrics.json:z
+      - ./scripts/grafana/dashboards/postgresql:/etc/grafana/provisioning/dashboards/postgresql:z
+      - ./scripts/grafana/dashboards/nifi2:/etc/grafana/provisioning/dashboards/nifi2:z
+      - ./scripts/grafana/dashboards/zammad:/etc/grafana/provisioning/dashboards/zammad:z
+      - ./scripts/grafana/dashboards/vector:/etc/grafana/provisioning/dashboards/vector:z
+      - ./scripts/grafana/datasources/prometheus-datasource.yml:/etc/grafana/provisioning/datasources/prometheus-datasource.yml:z
+      - ./scripts/grafana/datasources/zammad-elasticsearch.yml:/etc/grafana/provisioning/datasources/zammad-elasticsearch.yml:z
+#        restart: unless-stopped
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - bash -c 'printf \"GET / HTTP/1.1\n\n\" > /dev/tcp/127.0.0.1/3000; exit $$?;'
+      interval: 1s
+      timeout: 5s
+      retries: 5
+  #  ================================== Dockhand ========================================== #
+  dockhand:
+    image: docker.io/fnsys/dockhand:latest
+    container_name: dockhand
+    hostname: dockhand
+    labels:
+      com.platys.name: dockhand
+      com.platys.description: Docker container management UI
+      com.platys.webui.title: Dockhand UI
+      com.platys.webui.url: http://dataplatform:28349
+    ports:
+      - 28349:3000
+    environment:
+      DISABLE_WHATS_NEW: true
+      EXPORT_METRICS: false
+    volumes:
+      - ./data-transfer:/data-transfer:z
+      - ${PLATYS_DOCKER_SOCKET:-/var/run/docker.sock}:/var/run/docker.sock:z
+    restart: unless-stopped
+  #  ================================== markdown-viewer ========================================== #
+  markdown-viewer:
+    image: docker.io/dannyben/madness:1.2.5
+    container_name: markdown-viewer
+    hostname: markdown-viewer
+    labels:
+      com.platys.name: markdown-viewer
+      com.platys.description: Platys Platform homepage viewer
+      com.platys.webui.title: Markdown Viewer UI
+      com.platys.webui.url: http://dataplatform:80
+    ports:
+      - 80:3000
+    volumes:
+      - ./artefacts:/docs
+      - ./conf/markdown-viewer/markdown-madness.yml:/docs/.madness.yml:z
+      - ./data-transfer:/data-transfer:z
+    command: server
+    restart: unless-stopped
+    healthcheck:
+      test: [CMD-SHELL, curl --noproxy '*' -f http://localhost:3000 || exit 1]
+      interval: 1m30s
+      timeout: 10s
+      retries: 3
+      start_period: 1m
+  markdown-renderer:
+    image: docker.io/trivadis/jinja2-renderer:0.8.1
+    container_name: markdown-renderer
+    hostname: markdown-renderer
+    labels:
+      com.platys.name: markdown-renderer
+      com.platys.description: Platys Platform homepage rendering
+    environment:
+      USE_PUBLIC_IP: 'True'
+      PUBLIC_IP: ${PUBLIC_IP:-127.0.0.1}
+      DOCKER_HOST_IP: ${DOCKER_HOST_IP:-localhost}
+      DATAPLATFORM_HOME: ${DATAPLATFORM_HOME}
+      PLATYS_PLATFORM_NAME: platys-platform
+      PLATYS_PLATFORM_STACK: trivadis/platys-modern-data-platform
+      PLATYS_PLATFORM_STACK_VERSION: develop
+      PLATYS_COPY_COOKBOOK_DATA: 'True'
+      PLATYS_DATACENTER:
+      SERVICE_LIST_VERSION: 2
+    volumes:
+      - ./artefacts/templates:/templates:z
+      - ./artefacts/templates:/scripts:z
+      - .:/variables:z
+      - ./artefacts:/output:z
+      - ./data-transfer:/data-transfer:z
+    init: true
+volumes:
+  data-transfer-vol:
+    name: data_transfer_vol
+  nifi-config-vol:
+configs:
+  # Nimtable config file to be mounted into the Docker containers.
+  # See backend/config.yaml for more complete example
+  nimtable-config.yaml:
+    content: |-
+      server:
+        port: 8182
+        host: 0.0.0.0
+      database:
+        # You can also point to your own Postgres database, instead of using the one provided by docker-compose.
+        url: jdbc:postgresql://postgresql:5432/nimtabledb
+        username: nimtable
+        password: abc123!
