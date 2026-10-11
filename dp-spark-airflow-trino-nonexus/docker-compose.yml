@@ -18,9 +18,6 @@ services:
       com.platys.webui.title: Spark UI
       com.platys.webui.url: http://dataplatform:28304
     user: root
-    depends_on:
-      nexus:
-        condition: service_healthy
     ports:
       - 28304:28304
       - 6066:6066
@@ -74,10 +71,10 @@ services:
       SPARK_DEFAULTS_CONF_spark_jars: /opt/spark/jars/iceberg-spark-runtime-4.1_2.13-1.11.0.jar
       MAVEN_DOWNLOAD_REPO: nexus
       MAVEN_DOWNLOAD_SSL_VERIFY: 'false'
-      MAVEN_DOWNLOAD_REPO_NEXUS: http://nexus:8081/repository/maven-public
+      MAVEN_DOWNLOAD_REPO_NEXUS: http://${PUBLIC_IP}:28426/repository/maven-public
       MAVEN_DOWNLOAD_REPO_NEXUS_USER: admin
       MAVEN_DOWNLOAD_REPO_NEXUS_PASSWORD: ${PLATYS_NEXUS_ADMIN_PASSWORD:-abc123!abc123!}
-      PIP_INDEX_URL: http://nexus:8081/repository/pypi-proxy/simple/
+      PIP_INDEX_URL: http://${PUBLIC_IP}:28426/repository/pypi-proxy/simple/
       PIP_TRUSTED_HOST: nexus
       SPARK_DEFAULTS_CONF_spark_jars_ivySettings: /opt/spark/conf/ivy-settings.xml
       SPARK_DEFAULTS_CONF_spark_jars_ivy: /opt/ivy-cache
@@ -164,10 +161,10 @@ services:
       SPARK_DEFAULTS_CONF_spark_jars: /opt/spark/jars/iceberg-spark-runtime-4.1_2.13-1.11.0.jar
       MAVEN_DOWNLOAD_REPO: nexus
       MAVEN_DOWNLOAD_SSL_VERIFY: 'false'
-      MAVEN_DOWNLOAD_REPO_NEXUS: http://nexus:8081/repository/maven-public
+      MAVEN_DOWNLOAD_REPO_NEXUS: http://${PUBLIC_IP}:28426/repository/maven-public
       MAVEN_DOWNLOAD_REPO_NEXUS_USER: admin
       MAVEN_DOWNLOAD_REPO_NEXUS_PASSWORD: ${PLATYS_NEXUS_ADMIN_PASSWORD:-abc123!abc123!}
-      PIP_INDEX_URL: http://nexus:8081/repository/pypi-proxy/simple/
+      PIP_INDEX_URL: http://${PUBLIC_IP}:28426/repository/pypi-proxy/simple/
       PIP_TRUSTED_HOST: nexus
       SPARK_DEFAULTS_CONF_spark_jars_ivySettings: /opt/spark/conf/ivy-settings.xml
       SPARK_DEFAULTS_CONF_spark_jars_ivy: /opt/ivy-cache
@@ -249,10 +246,10 @@ services:
       SPARK_DEFAULTS_CONF_spark_jars: /opt/spark/jars/iceberg-spark-runtime-4.1_2.13-1.11.0.jar
       MAVEN_DOWNLOAD_REPO: nexus
       MAVEN_DOWNLOAD_SSL_VERIFY: 'false'
-      MAVEN_DOWNLOAD_REPO_NEXUS: http://nexus:8081/repository/maven-public
+      MAVEN_DOWNLOAD_REPO_NEXUS: http://${PUBLIC_IP}:28426/repository/maven-public
       MAVEN_DOWNLOAD_REPO_NEXUS_USER: admin
       MAVEN_DOWNLOAD_REPO_NEXUS_PASSWORD: ${PLATYS_NEXUS_ADMIN_PASSWORD:-abc123!abc123!}
-      PIP_INDEX_URL: http://nexus:8081/repository/pypi-proxy/simple/
+      PIP_INDEX_URL: http://${PUBLIC_IP}:28426/repository/pypi-proxy/simple/
       PIP_TRUSTED_HOST: nexus
       SPARK_DEFAULTS_CONF_spark_jars_ivySettings: /opt/spark/conf/ivy-settings.xml
       SPARK_DEFAULTS_CONF_spark_jars_ivy: /opt/ivy-cache
@@ -336,10 +333,10 @@ services:
       SPARK_DEFAULTS_CONF_spark_jars: /opt/spark/jars/iceberg-spark-runtime-4.1_2.13-1.11.0.jar
       MAVEN_DOWNLOAD_REPO: nexus
       MAVEN_DOWNLOAD_SSL_VERIFY: 'false'
-      MAVEN_DOWNLOAD_REPO_NEXUS: http://nexus:8081/repository/maven-public
+      MAVEN_DOWNLOAD_REPO_NEXUS: http://${PUBLIC_IP}:28426/repository/maven-public
       MAVEN_DOWNLOAD_REPO_NEXUS_USER: admin
       MAVEN_DOWNLOAD_REPO_NEXUS_PASSWORD: ${PLATYS_NEXUS_ADMIN_PASSWORD:-abc123!abc123!}
-      PIP_INDEX_URL: http://nexus:8081/repository/pypi-proxy/simple/
+      PIP_INDEX_URL: http://${PUBLIC_IP}:28426/repository/pypi-proxy/simple/
       PIP_TRUSTED_HOST: nexus
       SPARK_DEFAULTS_CONF_spark_jars_ivySettings: /opt/spark/conf/ivy-settings.xml
       SPARK_DEFAULTS_CONF_spark_jars_ivy: /opt/ivy-cache
@@ -418,10 +415,10 @@ services:
       SPARK_DEFAULTS_CONF_spark_jars: /opt/spark/jars/iceberg-spark-runtime-4.1_2.13-1.11.0.jar
       MAVEN_DOWNLOAD_REPO: nexus
       MAVEN_DOWNLOAD_SSL_VERIFY: 'false'
-      MAVEN_DOWNLOAD_REPO_NEXUS: http://nexus:8081/repository/maven-public
+      MAVEN_DOWNLOAD_REPO_NEXUS: http://${PUBLIC_IP}:28426/repository/maven-public
       MAVEN_DOWNLOAD_REPO_NEXUS_USER: admin
       MAVEN_DOWNLOAD_REPO_NEXUS_PASSWORD: ${PLATYS_NEXUS_ADMIN_PASSWORD:-abc123!abc123!}
-      PIP_INDEX_URL: http://nexus:8081/repository/pypi-proxy/simple/
+      PIP_INDEX_URL: http://${PUBLIC_IP}:28426/repository/pypi-proxy/simple/
       PIP_TRUSTED_HOST: nexus
       SPARK_DEFAULTS_CONF_spark_jars_ivySettings: /opt/spark/conf/ivy-settings.xml
       SPARK_DEFAULTS_CONF_spark_jars_ivy: /opt/ivy-cache
@@ -503,10 +500,10 @@ services:
       SPARK_DEFAULTS_CONF_spark_jars: /opt/spark/jars/iceberg-spark-runtime-4.1_2.13-1.11.0.jar
       MAVEN_DOWNLOAD_REPO: nexus
       MAVEN_DOWNLOAD_SSL_VERIFY: 'false'
-      MAVEN_DOWNLOAD_REPO_NEXUS: http://nexus:8081/repository/maven-public
+      MAVEN_DOWNLOAD_REPO_NEXUS: http://${PUBLIC_IP}:28426/repository/maven-public
       MAVEN_DOWNLOAD_REPO_NEXUS_USER: admin
       MAVEN_DOWNLOAD_REPO_NEXUS_PASSWORD: ${PLATYS_NEXUS_ADMIN_PASSWORD:-abc123!abc123!}
-      PIP_INDEX_URL: http://nexus:8081/repository/pypi-proxy/simple/
+      PIP_INDEX_URL: http://${PUBLIC_IP}:28426/repository/pypi-proxy/simple/
       PIP_TRUSTED_HOST: nexus
       SPARK_DEFAULTS_CONF_spark_jars_ivySettings: /opt/spark/conf/ivy-settings.xml
       SPARK_DEFAULTS_CONF_spark_jars_ivy: /opt/ivy-cache
@@ -615,8 +612,6 @@ services:
         required: true
       airflow-db:
         condition: service_healthy
-      nexus:
-        condition: service_healthy
     command:
       - api-server
     ports:
@@ -663,9 +658,9 @@ services:
       AWS_ACCESS_KEY_ID: ${PLATYS_AWS_ACCESS_KEY:-admin}
       AWS_SECRET_ACCESS_KEY: ${PLATYS_AWS_SECRET_ACCESS_KEY:-abc123abc123!}
       AIRFLOW__OPENLINEAGE__DISABLED: true
-      PIP_INDEX_URL: http://nexus:8081/repository/pypi-proxy/simple/
+      PIP_INDEX_URL: http://${PUBLIC_IP}:28426/repository/pypi-proxy/simple/
       PIP_TRUSTED_HOST: nexus
-      _PIP_INDEX_URL: http://nexus:8081/repository/pypi-proxy/simple/
+      _PIP_INDEX_URL: http://${PUBLIC_IP}:28426/repository/pypi-proxy/simple/
       _PIP_TRUSTED_HOST: nexus
     volumes:
       - ./data-transfer:/data-transfer:z
@@ -698,8 +693,6 @@ services:
       airflow-db:
         condition: service_healthy
         required: true
-      nexus:
-        condition: service_healthy
     command:
       - dag-processor
     environment:
@@ -744,9 +737,9 @@ services:
       AWS_ACCESS_KEY_ID: ${PLATYS_AWS_ACCESS_KEY:-admin}
       AWS_SECRET_ACCESS_KEY: ${PLATYS_AWS_SECRET_ACCESS_KEY:-abc123abc123!}
       AIRFLOW__OPENLINEAGE__DISABLED: true
-      PIP_INDEX_URL: http://nexus:8081/repository/pypi-proxy/simple/
+      PIP_INDEX_URL: http://${PUBLIC_IP}:28426/repository/pypi-proxy/simple/
       PIP_TRUSTED_HOST: nexus
-      _PIP_INDEX_URL: http://nexus:8081/repository/pypi-proxy/simple/
+      _PIP_INDEX_URL: http://${PUBLIC_IP}:28426/repository/pypi-proxy/simple/
       _PIP_TRUSTED_HOST: nexus
     volumes:
       - ./data-transfer:/data-transfer:z
@@ -779,8 +772,6 @@ services:
       airflow-db:
         condition: service_healthy
         required: true
-      nexus:
-        condition: service_healthy
     command:
       - scheduler
     environment:
@@ -825,9 +816,9 @@ services:
       AWS_ACCESS_KEY_ID: ${PLATYS_AWS_ACCESS_KEY:-admin}
       AWS_SECRET_ACCESS_KEY: ${PLATYS_AWS_SECRET_ACCESS_KEY:-abc123abc123!}
       AIRFLOW__OPENLINEAGE__DISABLED: true
-      PIP_INDEX_URL: http://nexus:8081/repository/pypi-proxy/simple/
+      PIP_INDEX_URL: http://${PUBLIC_IP}:28426/repository/pypi-proxy/simple/
       PIP_TRUSTED_HOST: nexus
-      _PIP_INDEX_URL: http://nexus:8081/repository/pypi-proxy/simple/
+      _PIP_INDEX_URL: http://${PUBLIC_IP}:28426/repository/pypi-proxy/simple/
       _PIP_TRUSTED_HOST: nexus
     volumes:
       - ./data-transfer:/data-transfer:z
@@ -1015,7 +1006,7 @@ services:
       AWS_ACCESS_KEY_ID: ${PLATYS_AWS_ACCESS_KEY:-admin}
       AWS_SECRET_ACCESS_KEY: ${PLATYS_AWS_SECRET_ACCESS_KEY:-abc123abc123!}
       AIRFLOW__OPENLINEAGE__DISABLED: true
-      PIP_INDEX_URL: http://nexus:8081/repository/pypi-proxy/simple/
+      PIP_INDEX_URL: http://${PUBLIC_IP}:28426/repository/pypi-proxy/simple/
       PIP_TRUSTED_HOST: nexus
     volumes:
       - ./data-transfer:/data-transfer:z
@@ -1045,7 +1036,7 @@ services:
       DOCKER_STACKS_JUPYTER_CMD: lab
       MAVEN_DOWNLOAD_REPO: nexus
       MAVEN_DOWNLOAD_SSL_VERIFY: 'false'
-      MAVEN_DOWNLOAD_REPO_NEXUS: http://nexus:8081/repository/maven-public
+      MAVEN_DOWNLOAD_REPO_NEXUS: http://${PUBLIC_IP}:28426/repository/maven-public
       MAVEN_DOWNLOAD_REPO_NEXUS_USER: admin
       MAVEN_DOWNLOAD_REPO_NEXUS_PASSWORD: ${PLATYS_NEXUS_ADMIN_PASSWORD:-abc123!abc123!}
       MAVEN_DOWNLOAD_JARS: software.amazon.awssdk:bundle:2.35.4,org.apache.hadoop:hadoop-aws:3.4.2
@@ -1060,9 +1051,6 @@ services:
       AWS_DEFAULT_REGION: us-east-1
       #PYSPARK_PYTHON: /opt/bitnami/python/bin/python3.12
       #PYSPARK_DRIVER_PYTHON: /usr/bin/python3.12   
-    depends_on:
-      nexus:
-        condition: service_healthy
     volumes:
       - ./data-transfer:/data-transfer:z
       - ./init/jupyter/on-startup-jupyter/:/usr/local/bin/start-notebook.d/:z
@@ -1079,11 +1067,7 @@ services:
         source /opt/conda/etc/profile.d/conda.sh
         conda activate py310
         # Trust pypi.org to avoid SSL Error in pip install
-        pip config set global.trusted-host "nexus pypi.org files.pythonhosted.org pypi.python.org"        
-        NEXUS_PASS=$$(python3 -c "import urllib.parse, os; print(urllib.parse.quote(os.environ.get('MAVEN_DOWNLOAD_REPO_NEXUS_PASSWORD', 'abc123!abc123!')))")
-        export PIP_INDEX_URL="http://admin:$${NEXUS_PASS}@nexus:8081/repository/pypi-proxy/simple/"
-        export PIP_TRUSTED_HOST="nexus"
-        pip config set global.trusted-host "nexus"        
+        pip config set global.trusted-host "${PUBLIC_IP} pypi.org files.pythonhosted.org pypi.python.org"        
         pip install ipykernel
         python -m ipykernel install --user --name py310 --display-name "Python 3.10.12 (ipykernel)"
         conda run -n py310 pip install pyspark==4.1.1 numpy graphframes-py typing_extensions jupysql "zstandard>=0.25.0" pandas arrow pyarrow grpcio-status boto3
@@ -1147,9 +1131,9 @@ services:
       - ENABLE_PLAYWRIGHT=false
       - PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
       - BUILD_SUPERSET_FRONTEND_IN_DOCKER=true
-      - PIP_INDEX_URL=http://nexus:8081/repository/pypi-proxy/simple/
+      - PIP_INDEX_URL=http://${PUBLIC_IP}:28426/repository/pypi-proxy/simple/
       - PIP_TRUSTED_HOST=nexus
-      - UV_INDEX_URL=http://nexus:8081/repository/pypi-proxy/simple/
+      - UV_INDEX_URL=http://${PUBLIC_IP}:28426/repository/pypi-proxy/simple/
       - UV_NATIVE_TLS=true
     volumes:
       - ./data-transfer:/data-transfer:z
@@ -1159,7 +1143,7 @@ services:
       - -c
       - |
         # Trust pypi.org to avoid SSL Error in pip install
-        uv pip config set global.trusted-host "nexus pypi.org files.pythonhosted.org pypi.python.org"
+        uv pip config set global.trusted-host "${PUBLIC_IP} pypi.org files.pythonhosted.org pypi.python.org"
         uv pip install psycopg2-binary
         uv pip install apache-superset[trino]
         /app/docker/docker-bootstrap.sh app-gunicorn
@@ -1217,9 +1201,9 @@ services:
       - ENABLE_PLAYWRIGHT=false
       - PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
       - BUILD_SUPERSET_FRONTEND_IN_DOCKER=true
-      - PIP_INDEX_URL=http://nexus:8081/repository/pypi-proxy/simple/
+      - PIP_INDEX_URL=http://${PUBLIC_IP}:28426/repository/pypi-proxy/simple/
       - PIP_TRUSTED_HOST=nexus
-      - UV_INDEX_URL=http://nexus:8081/repository/pypi-proxy/simple/
+      - UV_INDEX_URL=http://${PUBLIC_IP}:28426/repository/pypi-proxy/simple/
       - UV_NATIVE_TLS=true
     volumes:
       - ./data-transfer:/data-transfer:z
@@ -1274,9 +1258,9 @@ services:
       - ENABLE_PLAYWRIGHT=false
       - PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
       - BUILD_SUPERSET_FRONTEND_IN_DOCKER=true
-      - PIP_INDEX_URL=http://nexus:8081/repository/pypi-proxy/simple/
+      - PIP_INDEX_URL=http://${PUBLIC_IP}:28426/repository/pypi-proxy/simple/
       - PIP_TRUSTED_HOST=nexus
-      - UV_INDEX_URL=http://nexus:8081/repository/pypi-proxy/simple/
+      - UV_INDEX_URL=http://${PUBLIC_IP}:28426/repository/pypi-proxy/simple/
       - UV_NATIVE_TLS=true
     volumes:
       - ./data-transfer:/data-transfer:z
@@ -1286,7 +1270,7 @@ services:
       - -c
       - |
         # Trust pypi.org to avoid SSL Error in pip install
-        uv pip config set global.trusted-host "nexus pypi.org files.pythonhosted.org pypi.python.org"      
+        uv pip config set global.trusted-host "${PUBLIC_IP} pypi.org files.pythonhosted.org pypi.python.org"      
         uv pip install psycopg2-binary
         uv pip install apache-superset[trino]
         /app/docker/docker-bootstrap.sh worker
@@ -1339,9 +1323,9 @@ services:
       - ENABLE_PLAYWRIGHT=false
       - PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
       - BUILD_SUPERSET_FRONTEND_IN_DOCKER=true
-      - PIP_INDEX_URL=http://nexus:8081/repository/pypi-proxy/simple/
+      - PIP_INDEX_URL=http://${PUBLIC_IP}:28426/repository/pypi-proxy/simple/
       - PIP_TRUSTED_HOST=nexus
-      - UV_INDEX_URL=http://nexus:8081/repository/pypi-proxy/simple/
+      - UV_INDEX_URL=http://${PUBLIC_IP}:28426/repository/pypi-proxy/simple/
       - UV_NATIVE_TLS=true
     volumes:
       - ./data-transfer:/data-transfer:z
@@ -1351,7 +1335,7 @@ services:
       - -c
       - |
         # Trust pypi.org to avoid SSL Error in pip install
-        uv pip config set global.trusted-host "nexus pypi.org files.pythonhosted.org pypi.python.org"
+        uv pip config set global.trusted-host "${PUBLIC_IP} pypi.org files.pythonhosted.org pypi.python.org"
         uv pip install psycopg2-binary
         uv pip install apache-superset[trino]
         /app/docker/docker-bootstrap.sh beat
@@ -1911,33 +1895,6 @@ services:
       - ./data-transfer:/data-transfer:z
       - ${PLATYS_DOCKER_SOCKET:-/var/run/docker.sock}:/var/run/docker.sock:z
     restart: unless-stopped
-  #  ================================== Sonatype Nexus ========================================== #
-  nexus:
-    image: docker.io/sonatype/nexus3:3.96.4
-    container_name: nexus
-    hostname: nexus
-    labels:
-      com.platys.name: nexus
-      com.platys.description: Sonatype Nexus Repository Manager
-      com.platys.webui.title: Nexus UI
-      com.platys.webui.url: http://dataplatform:28426
-      com.platys.password.envvars: PLATYS_NEXUS_ADMIN_PASSWORD
-    ports:
-      - 28426:8081
-    environment:
-      INSTALL4J_ADD_JVM_PARAMS: -Xms512m -Xmx2g -XX:MaxDirectMemorySize=2g
-      NEXUS_ADMIN_PASSWORD: ${PLATYS_NEXUS_ADMIN_PASSWORD:-abc123!abc123!}
-    volumes:
-      - ./data-transfer:/data-transfer:z
-      - ./init/nexus:/nexus-init:ro
-      - ./security/nexus/certs:/nexus-security/certs:ro
-    entrypoint: [/bin/sh, /nexus-init/entrypoint.sh]
-    restart: unless-stopped
-    healthcheck:
-      interval: 1s
-      timeout: 10s
-      retries: 240
-      test: [CMD, test, -f, /nexus-data/.setup-complete]
   #  ================================== markdown-viewer ========================================== #
   markdown-viewer-env2:
     image: docker.io/dannyben/madness:1.2.5

@@ -151,8 +151,8 @@
         SEARXNG_enable: false
         SEARXNG_url: null
 
-        NEXUS_enable: false
-        NEXUS_endpoint: http://192.168.1.112:28426
+        NEXUS_enable: true
+        NEXUS_endpoint: http://${PUBLIC_IP}:28426
       
       
       # ========================================================================
@@ -3862,7 +3862,7 @@
       #
       # ===== Sonatype Nexus ========
       #
-      NEXUS_enable: true
+      NEXUS_enable: false
       NEXUS_volume_map_data: false
       NEXUS_jvm_min_heap: 512m
       NEXUS_jvm_max_heap: 2g
