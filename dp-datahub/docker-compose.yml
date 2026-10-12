@@ -202,7 +202,6 @@ services:
       SCHEMA_REGISTRY_KAFKASTORE_SECURITY_PROTOCOL: PLAINTEXT
     volumes:
       - ./data-transfer:/data-transfer:z
-      - ./plugins/opentelemetry/agents:/otel:z
     restart: unless-stopped
     healthcheck:
       test: [CMD, python3, -c, "import http.client, sys; c=http.client.HTTPConnection('localhost',8081,timeout=5); c.request('GET','/subjects'); sys.exit(0) if c.getresponse().status==200 else sys.exit(1)"]
