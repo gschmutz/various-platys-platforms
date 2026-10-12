@@ -73,11 +73,15 @@ services:
       SPARK_INSTALL_PYTHON_PACKAGES: ' delta-spark==4.1.0'
       SPARK_DEFAULTS_CONF_spark_jars: /opt/spark/jars/iceberg-spark-runtime-4.1_2.13-1.11.0.jar
       MAVEN_DOWNLOAD_REPO: nexus
+      MAVEN_DOWNLOAD_SSL_VERIFY: 'false'
       MAVEN_DOWNLOAD_REPO_NEXUS: http://nexus:8081/repository/maven-public
       MAVEN_DOWNLOAD_REPO_NEXUS_USER: admin
       MAVEN_DOWNLOAD_REPO_NEXUS_PASSWORD: ${PLATYS_NEXUS_ADMIN_PASSWORD:-abc123!abc123!}
       PIP_INDEX_URL: http://nexus:8081/repository/pypi-proxy/simple/
       PIP_TRUSTED_HOST: nexus
+      # consumed by spark-init.sh to generate /opt/spark/conf/ivy-settings.xml
+      NEXUS_HOST: nexus
+      NEXUS_URL: http://nexus:8081
       SPARK_DEFAULTS_CONF_spark_jars_ivySettings: /opt/spark/conf/ivy-settings.xml
       SPARK_DEFAULTS_CONF_spark_jars_ivy: /opt/ivy-cache
     volumes:
@@ -86,7 +90,6 @@ services:
       - ./conf/spark/hive-site.xml:/opt/spark/conf.default/hive-site.xml:z
       - ./conf/spark/spark-defaults.conf:/opt/spark/conf.default/spark-defaults.conf:z
       - ./init/spark:/docker-entrypoint-initdb.d:z
-      - ./conf/spark/ivy-settings.xml:/opt/spark/conf/ivy-settings.xml:z
       - ./scripts/docker/maven-download.sh:/maven-download.sh:z
       - ./scripts/spark/pyspark:/opt/spark/bin/pyspark:z
       - ./container-volume/spark/logs/:/var/log/spark/logs:z
@@ -162,11 +165,15 @@ services:
       SPARK_INSTALL_PYTHON_PACKAGES: ' delta-spark==4.1.0'
       SPARK_DEFAULTS_CONF_spark_jars: /opt/spark/jars/iceberg-spark-runtime-4.1_2.13-1.11.0.jar
       MAVEN_DOWNLOAD_REPO: nexus
+      MAVEN_DOWNLOAD_SSL_VERIFY: 'false'
       MAVEN_DOWNLOAD_REPO_NEXUS: http://nexus:8081/repository/maven-public
       MAVEN_DOWNLOAD_REPO_NEXUS_USER: admin
       MAVEN_DOWNLOAD_REPO_NEXUS_PASSWORD: ${PLATYS_NEXUS_ADMIN_PASSWORD:-abc123!abc123!}
       PIP_INDEX_URL: http://nexus:8081/repository/pypi-proxy/simple/
       PIP_TRUSTED_HOST: nexus
+      # consumed by spark-init.sh to generate /opt/spark/conf/ivy-settings.xml
+      NEXUS_HOST: nexus
+      NEXUS_URL: http://nexus:8081
       SPARK_DEFAULTS_CONF_spark_jars_ivySettings: /opt/spark/conf/ivy-settings.xml
       SPARK_DEFAULTS_CONF_spark_jars_ivy: /opt/ivy-cache
     volumes:
@@ -174,7 +181,6 @@ services:
       - ./conf/spark/hive-site.xml:/opt/spark/conf.default/hive-site.xml:z
       - ./conf/spark/spark-defaults.conf:/opt/spark/conf.default/spark-defaults.conf:z
       - ./init/spark:/docker-entrypoint-initdb.d:z
-      - ./conf/spark/ivy-settings.xml:/opt/spark/conf/ivy-settings.xml:z
       - ./scripts/docker/maven-download.sh:/maven-download.sh:z
       - ./container-volume/spark/logs/:/var/log/spark/logs:z
     entrypoint: [/docker-entrypoint-initdb.d/spark-init.sh]
@@ -246,11 +252,15 @@ services:
       SPARK_INSTALL_PYTHON_PACKAGES: ' delta-spark==4.1.0'
       SPARK_DEFAULTS_CONF_spark_jars: /opt/spark/jars/iceberg-spark-runtime-4.1_2.13-1.11.0.jar
       MAVEN_DOWNLOAD_REPO: nexus
+      MAVEN_DOWNLOAD_SSL_VERIFY: 'false'
       MAVEN_DOWNLOAD_REPO_NEXUS: http://nexus:8081/repository/maven-public
       MAVEN_DOWNLOAD_REPO_NEXUS_USER: admin
       MAVEN_DOWNLOAD_REPO_NEXUS_PASSWORD: ${PLATYS_NEXUS_ADMIN_PASSWORD:-abc123!abc123!}
       PIP_INDEX_URL: http://nexus:8081/repository/pypi-proxy/simple/
       PIP_TRUSTED_HOST: nexus
+      # consumed by spark-init.sh to generate /opt/spark/conf/ivy-settings.xml
+      NEXUS_HOST: nexus
+      NEXUS_URL: http://nexus:8081
       SPARK_DEFAULTS_CONF_spark_jars_ivySettings: /opt/spark/conf/ivy-settings.xml
       SPARK_DEFAULTS_CONF_spark_jars_ivy: /opt/ivy-cache
     volumes:
@@ -258,7 +268,6 @@ services:
       - ./conf/spark/hive-site.xml:/opt/spark/conf.default/hive-site.xml:z
       - ./conf/spark/spark-defaults.conf:/opt/spark/conf.default/spark-defaults.conf:z
       - ./init/spark:/docker-entrypoint-initdb.d:z
-      - ./conf/spark/ivy-settings.xml:/opt/spark/conf/ivy-settings.xml:z
       - ./scripts/docker/maven-download.sh:/maven-download.sh:z
       - ./container-volume/spark/logs/:/var/log/spark/logs:z
     entrypoint: [/docker-entrypoint-initdb.d/spark-init.sh]
@@ -332,11 +341,15 @@ services:
       SPARK_INSTALL_PYTHON_PACKAGES: ' delta-spark==4.1.0'
       SPARK_DEFAULTS_CONF_spark_jars: /opt/spark/jars/iceberg-spark-runtime-4.1_2.13-1.11.0.jar
       MAVEN_DOWNLOAD_REPO: nexus
+      MAVEN_DOWNLOAD_SSL_VERIFY: 'false'
       MAVEN_DOWNLOAD_REPO_NEXUS: http://nexus:8081/repository/maven-public
       MAVEN_DOWNLOAD_REPO_NEXUS_USER: admin
       MAVEN_DOWNLOAD_REPO_NEXUS_PASSWORD: ${PLATYS_NEXUS_ADMIN_PASSWORD:-abc123!abc123!}
       PIP_INDEX_URL: http://nexus:8081/repository/pypi-proxy/simple/
       PIP_TRUSTED_HOST: nexus
+      # consumed by spark-init.sh to generate /opt/spark/conf/ivy-settings.xml
+      NEXUS_HOST: nexus
+      NEXUS_URL: http://nexus:8081
       SPARK_DEFAULTS_CONF_spark_jars_ivySettings: /opt/spark/conf/ivy-settings.xml
       SPARK_DEFAULTS_CONF_spark_jars_ivy: /opt/ivy-cache
     volumes:
@@ -345,7 +358,6 @@ services:
       - ./conf/spark/hive-site.xml:/opt/spark/conf/hive-site.xml:z
       - ./conf/spark/spark-defaults.conf:/opt/spark/conf/spark-defaults.conf:z
       - ./init/spark:/docker-entrypoint-initdb.d:z
-      - ./conf/spark/ivy-settings.xml:/opt/spark/conf/ivy-settings.xml:z
       - ./scripts/docker/maven-download.sh:/maven-download.sh:z
       - ./container-volume/spark/logs/:/var/log/spark/logs:z
     entrypoint: [/docker-entrypoint-initdb.d/spark-init.sh]
@@ -413,11 +425,15 @@ services:
       SPARK_INSTALL_PYTHON_PACKAGES: ' delta-spark==4.1.0'
       SPARK_DEFAULTS_CONF_spark_jars: /opt/spark/jars/iceberg-spark-runtime-4.1_2.13-1.11.0.jar
       MAVEN_DOWNLOAD_REPO: nexus
+      MAVEN_DOWNLOAD_SSL_VERIFY: 'false'
       MAVEN_DOWNLOAD_REPO_NEXUS: http://nexus:8081/repository/maven-public
       MAVEN_DOWNLOAD_REPO_NEXUS_USER: admin
       MAVEN_DOWNLOAD_REPO_NEXUS_PASSWORD: ${PLATYS_NEXUS_ADMIN_PASSWORD:-abc123!abc123!}
       PIP_INDEX_URL: http://nexus:8081/repository/pypi-proxy/simple/
       PIP_TRUSTED_HOST: nexus
+      # consumed by spark-init.sh to generate /opt/spark/conf/ivy-settings.xml
+      NEXUS_HOST: nexus
+      NEXUS_URL: http://nexus:8081
       SPARK_DEFAULTS_CONF_spark_jars_ivySettings: /opt/spark/conf/ivy-settings.xml
       SPARK_DEFAULTS_CONF_spark_jars_ivy: /opt/ivy-cache
     volumes:
@@ -426,7 +442,6 @@ services:
       - ./conf/spark/hive-site.xml:/opt/spark/conf.default/hive-site.xml:z
       - ./conf/spark/spark-defaults.conf:/opt/spark/conf.default/spark-defaults.conf:z
       - ./init/spark:/docker-entrypoint-initdb.d:z
-      - ./conf/spark/ivy-settings.xml:/opt/spark/conf/ivy-settings.xml:z
       - ./scripts/docker/maven-download.sh:/maven-download.sh:z
       - ./container-volume/spark/logs/:/var/log/spark/logs:z
       - ./scripts/docker/wait-for-it.sh:/usr/src/app/wait-for-it.sh:z
@@ -497,11 +512,15 @@ services:
       SPARK_INSTALL_PYTHON_PACKAGES: ' delta-spark==4.1.0'
       SPARK_DEFAULTS_CONF_spark_jars: /opt/spark/jars/iceberg-spark-runtime-4.1_2.13-1.11.0.jar
       MAVEN_DOWNLOAD_REPO: nexus
+      MAVEN_DOWNLOAD_SSL_VERIFY: 'false'
       MAVEN_DOWNLOAD_REPO_NEXUS: http://nexus:8081/repository/maven-public
       MAVEN_DOWNLOAD_REPO_NEXUS_USER: admin
       MAVEN_DOWNLOAD_REPO_NEXUS_PASSWORD: ${PLATYS_NEXUS_ADMIN_PASSWORD:-abc123!abc123!}
       PIP_INDEX_URL: http://nexus:8081/repository/pypi-proxy/simple/
       PIP_TRUSTED_HOST: nexus
+      # consumed by spark-init.sh to generate /opt/spark/conf/ivy-settings.xml
+      NEXUS_HOST: nexus
+      NEXUS_URL: http://nexus:8081
       SPARK_DEFAULTS_CONF_spark_jars_ivySettings: /opt/spark/conf/ivy-settings.xml
       SPARK_DEFAULTS_CONF_spark_jars_ivy: /opt/ivy-cache
     volumes:
@@ -510,7 +529,6 @@ services:
       - ./conf/spark/hive-site.xml:/opt/spark/conf.default/hive-site.xml:z
       - ./conf/spark/spark-defaults.conf:/opt/spark/conf.default/spark-defaults.conf:z
       - ./init/spark:/docker-entrypoint-initdb.d:z
-      - ./conf/spark/ivy-settings.xml:/opt/spark/conf/ivy-settings.xml:z
       # we override the run.sh script to start thriftserver instead of master/worker
       # - ./scripts/spark/run-thriftserver.sh:/opt/bitnami/scripts/spark/run.sh
       - ./scripts/docker/maven-download.sh:/maven-download.sh:z
@@ -872,6 +890,12 @@ services:
       - ./conf/airflow/statsd/statsd.yaml:/home/statsd-mapping-configs.yaml:z
     entrypoint: [/bin/sh, -c, --]
     command: [statsd_exporter --statsd.listen-udp=:9125 --web.listen-address=:9102 --log.level debug --statsd.mapping-config=/home/statsd-mapping-configs.yaml]
+    healthcheck:
+      test: [CMD-SHELL, wget -Y off -q -O /dev/null http://localhost:9102/metrics || exit 1]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
     restart: unless-stopped
   airflow-init:
     image: docker.io/apache/airflow:3.1.6-python3.10
@@ -1038,12 +1062,14 @@ services:
       JUPYTER_TOKEN: ${PLATYS_JUPYTER_TOKEN:-abc123!}
       DOCKER_STACKS_JUPYTER_CMD: lab
       MAVEN_DOWNLOAD_REPO: nexus
+      MAVEN_DOWNLOAD_SSL_VERIFY: 'false'
       MAVEN_DOWNLOAD_REPO_NEXUS: http://nexus:8081/repository/maven-public
       MAVEN_DOWNLOAD_REPO_NEXUS_USER: admin
       MAVEN_DOWNLOAD_REPO_NEXUS_PASSWORD: ${PLATYS_NEXUS_ADMIN_PASSWORD:-abc123!abc123!}
       MAVEN_DOWNLOAD_JARS: software.amazon.awssdk:bundle:2.35.4,org.apache.hadoop:hadoop-aws:3.4.2
       # remove some JARS if they are conflicting with the ones installed above
       REMOVE_JARS: guava-14.0.1.jar
+      CONDA_SSL_VERIFY: 'false'
       # for awscli & s3cmd
       AWS_ACCESS_KEY_ID: ${PLATYS_AWS_ACCESS_KEY:-admin}
       AWS_SECRET_ACCESS_KEY: ${PLATYS_AWS_SECRET_ACCESS_KEY:-${PLATYS_AWS_SECRET_ACCESS_KEY:-abc123abc123!}}
@@ -1070,8 +1096,12 @@ services:
         conda create -y --name py310 python=3.10.12
         source /opt/conda/etc/profile.d/conda.sh
         conda activate py310
+        # Trust pypi.org to avoid SSL Error in pip install
+        pip config set global.trusted-host "nexus pypi.org files.pythonhosted.org pypi.python.org"        
         NEXUS_PASS=$$(python3 -c "import urllib.parse, os; print(urllib.parse.quote(os.environ.get('MAVEN_DOWNLOAD_REPO_NEXUS_PASSWORD', 'abc123!abc123!')))")
-        NEXUS_INDEX_URL="http://admin:$${NEXUS_PASS}@nexus:8081/repository/pypi-proxy/simple/"
+        export PIP_INDEX_URL="http://admin:$${NEXUS_PASS}@nexus:8081/repository/pypi-proxy/simple/"
+        export PIP_TRUSTED_HOST="nexus"
+        pip config set global.trusted-host "nexus"        
         pip install ipykernel
         python -m ipykernel install --user --name py310 --display-name "Python 3.10.12 (ipykernel)"
         conda run -n py310 pip install pyspark==4.1.1 numpy graphframes-py typing_extensions jupysql "zstandard>=0.25.0" pandas arrow pyarrow grpcio-status boto3
@@ -1092,10 +1122,10 @@ services:
       com.platys.name: superset
       com.platys.description: modern data exploration and visualization platform
       com.platys.webui.title: Superset UI
-      com.platys.webui.url: http://dataplatform:28151
+      com.platys.webui.url: http://dataplatform:28463
       com.platys.password.envvars: PLATYS_SUPERSET_ADMIN_PASSWORD
     ports:
-      - 28151:8088
+      - 28463:8088
     user: root
     depends_on:
       superset-init:
@@ -1135,6 +1165,10 @@ services:
       - ENABLE_PLAYWRIGHT=false
       - PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
       - BUILD_SUPERSET_FRONTEND_IN_DOCKER=true
+      - PIP_INDEX_URL=http://nexus:8081/repository/pypi-proxy/simple/
+      - PIP_TRUSTED_HOST=nexus
+      - UV_INDEX_URL=http://nexus:8081/repository/pypi-proxy/simple/
+      - UV_NATIVE_TLS=true
     volumes:
       - ./data-transfer:/data-transfer:z
       - ./conf/superset:/app/docker:z
@@ -1142,6 +1176,8 @@ services:
       - /bin/bash
       - -c
       - |
+        # Trust pypi.org to avoid SSL Error in pip install
+        uv pip config set global.trusted-host "nexus pypi.org files.pythonhosted.org pypi.python.org"
         uv pip install psycopg2-binary
         uv pip install apache-superset[trino]
         /app/docker/docker-bootstrap.sh app-gunicorn
@@ -1199,6 +1235,10 @@ services:
       - ENABLE_PLAYWRIGHT=false
       - PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
       - BUILD_SUPERSET_FRONTEND_IN_DOCKER=true
+      - PIP_INDEX_URL=http://nexus:8081/repository/pypi-proxy/simple/
+      - PIP_TRUSTED_HOST=nexus
+      - UV_INDEX_URL=http://nexus:8081/repository/pypi-proxy/simple/
+      - UV_NATIVE_TLS=true
     volumes:
       - ./data-transfer:/data-transfer:z
       - ./conf/superset:/app/docker:z
@@ -1252,6 +1292,10 @@ services:
       - ENABLE_PLAYWRIGHT=false
       - PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
       - BUILD_SUPERSET_FRONTEND_IN_DOCKER=true
+      - PIP_INDEX_URL=http://nexus:8081/repository/pypi-proxy/simple/
+      - PIP_TRUSTED_HOST=nexus
+      - UV_INDEX_URL=http://nexus:8081/repository/pypi-proxy/simple/
+      - UV_NATIVE_TLS=true
     volumes:
       - ./data-transfer:/data-transfer:z
       - ./conf/superset:/app/docker:z
@@ -1259,6 +1303,8 @@ services:
       - /bin/bash
       - -c
       - |
+        # Trust pypi.org to avoid SSL Error in pip install
+        uv pip config set global.trusted-host "nexus pypi.org files.pythonhosted.org pypi.python.org"      
         uv pip install psycopg2-binary
         uv pip install apache-superset[trino]
         /app/docker/docker-bootstrap.sh worker
@@ -1311,6 +1357,10 @@ services:
       - ENABLE_PLAYWRIGHT=false
       - PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
       - BUILD_SUPERSET_FRONTEND_IN_DOCKER=true
+      - PIP_INDEX_URL=http://nexus:8081/repository/pypi-proxy/simple/
+      - PIP_TRUSTED_HOST=nexus
+      - UV_INDEX_URL=http://nexus:8081/repository/pypi-proxy/simple/
+      - UV_NATIVE_TLS=true
     volumes:
       - ./data-transfer:/data-transfer:z
       - ./conf/superset:/app/docker:z
@@ -1318,6 +1368,8 @@ services:
       - /bin/bash
       - -c
       - |
+        # Trust pypi.org to avoid SSL Error in pip install
+        uv pip config set global.trusted-host "nexus pypi.org files.pythonhosted.org pypi.python.org"
         uv pip install psycopg2-binary
         uv pip install apache-superset[trino]
         /app/docker/docker-bootstrap.sh beat
@@ -1404,11 +1456,11 @@ services:
       com.platys.name: cubejs
       com.platys.description: Headless Business Intelligence platform
       com.platys.webui.title: Cube.js Playground
-      com.platys.webui.url: http://dataplatform:4003
+      com.platys.webui.url: http://dataplatform:28464
       com.platys.restapi.title: Cube.js API
-      com.platys.restapi.url: http://dataplatform:4003/cubejs-api/v1
+      com.platys.restapi.url: http://dataplatform:28464/cubejs-api/v1
     ports:
-      - 4003:4000
+      - 28464:4000
     environment:
       CUBEJS_DEV_MODE: 'true'
       # Data sources defined here can be used to decorate CUBEJS_DB_* environment variables. 
@@ -1720,7 +1772,7 @@ services:
     init: true
     # restart: "no"  # do be podman compatible, it has to be "no" which did not work, but no is default    
   polaris-catalog-setup:
-    image: docker.io/alpine/curl
+    image: docker.io/badouralix/curl-jq
     container_name: polaris-catalog-setup
     hostname: polaris-catalog-setup
     depends_on:
@@ -1828,7 +1880,7 @@ services:
         touch /tmp/polaris-setup-done
         tail -f /dev/null
     init: true
-    restart: no
+    # restart:  no
     healthcheck:
       interval: 1s
       timeout: 10s
@@ -1867,12 +1919,12 @@ services:
       com.platys.name: nimtable
       com.platys.description: Control Plane for Iceberg
       com.platys.webui.title: Nimtable Web UI
-      com.platys.webui.url: http://dataplatform:28463
+      com.platys.webui.url: http://dataplatform:28511
       com.platys.password.envvars: PLATYS_NIMTABLE_ADMIN_PASSWORD
     depends_on:
       - nimtable
     ports:
-      - 28463:3000
+      - 28511:3000
     environment:
       - JAVA_API_URL=http://nimtable:8182
       - DATABASE_URL=postgresql://nimtable:abc123!@postgresql:5432/nimtabledb
@@ -1893,7 +1945,7 @@ services:
       postgresql:
         condition: service_healthy
     ports:
-      - 28464:8182
+      - 28512:8182
     environment:
       - JAVA_OPTS=-Xmx32g -Xms512m
       - AWS_ACCESS_KEY_ID=${PLATYS_AWS_ACCESS_KEY:-admin}
@@ -1940,9 +1992,9 @@ services:
       com.platys.name: dockhand
       com.platys.description: Docker container management UI
       com.platys.webui.title: Dockhand UI
-      com.platys.webui.url: http://dataplatform:28498
+      com.platys.webui.url: http://dataplatform:28349
     ports:
-      - 28498:3000
+      - 28349:3000
     environment:
       DISABLE_WHATS_NEW: true
       EXPORT_METRICS: false
@@ -1969,6 +2021,7 @@ services:
     volumes:
       - ./data-transfer:/data-transfer:z
       - ./init/nexus:/nexus-init:ro
+      - ./security/nexus/certs:/nexus-security/certs:ro
     entrypoint: [/bin/sh, /nexus-init/entrypoint.sh]
     restart: unless-stopped
     healthcheck:

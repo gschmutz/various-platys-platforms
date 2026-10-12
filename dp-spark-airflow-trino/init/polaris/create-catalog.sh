@@ -19,16 +19,15 @@
 
 set -e
 
-apk add --no-cache jq
-
 realm=${1:-"POLARIS"}
 
 TOKEN=${2:-""}
 
-BASEDIR=$(dirname $0)
+BASEDIR=$(dirname "$0")
 
 if [ -z "$TOKEN" ]; then
-  source $BASEDIR/obtain-token.sh
+  # shellcheck source=/dev/null
+  . "$BASEDIR/obtain-token.sh"
 fi
 
 echo

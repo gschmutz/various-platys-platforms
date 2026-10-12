@@ -75,8 +75,8 @@ Container Port(s) | Internal Port(s)           | Service (alternatives) |
 2482 | 2480 | arcadedb (mongodb port) |
 2483 | 27017 | arcadedb |
 3000 | 3000 | grafana |
-3001 | 3000 | wetty (dc1) |
-3002 | 3000 | wetty (dc2 |
+3001 | 3000 | wetty (env1) |
+3002 | 3000 | wetty (env2 |
 3003 | 3003 | opik-backend |
 3004 | 3000 | forgejo (web UI) |
 3005 | 3000 | marquez-web |
@@ -103,7 +103,6 @@ Container Port(s) | Internal Port(s)           | Service (alternatives) |
 4000 | 4000 | graphql-mesh |
 4001 | 4000 | supabase-analytics |
 4002 | 4000 | litellm |
-4003 | 4000 | cubejs |
 4004 | 4004 | log4brains |
 4040 | 4040 | spark-master (ui) |
 4041 | 4041 | spark-master (ui) |
@@ -326,10 +325,10 @@ Container Port(s) | Internal Port(s)           | Service (alternatives) |
 9164 | 9160 | cassandra-5 |
 9083 | 9083 | hive-metastore |
 9084 | 9084 | hive-metastore (iceberg-rest) |
-9021 | 9021 | control-center (dc1) |
-9022 | 9021 | control-center (dc2) |
-9025 | 9021 | control-center-ng (dc1) |
-9026 | 9021 | control-center-ng (dc2) |
+9021 | 9021 | control-center (env1) |
+9022 | 9021 | control-center (env2) |
+9025 | 9021 | control-center-ng (env1) |
+9026 | 9021 | control-center-ng (env2) |
 9090 | 9090 | prometheus-1 |
 9091 | 9091 | prometheus-pushgateway |
 9092 | 9092 | kafka-1     |
@@ -527,11 +526,11 @@ Container Port(s) | Internal Port(s)           | Service (alternatives) |
 28101 | 9010 | zoonavigator-api     |
 28102 | 8000 | schema-registry-ui   |
 28103 | 8000 | kafka-connect-ui     |
-28104 | 9000 | cmak (dc1) |
-28105 | 9000 | cmak (dc2) |
+28104 | 9000 | cmak (env1) |
+28105 | 9000 | cmak (env2) |
 28106 | 8080 | kadmin     |
-28107 | 8080 | akhq (dc1)    |
-28108 | 8080 | akhq (dc2)     |
+28107 |  |   |
+28108 |  |   |
 28110 | 9020 | kafdrop     |
 28111 | 28111 | spark-worker-1 |
 28112 | 28112 | spark-worker-2 |
@@ -571,8 +570,8 @@ Container Port(s) | Internal Port(s)           | Service (alternatives) |
 28146 | 9092 | datahub-mce-consumer |
 28150 | 8888 | druid-router |
 28150 | 8888 | druid-sandbox |
-28151 | 8088 | superset |
-28152 | 8080 | superset |
+28151 |  |  |
+28152 |  |  |
 28154 | 8080 | penthao |
 28155 | 8080 | hawtio |
 28156 | 8080 | swagger-editor |
@@ -718,8 +717,8 @@ Container Port(s) | Internal Port(s)           | Service (alternatives) |
 28317 | 25 | maildev |
 28318 | 8025 | mailpit |
 28319 | 25 | mailpit |
-28320 | 25 | akhq (dc1) |
-28321 | 25 | akhq (dc1) |
+28320 | 25 | akhq (env1) |
+28321 | 25 | akhq (env1) |
 28322 | 80 | asyncapi-studio |
 28323 | 80 | taiga-front |
 28324 | 80 | taiga-gateway |
@@ -743,11 +742,11 @@ Container Port(s) | Internal Port(s)           | Service (alternatives) |
 28342 | 9091 | milvus (metric) |
 28343 | 3000 | attu |
 28344 | 3001 | anything-llm |
-28345 | 80 | streamlit-1 |
-28346 | 80 | streamlit-2 |
-28347 | 80 | streamlit-3 |
-28348 | 80 | streamlit-4 |
-28349 | 80 | streamlit-5 |
+28345 | 8080 | akhq (env1)    |
+28346 | 8080 | akhq (env2)     |
+28347
+28348
+28349 | 3000 | dockhand |
 28350 | 3001 | vector-admin |
 28351 | 8000 | single-store |
 28352 | 9000 | single-store |
@@ -861,8 +860,8 @@ Container Port(s) | Internal Port(s)           | Service (alternatives) |
 28460 | 8181 | seaweedfs-1 |
 28461 | 5050 | allure |
 28462 | 5252 | allure-ui |
-28463 | 3000 | nimtable-web |
-28464 | 8182 | nimtable |
+28463 | 8088 | superset  |
+28464 | 4000 | cubejs |
 28465 | 8080 | ehrbase |
 28466 | 9000 | openehr-tool |
 28467 | 8182 | janusgraph |
@@ -896,8 +895,17 @@ Container Port(s) | Internal Port(s)           | Service (alternatives) |
 28495 | 3002 | cosmo-router |
 28496 | 8000 | dbt-workbench (backend API) |
 28497 | 3000 | dbt-workbench (frontend UI) |
-28498 | 3000 | dockhand |
+28498 |  |  |
 28499 | 8888 | klag |
+28500 |      |      |
+28511 | 3000 | nimtable-web |
+28512 | 8182 | nimtable |
+28513 |      | |
+28630 | 80 | streamlit-1 |
+28631 | 80 | streamlit-2 |
+28632 | 80 | streamlit-3 |
+28633 | 80 | streamlit-4 |
+28634 | 80 | streamlit-5 |
 
 ## Ports > 28700
 

@@ -76,6 +76,9 @@ services:
       MAVEN_DOWNLOAD_REPO_NEXUS_PASSWORD: ${PLATYS_NEXUS_ADMIN_PASSWORD:-abc123!abc123!}
       PIP_INDEX_URL: http://${PUBLIC_IP}:28426/repository/pypi-proxy/simple/
       PIP_TRUSTED_HOST: ${PUBLIC_IP}
+      # consumed by spark-init.sh to generate /opt/spark/conf/ivy-settings.xml
+      NEXUS_HOST: ${PUBLIC_IP}
+      NEXUS_URL: http://${PUBLIC_IP}:28426
       SPARK_DEFAULTS_CONF_spark_jars_ivySettings: /opt/spark/conf/ivy-settings.xml
       SPARK_DEFAULTS_CONF_spark_jars_ivy: /opt/ivy-cache
     volumes:
@@ -84,7 +87,6 @@ services:
       - ./conf/spark/hive-site.xml:/opt/spark/conf.default/hive-site.xml:z
       - ./conf/spark/spark-defaults.conf:/opt/spark/conf.default/spark-defaults.conf:z
       - ./init/spark:/docker-entrypoint-initdb.d:z
-      - ./conf/spark/ivy-settings.xml:/opt/spark/conf/ivy-settings.xml:z
       - ./scripts/docker/maven-download.sh:/maven-download.sh:z
       - ./scripts/spark/pyspark:/opt/spark/bin/pyspark:z
       - ./container-volume/spark/logs/:/var/log/spark/logs:z
@@ -166,6 +168,9 @@ services:
       MAVEN_DOWNLOAD_REPO_NEXUS_PASSWORD: ${PLATYS_NEXUS_ADMIN_PASSWORD:-abc123!abc123!}
       PIP_INDEX_URL: http://${PUBLIC_IP}:28426/repository/pypi-proxy/simple/
       PIP_TRUSTED_HOST: ${PUBLIC_IP}
+      # consumed by spark-init.sh to generate /opt/spark/conf/ivy-settings.xml
+      NEXUS_HOST: ${PUBLIC_IP}
+      NEXUS_URL: http://${PUBLIC_IP}:28426
       SPARK_DEFAULTS_CONF_spark_jars_ivySettings: /opt/spark/conf/ivy-settings.xml
       SPARK_DEFAULTS_CONF_spark_jars_ivy: /opt/ivy-cache
     volumes:
@@ -173,7 +178,6 @@ services:
       - ./conf/spark/hive-site.xml:/opt/spark/conf.default/hive-site.xml:z
       - ./conf/spark/spark-defaults.conf:/opt/spark/conf.default/spark-defaults.conf:z
       - ./init/spark:/docker-entrypoint-initdb.d:z
-      - ./conf/spark/ivy-settings.xml:/opt/spark/conf/ivy-settings.xml:z
       - ./scripts/docker/maven-download.sh:/maven-download.sh:z
       - ./container-volume/spark/logs/:/var/log/spark/logs:z
     entrypoint: [/docker-entrypoint-initdb.d/spark-init.sh]
@@ -251,6 +255,9 @@ services:
       MAVEN_DOWNLOAD_REPO_NEXUS_PASSWORD: ${PLATYS_NEXUS_ADMIN_PASSWORD:-abc123!abc123!}
       PIP_INDEX_URL: http://${PUBLIC_IP}:28426/repository/pypi-proxy/simple/
       PIP_TRUSTED_HOST: ${PUBLIC_IP}
+      # consumed by spark-init.sh to generate /opt/spark/conf/ivy-settings.xml
+      NEXUS_HOST: ${PUBLIC_IP}
+      NEXUS_URL: http://${PUBLIC_IP}:28426
       SPARK_DEFAULTS_CONF_spark_jars_ivySettings: /opt/spark/conf/ivy-settings.xml
       SPARK_DEFAULTS_CONF_spark_jars_ivy: /opt/ivy-cache
     volumes:
@@ -258,7 +265,6 @@ services:
       - ./conf/spark/hive-site.xml:/opt/spark/conf.default/hive-site.xml:z
       - ./conf/spark/spark-defaults.conf:/opt/spark/conf.default/spark-defaults.conf:z
       - ./init/spark:/docker-entrypoint-initdb.d:z
-      - ./conf/spark/ivy-settings.xml:/opt/spark/conf/ivy-settings.xml:z
       - ./scripts/docker/maven-download.sh:/maven-download.sh:z
       - ./container-volume/spark/logs/:/var/log/spark/logs:z
     entrypoint: [/docker-entrypoint-initdb.d/spark-init.sh]
@@ -338,6 +344,9 @@ services:
       MAVEN_DOWNLOAD_REPO_NEXUS_PASSWORD: ${PLATYS_NEXUS_ADMIN_PASSWORD:-abc123!abc123!}
       PIP_INDEX_URL: http://${PUBLIC_IP}:28426/repository/pypi-proxy/simple/
       PIP_TRUSTED_HOST: ${PUBLIC_IP}
+      # consumed by spark-init.sh to generate /opt/spark/conf/ivy-settings.xml
+      NEXUS_HOST: ${PUBLIC_IP}
+      NEXUS_URL: http://${PUBLIC_IP}:28426
       SPARK_DEFAULTS_CONF_spark_jars_ivySettings: /opt/spark/conf/ivy-settings.xml
       SPARK_DEFAULTS_CONF_spark_jars_ivy: /opt/ivy-cache
     volumes:
@@ -346,7 +355,6 @@ services:
       - ./conf/spark/hive-site.xml:/opt/spark/conf/hive-site.xml:z
       - ./conf/spark/spark-defaults.conf:/opt/spark/conf/spark-defaults.conf:z
       - ./init/spark:/docker-entrypoint-initdb.d:z
-      - ./conf/spark/ivy-settings.xml:/opt/spark/conf/ivy-settings.xml:z
       - ./scripts/docker/maven-download.sh:/maven-download.sh:z
       - ./container-volume/spark/logs/:/var/log/spark/logs:z
     entrypoint: [/docker-entrypoint-initdb.d/spark-init.sh]
@@ -420,6 +428,9 @@ services:
       MAVEN_DOWNLOAD_REPO_NEXUS_PASSWORD: ${PLATYS_NEXUS_ADMIN_PASSWORD:-abc123!abc123!}
       PIP_INDEX_URL: http://${PUBLIC_IP}:28426/repository/pypi-proxy/simple/
       PIP_TRUSTED_HOST: ${PUBLIC_IP}
+      # consumed by spark-init.sh to generate /opt/spark/conf/ivy-settings.xml
+      NEXUS_HOST: ${PUBLIC_IP}
+      NEXUS_URL: http://${PUBLIC_IP}:28426
       SPARK_DEFAULTS_CONF_spark_jars_ivySettings: /opt/spark/conf/ivy-settings.xml
       SPARK_DEFAULTS_CONF_spark_jars_ivy: /opt/ivy-cache
     volumes:
@@ -428,7 +439,6 @@ services:
       - ./conf/spark/hive-site.xml:/opt/spark/conf.default/hive-site.xml:z
       - ./conf/spark/spark-defaults.conf:/opt/spark/conf.default/spark-defaults.conf:z
       - ./init/spark:/docker-entrypoint-initdb.d:z
-      - ./conf/spark/ivy-settings.xml:/opt/spark/conf/ivy-settings.xml:z
       - ./scripts/docker/maven-download.sh:/maven-download.sh:z
       - ./container-volume/spark/logs/:/var/log/spark/logs:z
       - ./scripts/docker/wait-for-it.sh:/usr/src/app/wait-for-it.sh:z
@@ -505,6 +515,9 @@ services:
       MAVEN_DOWNLOAD_REPO_NEXUS_PASSWORD: ${PLATYS_NEXUS_ADMIN_PASSWORD:-abc123!abc123!}
       PIP_INDEX_URL: http://${PUBLIC_IP}:28426/repository/pypi-proxy/simple/
       PIP_TRUSTED_HOST: ${PUBLIC_IP}
+      # consumed by spark-init.sh to generate /opt/spark/conf/ivy-settings.xml
+      NEXUS_HOST: ${PUBLIC_IP}
+      NEXUS_URL: http://${PUBLIC_IP}:28426
       SPARK_DEFAULTS_CONF_spark_jars_ivySettings: /opt/spark/conf/ivy-settings.xml
       SPARK_DEFAULTS_CONF_spark_jars_ivy: /opt/ivy-cache
     volumes:
@@ -513,7 +526,6 @@ services:
       - ./conf/spark/hive-site.xml:/opt/spark/conf.default/hive-site.xml:z
       - ./conf/spark/spark-defaults.conf:/opt/spark/conf.default/spark-defaults.conf:z
       - ./init/spark:/docker-entrypoint-initdb.d:z
-      - ./conf/spark/ivy-settings.xml:/opt/spark/conf/ivy-settings.xml:z
       # we override the run.sh script to start thriftserver instead of master/worker
       # - ./scripts/spark/run-thriftserver.sh:/opt/bitnami/scripts/spark/run.sh
       - ./scripts/docker/maven-download.sh:/maven-download.sh:z
