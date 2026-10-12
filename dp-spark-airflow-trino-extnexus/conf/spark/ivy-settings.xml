@@ -1,11 +1,11 @@
 <ivysettings>
   <settings defaultResolver="nexus"/>
-  <credentials host="nexus" realm="Sonatype Nexus Repository Manager"
+  <credentials host="10.129.9.120" realm="Sonatype Nexus Repository Manager"
                username="admin" passwd="abc123!abc123!"/>
   <resolvers>
     <ibiblio name="nexus"
              m2compatible="true"
-             root="http://nexus:8081/repository/maven-public/"/>
+             root="http://10.129.9.120:28426/repository/maven-public/"/>
   </resolvers>
   <modules>
     <module organisation="*" name="*" resolver="nexus"/>
