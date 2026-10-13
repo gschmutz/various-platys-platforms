@@ -431,7 +431,7 @@ services:
       - ./data-transfer:/data-transfer:z
     restart: unless-stopped
   datahub-mysql:
-    image: docker.io/mysql:9.4.9
+    image: docker.io/mysql:8.2
     hostname: datahub-mysql
     container_name: datahub-mysql
     labels:
@@ -481,7 +481,7 @@ services:
       test: [CMD, wget, --no-proxy, -q, -O, /dev/null, http://localhost:7474]
       timeout: 10s
   datahub-opensearch:
-    image: docker.io/opensearchproject/opensearch:2.19.0
+    image: docker.io/opensearchproject/opensearch:2.19.3
     hostname: datahub-opensearch
     container_name: datahub-opensearch
     labels:
@@ -582,6 +582,10 @@ services:
       - USE_CONFLUENT_SCHEMA_REGISTRY=true
       - ZDU_STAGE_10=true
       - ZDU_STAGE_20=true
+      - PIP_INDEX_URL=http://nexus:8081/repository/pypi-proxy/simple/
+      - PIP_TRUSTED_HOST=nexus
+      - UV_INDEX_URL=http://nexus:8081/repository/pypi-proxy/simple/
+      - UV_NATIVE_TLS=true
     volumes:
       - ./data-transfer:/data-transfer:z
     command: -u SystemUpdate
