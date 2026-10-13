@@ -427,6 +427,8 @@ services:
       - PIP_TRUSTED_HOST=nexus
       - UV_INDEX_URL=http://nexus:8081/repository/pypi-proxy/simple/
       - UV_NATIVE_TLS=true
+      - PYTHONHTTPSVERIFY=0
+      - CURL_CA_BUNDLE=""      
     volumes:
       - ./data-transfer:/data-transfer:z
     restart: unless-stopped
@@ -582,6 +584,8 @@ services:
       - USE_CONFLUENT_SCHEMA_REGISTRY=true
       - ZDU_STAGE_10=true
       - ZDU_STAGE_20=true
+      - PYTHONHTTPSVERIFY=0
+      - CURL_CA_BUNDLE=""      
     volumes:
       - ./data-transfer:/data-transfer:z
     command: -u SystemUpdate
@@ -595,6 +599,9 @@ services:
     depends_on:
       datahub-gms:
         condition: service_healthy
+    environment:
+      - PYTHONHTTPSVERIFY=0
+      - CURL_CA_BUNDLE=""
     volumes:
       - ./data-transfer:/data-transfer:z
       - ./init/datahub/sample-data/sample_recipe.yml:/sample_recipe.yml:ro
