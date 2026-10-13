@@ -427,13 +427,11 @@ services:
       - PIP_TRUSTED_HOST=nexus
       - UV_INDEX_URL=http://nexus:8081/repository/pypi-proxy/simple/
       - UV_NATIVE_TLS=true
-      - PYTHONHTTPSVERIFY=0
-      - CURL_CA_BUNDLE=""      
     volumes:
       - ./data-transfer:/data-transfer:z
     restart: unless-stopped
   datahub-mysql:
-    image: docker.io/mysql:8.2
+    image: docker.io/mysql:9.4.9
     hostname: datahub-mysql
     container_name: datahub-mysql
     labels:
@@ -469,14 +467,10 @@ services:
       - 17475:7474
       - 17688:7687
     environment:
-      - NEO4J_AUTH=neo4j/abc123!
+      - NEO4J_AUTH=neo4j/abc123abc123
       - NEO4J_dbms_default__database=graph.db
       - NEO4J_dbms_allow__upgrade=true
       - NEO4JLABS_PLUGINS=["apoc"]
-      #- HTTP_PROXY=http://PRXP01.admin.ch:8080
-      #- HPTTS_PROXY=http://PRXP01.admin.ch:8080
-      #- http_proxy=http://PRXP01.admin.ch:8080
-      #- https:proxy=http://PRXP01.admin.ch:8080
     volumes:
       - ./data-transfer:/data-transfer:z
     restart: unless-stopped
@@ -487,7 +481,7 @@ services:
       test: [CMD, wget, --no-proxy, -q, -O, /dev/null, http://localhost:7474]
       timeout: 10s
   datahub-opensearch:
-    image: docker.io/opensearchproject/opensearch:2.19.3
+    image: docker.io/opensearchproject/opensearch:2.19.0
     hostname: datahub-opensearch
     container_name: datahub-opensearch
     labels:
@@ -588,8 +582,6 @@ services:
       - USE_CONFLUENT_SCHEMA_REGISTRY=true
       - ZDU_STAGE_10=true
       - ZDU_STAGE_20=true
-      - PYTHONHTTPSVERIFY=0
-      - CURL_CA_BUNDLE=""      
     volumes:
       - ./data-transfer:/data-transfer:z
     command: -u SystemUpdate
@@ -603,9 +595,6 @@ services:
     depends_on:
       datahub-gms:
         condition: service_healthy
-    environment:
-      - PYTHONHTTPSVERIFY=0
-      - CURL_CA_BUNDLE=""
     volumes:
       - ./data-transfer:/data-transfer:z
       - ./init/datahub/sample-data/sample_recipe.yml:/sample_recipe.yml:ro
