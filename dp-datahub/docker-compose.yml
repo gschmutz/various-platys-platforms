@@ -259,7 +259,7 @@ services:
       start_period: 30s
   #  ================================== DataHub ========================================== #
   datahub-frontend:
-    image: docker.io/acryldata/datahub-frontend-react:v1.7.0
+    image: docker.io/acryldata/datahub-frontend-react:v1.7.0.1
     hostname: datahub-frontend
     container_name: datahub-frontend
     labels:
@@ -274,7 +274,7 @@ services:
     ports:
       - 28144:9002
     environment:
-      - DATAHUB_APP_VERSION=v1.7.0
+      - DATAHUB_APP_VERSION=v1.7.0.1
       - DATAHUB_BASE_PATH=/
       - DATAHUB_GMS_BASE_PATH=/
       - DATAHUB_GMS_HOST=datahub-gms
@@ -299,7 +299,7 @@ services:
       - ./data-transfer:/data-transfer:z
     restart: unless-stopped
   datahub-gms:
-    image: docker.io/acryldata/datahub-gms:v1.7.0
+    image: docker.io/acryldata/datahub-gms:v1.7.0.1
     hostname: datahub-gms
     container_name: datahub-gms
     labels:
@@ -388,6 +388,10 @@ services:
       - ELASTICSEARCH_SEMANTIC_SEARCH_ENABLED=true
       - LOCAL_EMBEDDING_ENDPOINT=http://ollama:11434/v1/embeddings
       - LOCAL_EMBEDDING_MODEL=nomic-embed-text
+      - ENTITY_GRAPH_CACHE_ENABLED=false
+      - ENTITY_GRAPH_CACHE_CONFIG_FILE_ENABLED=false
+      - ENTITY_GRAPH_CACHE_CONFIG_FILE=
+      - ENTITY_GRAPH_CACHE_CONFIG_JSON=
     volumes:
       - ./data-transfer:/data-transfer:z
     restart: unless-stopped
@@ -398,7 +402,7 @@ services:
       retries: 5
       timeout: 5s
   datahub-actions:
-    image: docker.io/acryldata/datahub-actions:v1.7.0
+    image: docker.io/acryldata/datahub-actions:v1.7.0.1
     hostname: datahub-actions
     container_name: datahub-actions
     labels:
@@ -520,7 +524,7 @@ services:
       test: curl --noproxy '*' -sS --fail "http://localhost:9200/_cluster/health?wait_for_status=yellow&timeout=0s"
       timeout: 10s
   datahub-upgrade:
-    image: docker.io/acryldata/datahub-upgrade:v1.7.0
+    image: docker.io/acryldata/datahub-upgrade:v1.7.0.1
     hostname: datahub-upgrade
     container_name: datahub-upgrade
     labels:
