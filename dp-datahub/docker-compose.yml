@@ -383,14 +383,14 @@ services:
       - USAGE_AGGREGATION_INCLUDE_AGENT_NAME=true
       - ZDU_STAGE_10=true
       - ZDU_STAGE_20=true
-      - UI_INGESTION_DEFAULT_CLI_VERSION=1.7.0.1
+      - UI_INGESTION_DEFAULT_CLI_VERSION=1.7.0.14
       - EMBEDDING_PROVIDER_TYPE=local
       - ELASTICSEARCH_SEMANTIC_SEARCH_ENABLED=true
       - LOCAL_EMBEDDING_ENDPOINT=http://ollama:11434/v1/embeddings
       - LOCAL_EMBEDDING_MODEL=nomic-embed-text
       - ENTITY_GRAPH_CACHE_ENABLED=false
       - ENTITY_GRAPH_CACHE_CONFIG_FILE_ENABLED=false
-      - ENTITY_GRAPH_CACHE_CONFIG_FILE=
+      - ENTITY_GRAPH_CACHE_CONFIG_FILE=entity-graph-cache.yaml
       - ENTITY_GRAPH_CACHE_CONFIG_JSON=
     volumes:
       - ./data-transfer:/data-transfer:z
