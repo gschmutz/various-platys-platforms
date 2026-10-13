@@ -423,6 +423,10 @@ services:
       - METADATA_AUDIT_EVENT_NAME=MetadataAuditEvent_v4
       - METADATA_CHANGE_LOG_VERSIONED_TOPIC_NAME=MetadataChangeLog_Versioned_v1
       - SCHEMA_REGISTRY_URL=http://schema-registry-1:8081
+      - PIP_INDEX_URL=http://nexus:8081/repository/pypi-proxy/simple/
+      - PIP_TRUSTED_HOST=nexus
+      - UV_INDEX_URL=http://nexus:8081/repository/pypi-proxy/simple/
+      - UV_NATIVE_TLS=true
     volumes:
       - ./data-transfer:/data-transfer:z
     restart: unless-stopped

@@ -1150,7 +1150,7 @@ services:
       - PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
       - BUILD_SUPERSET_FRONTEND_IN_DOCKER=true
       - PIP_INDEX_URL=http://${PUBLIC_IP}:28426/repository/pypi-proxy/simple/
-      - PIP_TRUSTED_HOST=nexus
+      - PIP_TRUSTED_HOST=${PUBLIC_IP}
       - UV_INDEX_URL=http://${PUBLIC_IP}:28426/repository/pypi-proxy/simple/
       - UV_NATIVE_TLS=true
     volumes:
@@ -1220,7 +1220,7 @@ services:
       - PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
       - BUILD_SUPERSET_FRONTEND_IN_DOCKER=true
       - PIP_INDEX_URL=http://${PUBLIC_IP}:28426/repository/pypi-proxy/simple/
-      - PIP_TRUSTED_HOST=nexus
+      - PIP_TRUSTED_HOST=${PUBLIC_IP}
       - UV_INDEX_URL=http://${PUBLIC_IP}:28426/repository/pypi-proxy/simple/
       - UV_NATIVE_TLS=true
     volumes:
@@ -1277,7 +1277,7 @@ services:
       - PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
       - BUILD_SUPERSET_FRONTEND_IN_DOCKER=true
       - PIP_INDEX_URL=http://${PUBLIC_IP}:28426/repository/pypi-proxy/simple/
-      - PIP_TRUSTED_HOST=nexus
+      - PIP_TRUSTED_HOST=${PUBLIC_IP}
       - UV_INDEX_URL=http://${PUBLIC_IP}:28426/repository/pypi-proxy/simple/
       - UV_NATIVE_TLS=true
     volumes:
@@ -1342,7 +1342,7 @@ services:
       - PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
       - BUILD_SUPERSET_FRONTEND_IN_DOCKER=true
       - PIP_INDEX_URL=http://${PUBLIC_IP}:28426/repository/pypi-proxy/simple/
-      - PIP_TRUSTED_HOST=nexus
+      - PIP_TRUSTED_HOST=${PUBLIC_IP}
       - UV_INDEX_URL=http://${PUBLIC_IP}:28426/repository/pypi-proxy/simple/
       - UV_NATIVE_TLS=true
     volumes:
