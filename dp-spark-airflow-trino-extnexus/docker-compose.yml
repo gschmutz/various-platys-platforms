@@ -42,7 +42,10 @@ services:
       SPARK_DEFAULTS_CONF_spark_executor_extraJavaOptions:
       SPARK_DEFAULTS_CONF_spark_cores_max: 2
       SPARK_DEFAULTS_CONF_spark_extraListeners: datahub.spark.DatahubSparkListener
+      SPARK_DEFAULTS_CONF_spark_datahub_emitter: rest
       SPARK_DEFAULTS_CONF_spark_datahub_rest_server: http://${DOCKER_HOST_IP}:28142
+      SPARK_DEFAULTS_CONF_spark_datahub_kafka.bootstrap: ${DOCKER_HOST_IP}:9092,${DOCKER_HOST_IP}:9093
+      SPARK_DEFAULTS_CONF_spark_datahub_kafka_schema__registry__url: http://${DOCKER_HOST_IP}:8081
       SPARK_DEFAULTS_CONF_spark_datahub_metadata_dataset_env: ${PLATYS_ENV}
       SPARK_DEFAULTS_CONF_spark_sql_hive_metastore_jars: builtin
       # SPARK_DEFAULTS_CONF_spark_sql_hive_metastore_version: 3.1.2    
@@ -137,7 +140,10 @@ services:
       SPARK_DEFAULTS_CONF_spark_executor_extraJavaOptions:
       SPARK_DEFAULTS_CONF_spark_cores_max: 2
       SPARK_DEFAULTS_CONF_spark_extraListeners: datahub.spark.DatahubSparkListener
+      SPARK_DEFAULTS_CONF_spark_datahub_emitter: rest
       SPARK_DEFAULTS_CONF_spark_datahub_rest_server: http://${DOCKER_HOST_IP}:28142
+      SPARK_DEFAULTS_CONF_spark_datahub_kafka.bootstrap: ${DOCKER_HOST_IP}:9092,${DOCKER_HOST_IP}:9093
+      SPARK_DEFAULTS_CONF_spark_datahub_kafka_schema__registry__url: http://${DOCKER_HOST_IP}:8081
       SPARK_DEFAULTS_CONF_spark_datahub_metadata_dataset_env: ${PLATYS_ENV}
       SPARK_DEFAULTS_CONF_spark_sql_hive_metastore_jars: builtin
       # SPARK_DEFAULTS_CONF_spark_sql_hive_metastore_version: 3.1.2    
@@ -227,7 +233,10 @@ services:
       SPARK_DEFAULTS_CONF_spark_executor_extraJavaOptions:
       SPARK_DEFAULTS_CONF_spark_cores_max: 2
       SPARK_DEFAULTS_CONF_spark_extraListeners: datahub.spark.DatahubSparkListener
+      SPARK_DEFAULTS_CONF_spark_datahub_emitter: rest
       SPARK_DEFAULTS_CONF_spark_datahub_rest_server: http://${DOCKER_HOST_IP}:28142
+      SPARK_DEFAULTS_CONF_spark_datahub_kafka.bootstrap: ${DOCKER_HOST_IP}:9092,${DOCKER_HOST_IP}:9093
+      SPARK_DEFAULTS_CONF_spark_datahub_kafka_schema__registry__url: http://${DOCKER_HOST_IP}:8081
       SPARK_DEFAULTS_CONF_spark_datahub_metadata_dataset_env: ${PLATYS_ENV}
       SPARK_DEFAULTS_CONF_spark_sql_hive_metastore_jars: builtin
       # SPARK_DEFAULTS_CONF_spark_sql_hive_metastore_version: 3.1.2    
@@ -319,7 +328,10 @@ services:
       SPARK_DEFAULTS_CONF_spark_executor_extraJavaOptions:
       SPARK_DEFAULTS_CONF_spark_cores_max: 2
       SPARK_DEFAULTS_CONF_spark_extraListeners: datahub.spark.DatahubSparkListener
+      SPARK_DEFAULTS_CONF_spark_datahub_emitter: rest
       SPARK_DEFAULTS_CONF_spark_datahub_rest_server: http://${DOCKER_HOST_IP}:28142
+      SPARK_DEFAULTS_CONF_spark_datahub_kafka.bootstrap: ${DOCKER_HOST_IP}:9092,${DOCKER_HOST_IP}:9093
+      SPARK_DEFAULTS_CONF_spark_datahub_kafka_schema__registry__url: http://${DOCKER_HOST_IP}:8081
       SPARK_DEFAULTS_CONF_spark_datahub_metadata_dataset_env: ${PLATYS_ENV}
       SPARK_DEFAULTS_CONF_spark_sql_hive_metastore_jars: builtin
       # SPARK_DEFAULTS_CONF_spark_sql_hive_metastore_version: 3.1.2    
@@ -406,7 +418,10 @@ services:
       SPARK_DEFAULTS_CONF_spark_executor_extraJavaOptions:
       SPARK_DEFAULTS_CONF_spark_cores_max: 2
       SPARK_DEFAULTS_CONF_spark_extraListeners: datahub.spark.DatahubSparkListener
+      SPARK_DEFAULTS_CONF_spark_datahub_emitter: rest
       SPARK_DEFAULTS_CONF_spark_datahub_rest_server: http://${DOCKER_HOST_IP}:28142
+      SPARK_DEFAULTS_CONF_spark_datahub_kafka.bootstrap: ${DOCKER_HOST_IP}:9092,${DOCKER_HOST_IP}:9093
+      SPARK_DEFAULTS_CONF_spark_datahub_kafka_schema__registry__url: http://${DOCKER_HOST_IP}:8081
       SPARK_DEFAULTS_CONF_spark_datahub_metadata_dataset_env: ${PLATYS_ENV}
       SPARK_DEFAULTS_CONF_spark_sql_hive_metastore_jars: builtin
       # SPARK_DEFAULTS_CONF_spark_sql_hive_metastore_version: 3.1.2    
@@ -496,7 +511,10 @@ services:
       SPARK_DEFAULTS_CONF_spark_executor_extraJavaOptions:
       SPARK_DEFAULTS_CONF_spark_cores_max: 2
       SPARK_DEFAULTS_CONF_spark_extraListeners: datahub.spark.DatahubSparkListener
+      SPARK_DEFAULTS_CONF_spark_datahub_emitter: rest
       SPARK_DEFAULTS_CONF_spark_datahub_rest_server: http://${DOCKER_HOST_IP}:28142
+      SPARK_DEFAULTS_CONF_spark_datahub_kafka.bootstrap: ${DOCKER_HOST_IP}:9092,${DOCKER_HOST_IP}:9093
+      SPARK_DEFAULTS_CONF_spark_datahub_kafka_schema__registry__url: http://${DOCKER_HOST_IP}:8081
       SPARK_DEFAULTS_CONF_spark_datahub_metadata_dataset_env: ${PLATYS_ENV}
       SPARK_DEFAULTS_CONF_spark_sql_hive_metastore_jars: builtin
       # SPARK_DEFAULTS_CONF_spark_sql_hive_metastore_version: 3.1.2    
@@ -1582,7 +1600,7 @@ services:
       ICEBERG_POLARIS_CATALOG_WAREHOUSE: polaris_catalog
       CLIENT_ID: admin
       CLIENT_SECRET: ${PLATYS_POLARIS_CLIENT_SECRET:-abc123!}
-      KAFKA_NODES: ${DOCKER_HOST_IP}:9095
+      KAFKA_NODES: ${DOCKER_HOST_IP}:9092,${DOCKER_HOST_IP}:9093
       KAFKA_SCHEMA_REGISTRY_URL: http://${DOCKER_HOST_IP}:8081
       KAFKA_CONFIG_RESOURCES: /etc/trino/kafka-configuration.properties
       KAFKA_SECURITY_PROTOCOL: None
