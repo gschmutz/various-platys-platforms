@@ -298,6 +298,12 @@ services:
     volumes:
       - ./data-transfer:/data-transfer:z
     restart: unless-stopped
+    healthcheck:
+      test: curl --noproxy '*' -sS --fail http://localhost:9002/health
+      start_period: 90s
+      interval: 5s
+      retries: 10
+      timeout: 10s
   datahub-gms:
     image: docker.io/acryldata/datahub-gms:v1.7.0.1
     hostname: datahub-gms
@@ -399,8 +405,8 @@ services:
       test: curl --noproxy '*' -sS --fail http://localhost:8080/health
       start_period: 90s
       interval: 5s
-      retries: 5
-      timeout: 5s
+      retries: 10
+      timeout: 10s
   datahub-actions:
     image: docker.io/acryldata/datahub-actions:v1.7.0.1
     hostname: datahub-actions
@@ -434,6 +440,12 @@ services:
     volumes:
       - ./data-transfer:/data-transfer:z
     restart: unless-stopped
+    healthcheck:
+      test: [CMD-SHELL, ps aux | grep -v grep | grep -q 'datahub_actions' || exit 1]
+      start_period: 60s
+      interval: 30s
+      retries: 10
+      timeout: 10s
   datahub-mysql:
     image: docker.io/mysql:8.2
     hostname: datahub-mysql
@@ -610,6 +622,12 @@ services:
     volumes:
       - ./data-transfer:/data-transfer:z
     restart: unless-stopped
+    healthcheck:
+      test: [CMD-SHELL, ps aux | grep -v grep | grep -q 'tail' || exit 1]
+      start_period: 10s
+      interval: 30s
+      retries: 10
+      timeout: 10s
   #  ================================== Sonatype Nexus ========================================== #
   nexus:
     image: docker.io/sonatype/nexus3:3.96.4
