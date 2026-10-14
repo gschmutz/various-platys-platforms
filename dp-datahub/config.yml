@@ -1067,7 +1067,7 @@
       # one of "elasticsearch" or "opensearch"
       DATAHUB_search_service_impl: opensearch
       DATAHUB_use_kibana: false
-      DATAHUB_provision_sample_data: true
+      DATAHUB_provision_sample_data: false
       DATAHUB_secret: WFqedcrR1diAtbRcoSnllKrGWOe0Pcx/pPwE0stgezw=
       DATAHUB_map_user_props: false
       
@@ -3824,6 +3824,7 @@
       # ===== Sonatype Nexus ========
       #      
       NEXUS_enable: true
+      NEXUS_compose_profile: nexus_init
       NEXUS_volume_map_data: false
       NEXUS_jvm_min_heap: 512m
       NEXUS_jvm_max_heap: 2g

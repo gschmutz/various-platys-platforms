@@ -594,23 +594,6 @@ services:
       - ./data-transfer:/data-transfer:z
     command: -u SystemUpdate
     init: true
-  datahub-ingestion:
-    image: docker.io/acryldata/datahub-ingestion:head
-    hostname: datahub-ingestion
-    container_name: datahub-ingestion
-    labels:
-      com.platys.name: datahub
-    depends_on:
-      datahub-gms:
-        condition: service_healthy
-    volumes:
-      - ./data-transfer:/data-transfer:z
-      - ./init/datahub/sample-data/sample_recipe.yml:/sample_recipe.yml:ro
-      - ./init/datahub/sample-data/bootstrap_mce.json:/bootstrap_mce.json:ro
-      - ./scripts/docker/wait-for-it.sh:/tmp/wait-for-it.sh:z
-    entrypoint: [/tmp/wait-for-it.sh, datahub-gms:8080, --timeout=0, --, datahub]
-    command: ingest -c /sample_recipe.yml
-    init: true
   datahub-cli:
     image: docker.io/acryldata/datahub-ingestion:head
     hostname: datahub-cli
@@ -632,6 +615,7 @@ services:
     image: docker.io/sonatype/nexus3:3.96.4
     container_name: nexus
     hostname: nexus
+    profiles: [nexus_init]
     labels:
       com.platys.name: nexus
       com.platys.description: Sonatype Nexus Repository Manager
