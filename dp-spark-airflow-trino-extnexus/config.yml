@@ -3600,8 +3600,10 @@
       #
       # ===== Code Server ========
       #
-      CODE_SERVER_enable: false
+      CODE_SERVER_enable: true
       CODE_SERVER_volume_map_platform_root: false
+      CODE_SERVER_volume_map_modcache: true
+      CODE_SERVER_docker_mods: linuxserver/mods:code-server-python3
       
       #
       # ===== Taiga ========
