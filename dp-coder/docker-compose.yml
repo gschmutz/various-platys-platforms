@@ -30,19 +30,6 @@ services:
       - ./data-transfer:/data-transfer:z
       - ${PLATYS_DOCKER_SOCKET:-/var/run/docker.sock}:/var/run/docker.sock:z
     restart: unless-stopped
-  #  ================================== data-provisioning ========================================== #
-  data-provisioning:
-    image: docker.io/trivadis/platys-modern-data-platform-data:latest
-    container_name: data-provisioning
-    hostname: data-provisioning
-    labels:
-      com.platys.name: data-provisioning
-      com.platys.description: Provisioning sample data
-    environment:
-      DUMMY: make-it-valid
-    volumes:
-      - ./data-transfer:/data-transfer:z
-    init: true
 volumes:
   data-transfer-vol:
     name: data_transfer_vol

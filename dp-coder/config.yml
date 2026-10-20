@@ -159,7 +159,7 @@
       # Platys Services
       # ========================================================================
       
-      PROVISIONING_DATA_enable: true
+      PROVISIONING_DATA_enable: false
       PROVISIONING_DATA_additional_data_folder: null
       
       #
