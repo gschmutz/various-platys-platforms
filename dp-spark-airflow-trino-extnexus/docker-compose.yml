@@ -1948,7 +1948,7 @@ services:
       PGID: 1000
       PASSWORD: abc123!
       SUDO_PASSWORD: abc123!   #optional
-      DEFAULT_WORKSPACE: /workspace   #optional
+      DEFAULT_WORKSPACE: /config/workspace   #optional
       PWA_APPNAME: code-server
       DOCKER_MODS: linuxserver/mods:code-server-python3
       MAVEN_DOWNLOAD_REPO_NEXUS: http://${PUBLIC_IP}:28426/repository/maven-public
