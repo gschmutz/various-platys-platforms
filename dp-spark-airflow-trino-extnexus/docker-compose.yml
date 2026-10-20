@@ -1951,6 +1951,7 @@ services:
       DEFAULT_WORKSPACE: /config/workspace   #optional
       PWA_APPNAME: code-server
       DOCKER_MODS: linuxserver/mods:code-server-python3
+      NODE_EXTRA_CA_CERTS: /certs/root_ca.pem
       MAVEN_DOWNLOAD_REPO_NEXUS: http://${PUBLIC_IP}:28426/repository/maven-public
       MAVEN_DOWNLOAD_REPO_NEXUS_USER: admin
       MAVEN_DOWNLOAD_REPO_NEXUS_PASSWORD: ${PLATYS_NEXUS_ADMIN_PASSWORD:-abc123!abc123!}
@@ -1961,7 +1962,9 @@ services:
       NPM_CONFIG_REGISTRY: http://${PUBLIC_IP}:28426/repository/npm-group/
       GOPROXY: http://${PUBLIC_IP}:28426/repository/go-group
     volumes:
+      - ./data-transfer:/data-transfer:z
       - ./data-transfer:/home/coder/data-transfer:z
+      - ./security/code-server/certs:/certs:ro
       - ./plugins/code-server/:/modcache:Z
     restart: unless-stopped
     healthcheck:
