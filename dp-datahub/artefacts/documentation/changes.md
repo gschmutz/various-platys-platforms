@@ -13,6 +13,7 @@ See [Upgrade to a new platform stack version](https://github.com/TrivadisPF/plat
  * Nexus
  * Coder
  * Polaris Console (UI)
+ * Spark Connect
  * Wundergraph Cosmo Platform
  * mitmproxy
  * Forgejo
@@ -23,7 +24,19 @@ See [Upgrade to a new platform stack version](https://github.com/TrivadisPF/plat
  * mimir
  * vector
  * pREST
- 
+ * restate
+ * karapace (as an additional schema-registry flavour)
+ * redpanda-connect
+ * browserless
+ * zammad
+ * postgraphile
+ * versitygw (Versity S3 Gateway)
+ * hive-console
+ * hive-gateway
+ * hive-router
+ * hive-yoga-server
+ * apollo-rover-cli
+
 ### Version upgrades
  
  * Update `nifi-toolkit v2` to `2.10.0`
@@ -41,11 +54,16 @@ See [Upgrade to a new platform stack version](https://github.com/TrivadisPF/plat
  * Update `prometheus` to `v3.13.4`
  * Update `prometheus-alertmanager` to `v0.34.1`
  * Update `nifi2` to `2.12.0`
+ * Update `clickhouse` to `26.10-alpine`
 
 ### Enhancements
 
  * Add ui mode for defining a platform using a Web-UI
  * Add support for Spark 4.x
+ * Improve support for Podman
+ * Add support for working with Nexus and a HTTP Proxy for accessing internet
+ * New global settings `volume_map_data_transfer_folder` and `data_transfer_local_folder` to control mapping and location of the `data-transfer` folder
+ * `python`: optional supervisord support (`PYTHON_supervisord_enabled`) to run multiple python scripts in one container
 
 ### Breaking Changes
 
@@ -66,6 +84,8 @@ See [Upgrade to a new platform stack version](https://github.com/TrivadisPF/plat
  * changed docker image for Apache Spark to `apache/spark`
  * Jupyter external port changed to `38888` (used to be `28888`)
  * replace `MARKDOWN_VIEWER_use_port_80` by `MARKDOWN_VIEWER_external_port` to have more control over the port used for the markdown viewer (needed for Podman if ports below `1024` are not permitted)
+ * remove `BENTHOS` service, it has been replaced by `REDPANDA_CONNECT` (Redpanda Connect is the continuation of Benthos)
+ * rename `SHADOW_TRAFFIC_xxxx` to `SHADOWTRAFFIC_xxxx`
 
 ## What's new in 1.20.0
 

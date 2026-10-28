@@ -291,6 +291,8 @@ Container Port(s) | Internal Port(s)           | Service (alternatives) |
 9002 | 9000 | minio-3 |
 9003 | 9000 | minio-4 |
 9005 | 9000 | rustfs-1 |
+9006 | 9000 | versitygw (S3 API) |
+9007 | 9001 | versitygw (WebUI) |
 9008 | 9009 | mimir |
 9009 | 9009 | questdb |
 9010 | 9010 | minio-1 ui |
@@ -527,8 +529,9 @@ Container Port(s) | Internal Port(s)           | Service (alternatives) |
 28104 | 9000 | cmak (env1) |
 28105 | 9000 | cmak (env2) |
 28106 | 8080 | kadmin     |
-28107 |  |   |
-28108 |  |   |
+28107 | 3000 | hive-console-app |
+28108 | 3001 | hive-console-server (GraphQL API) |
+28109 | 3006 | hive-console-usage |
 28110 | 9020 | kafdrop     |
 28111 | 28111 | spark-worker-1 |
 28112 | 28112 | spark-worker-2 |
@@ -566,10 +569,13 @@ Container Port(s) | Internal Port(s)           | Service (alternatives) |
 28144 | 9002 | datahub-frontend |
 28145 | 9091 | datahub-mae-consumer |
 28146 | 9092 | datahub-mce-consumer |
+28147 | 4000 | hive-gateway |
+28148 | 4000 | hive-router |
 28150 | 8888 | druid-router |
 28150 | 8888 | druid-sandbox |
-28151 |  |  |
+28151 | 5000 | postgraphile |
 28152 |  |  |
+28153 |  |  |
 28154 | 8080 | penthao |
 28155 | 8080 | hawtio |
 28156 | 8080 | swagger-editor |
@@ -578,6 +584,14 @@ Container Port(s) | Internal Port(s)           | Service (alternatives) |
 28159 | 8081 | quix-backend |
 28160 | 8081 | quix-frontend |
 28161 | 5000 | redash-server |
+28162 | 3001 | hive-yoga-server-1 |
+28163 | 3001 | hive-yoga-server-2 |
+28164 | 3001 | hive-yoga-server-3 |
+28165 | 3001 | hive-yoga-server-4 |
+28166 | 3001 | hive-yoga-server-5 |
+28167 |  |  |
+28168 |  |  |
+28169 |  |  |
 28170 | 80 | stardog-studio |
 28171 | 3030 | smashing |
 28172 | 3030 | tipboard |
@@ -898,6 +912,9 @@ Container Port(s) | Internal Port(s)           | Service (alternatives) |
 28511 | 3000 | nimtable-web |
 28512 | 8182 | nimtable |
 28513 |      | |
+28514 |      | |
+28515 |      | |
+28516 |      | |
 28630 | 80 | streamlit-1 |
 28631 | 80 | streamlit-2 |
 28632 | 80 | streamlit-3 |

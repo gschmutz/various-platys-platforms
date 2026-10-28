@@ -49,7 +49,7 @@ services:
       KAFKA_LOG4J_ROOT_LOGLEVEL: INFO
       KAFKA_TOOLS_LOG4J_LOGLEVEL: INFO
     volumes:
-      - ./data-transfer:/data-transfer:z
+      - ${PLATYS_DATA_TRANSFER_LOCAL_FOLDER:-./data-transfer}:/data-transfer:z
     restart: unless-stopped
     healthcheck:
       test: kafka-metadata-quorum --bootstrap-server kafka-1:19092 describe --replication
@@ -97,7 +97,7 @@ services:
       KAFKA_LOG4J_ROOT_LOGLEVEL: INFO
       KAFKA_TOOLS_LOG4J_LOGLEVEL: INFO
     volumes:
-      - ./data-transfer:/data-transfer:z
+      - ${PLATYS_DATA_TRANSFER_LOCAL_FOLDER:-./data-transfer}:/data-transfer:z
     restart: unless-stopped
     healthcheck:
       test: kafka-metadata-quorum --bootstrap-server kafka-2:19093 describe --replication
@@ -145,7 +145,7 @@ services:
       KAFKA_LOG4J_ROOT_LOGLEVEL: INFO
       KAFKA_TOOLS_LOG4J_LOGLEVEL: INFO
     volumes:
-      - ./data-transfer:/data-transfer:z
+      - ${PLATYS_DATA_TRANSFER_LOCAL_FOLDER:-./data-transfer}:/data-transfer:z
     restart: unless-stopped
     healthcheck:
       test: kafka-metadata-quorum --bootstrap-server kafka-3:19094 describe --replication
@@ -169,7 +169,7 @@ services:
       KAFKA_TOPIC_CONFIG: ''
       KAFKA_CREATE_TOPICS: MetadataChangeEvent_v4:1:3,DataHubUsageEvent_v1:1:3
     volumes:
-      - ./data-transfer:/data-transfer:z
+      - ${PLATYS_DATA_TRANSFER_LOCAL_FOLDER:-./data-transfer}:/data-transfer:z
     init: true
   #  ================================== Confluent Schema Registry ========================================== #
   schema-registry-1:
@@ -201,7 +201,7 @@ services:
       SCHEMA_REGISTRY_DEBUG: 'False'
       SCHEMA_REGISTRY_KAFKASTORE_SECURITY_PROTOCOL: PLAINTEXT
     volumes:
-      - ./data-transfer:/data-transfer:z
+      - ${PLATYS_DATA_TRANSFER_LOCAL_FOLDER:-./data-transfer}:/data-transfer:z
     restart: unless-stopped
     healthcheck:
       test: [CMD, python3, -c, "import http.client, sys; c=http.client.HTTPConnection('localhost',8081,timeout=5); c.request('GET','/subjects'); sys.exit(0) if c.getresponse().status==200 else sys.exit(1)"]
@@ -249,7 +249,7 @@ services:
                 url: "http://schema-registry-1:8081"
                 type: "confluent"
     volumes:
-      - ./data-transfer:/data-transfer:z
+      - ${PLATYS_DATA_TRANSFER_LOCAL_FOLDER:-./data-transfer}:/data-transfer:z
     restart: unless-stopped
     healthcheck:
       test: [CMD, curl, -f, http://localhost:28081/health]
@@ -296,7 +296,7 @@ services:
       - PLAY_HTTP_CONTEXT=/
       - THEME_V2_DEFAULT=true
     volumes:
-      - ./data-transfer:/data-transfer:z
+      - ${PLATYS_DATA_TRANSFER_LOCAL_FOLDER:-./data-transfer}:/data-transfer:z
     restart: unless-stopped
     healthcheck:
       test: curl --noproxy '*' -sS --fail http://localhost:9002/health
@@ -399,7 +399,7 @@ services:
       - ENTITY_GRAPH_CACHE_CONFIG_FILE=entity-graph-cache.yaml
       - ENTITY_GRAPH_CACHE_CONFIG_JSON=
     volumes:
-      - ./data-transfer:/data-transfer:z
+      - ${PLATYS_DATA_TRANSFER_LOCAL_FOLDER:-./data-transfer}:/data-transfer:z
     restart: unless-stopped
     healthcheck:
       test: curl --noproxy '*' -sS --fail http://localhost:8080/health
@@ -438,7 +438,7 @@ services:
       - UV_INDEX_URL=http://nexus:8081/repository/pypi-proxy/simple/
       - UV_NATIVE_TLS=true
     volumes:
-      - ./data-transfer:/data-transfer:z
+      - ${PLATYS_DATA_TRANSFER_LOCAL_FOLDER:-./data-transfer}:/data-transfer:z
     restart: unless-stopped
     healthcheck:
       test: [CMD-SHELL, ps aux | grep -v grep | grep -q 'datahub_actions' || exit 1]
@@ -461,7 +461,7 @@ services:
       - MYSQL_PASSWORD=datahub
       - MYSQL_ROOT_PASSWORD=datahub
     volumes:
-      - ./data-transfer:/data-transfer:z
+      - ${PLATYS_DATA_TRANSFER_LOCAL_FOLDER:-./data-transfer}:/data-transfer:z
     command: --character-set-server=utf8mb4 --collation-server=utf8mb4_bin --default-authentication-plugin=caching_sha2_password
     restart: unless-stopped
     healthcheck:
@@ -488,7 +488,7 @@ services:
       - NEO4J_dbms_allow__upgrade=true
       - NEO4JLABS_PLUGINS=["apoc"]
     volumes:
-      - ./data-transfer:/data-transfer:z
+      - ${PLATYS_DATA_TRANSFER_LOCAL_FOLDER:-./data-transfer}:/data-transfer:z
     restart: unless-stopped
     healthcheck:
       interval: 10s
@@ -527,7 +527,7 @@ services:
         soft: 65536 # maximum number of open files for the OpenSearch user, set to at least 65536 on modern systems
         hard: 65536
     volumes:
-      - ./data-transfer:/data-transfer:z
+      - ${PLATYS_DATA_TRANSFER_LOCAL_FOLDER:-./data-transfer}:/data-transfer:z
     restart: unless-stopped
     healthcheck:
       interval: 10s
@@ -603,7 +603,7 @@ services:
       - UV_INDEX_URL=http://nexus:8081/repository/pypi-proxy/simple/
       - UV_NATIVE_TLS=true
     volumes:
-      - ./data-transfer:/data-transfer:z
+      - ${PLATYS_DATA_TRANSFER_LOCAL_FOLDER:-./data-transfer}:/data-transfer:z
     command: -u SystemUpdate
     init: true
   datahub-cli:
@@ -620,7 +620,7 @@ services:
       - DATAHUB_GMS_PROTOCOL=http
       - DATAHUB_DEBUG=false
     volumes:
-      - ./data-transfer:/data-transfer:z
+      - ${PLATYS_DATA_TRANSFER_LOCAL_FOLDER:-./data-transfer}:/data-transfer:z
     restart: unless-stopped
     healthcheck:
       test: [CMD-SHELL, ps aux | grep -v grep | grep -q 'tail' || exit 1]
@@ -646,7 +646,7 @@ services:
       INSTALL4J_ADD_JVM_PARAMS: -Xms512m -Xmx2g -XX:MaxDirectMemorySize=2g
       NEXUS_ADMIN_PASSWORD: ${PLATYS_NEXUS_ADMIN_PASSWORD:-abc123!abc123!}
     volumes:
-      - ./data-transfer:/data-transfer:z
+      - ${PLATYS_DATA_TRANSFER_LOCAL_FOLDER:-./data-transfer}:/data-transfer:z
       - ./init/nexus:/nexus-init:ro
       - ./security/nexus/certs:/nexus-security/certs:ro
     entrypoint: [/bin/sh, /nexus-init/entrypoint.sh]
@@ -671,7 +671,7 @@ services:
     volumes:
       - ./artefacts:/docs
       - ./conf/markdown-viewer/markdown-madness.yml:/docs/.madness.yml:z
-      - ./data-transfer:/data-transfer:z
+      - ${PLATYS_DATA_TRANSFER_LOCAL_FOLDER:-./data-transfer}:/data-transfer:z
     command: server
     restart: unless-stopped
     healthcheck:
@@ -703,21 +703,8 @@ services:
       - ./artefacts/templates:/scripts:z
       - .:/variables:z
       - ./artefacts:/output:z
-      - ./data-transfer:/data-transfer:z
+      - ${PLATYS_DATA_TRANSFER_LOCAL_FOLDER:-./data-transfer}:/data-transfer:z
     init: true
 volumes:
   data-transfer-vol:
     name: data_transfer_vol
-configs:
-  # Nimtable config file to be mounted into the Docker containers.
-  # See backend/config.yaml for more complete example
-  nimtable-config.yaml:
-    content: |-
-      server:
-        port: 8182
-        host: 0.0.0.0
-      database:
-        # You can also point to your own Postgres database, instead of using the one provided by docker-compose.
-        url: jdbc:postgresql://postgresql:5432/nimtabledb
-        username: nimtable
-        password: abc123!

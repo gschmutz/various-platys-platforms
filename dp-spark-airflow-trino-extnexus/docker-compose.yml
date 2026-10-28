@@ -88,7 +88,7 @@ services:
       SPARK_DEFAULTS_CONF_spark_jars_ivySettings: /opt/spark/conf/ivy-settings.xml
       SPARK_DEFAULTS_CONF_spark_jars_ivy: /opt/ivy-cache
     volumes:
-      - ./data-transfer:/data-transfer:z
+      - ${PLATYS_DATA_TRANSFER_LOCAL_FOLDER:-./data-transfer}:/data-transfer:z
       # the 3 conf files are mapped to conf.default folder, they are copied with env variable interpolation into conf upon start of container
       - ./conf/spark/hive-site.xml:/opt/spark/conf.default/hive-site.xml:z
       - ./conf/spark/spark-defaults.conf:/opt/spark/conf.default/spark-defaults.conf:z
@@ -186,7 +186,7 @@ services:
       SPARK_DEFAULTS_CONF_spark_jars_ivySettings: /opt/spark/conf/ivy-settings.xml
       SPARK_DEFAULTS_CONF_spark_jars_ivy: /opt/ivy-cache
     volumes:
-      - ./data-transfer:/data-transfer:z
+      - ${PLATYS_DATA_TRANSFER_LOCAL_FOLDER:-./data-transfer}:/data-transfer:z
       - ./conf/spark/hive-site.xml:/opt/spark/conf.default/hive-site.xml:z
       - ./conf/spark/spark-defaults.conf:/opt/spark/conf.default/spark-defaults.conf:z
       - ./init/spark:/docker-entrypoint-initdb.d:z
@@ -279,7 +279,7 @@ services:
       SPARK_DEFAULTS_CONF_spark_jars_ivySettings: /opt/spark/conf/ivy-settings.xml
       SPARK_DEFAULTS_CONF_spark_jars_ivy: /opt/ivy-cache
     volumes:
-      - ./data-transfer:/data-transfer:z
+      - ${PLATYS_DATA_TRANSFER_LOCAL_FOLDER:-./data-transfer}:/data-transfer:z
       - ./conf/spark/hive-site.xml:/opt/spark/conf.default/hive-site.xml:z
       - ./conf/spark/spark-defaults.conf:/opt/spark/conf.default/spark-defaults.conf:z
       - ./init/spark:/docker-entrypoint-initdb.d:z
@@ -374,7 +374,7 @@ services:
       SPARK_DEFAULTS_CONF_spark_jars_ivySettings: /opt/spark/conf/ivy-settings.xml
       SPARK_DEFAULTS_CONF_spark_jars_ivy: /opt/ivy-cache
     volumes:
-      - ./data-transfer:/data-transfer:z
+      - ${PLATYS_DATA_TRANSFER_LOCAL_FOLDER:-./data-transfer}:/data-transfer:z
       # the 3 conf files are mapped to conf.default folder, they are copied with env variable interpolation into conf upon start of container
       - ./conf/spark/hive-site.xml:/opt/spark/conf/hive-site.xml:z
       - ./conf/spark/spark-defaults.conf:/opt/spark/conf/spark-defaults.conf:z
@@ -464,7 +464,7 @@ services:
       SPARK_DEFAULTS_CONF_spark_jars_ivySettings: /opt/spark/conf/ivy-settings.xml
       SPARK_DEFAULTS_CONF_spark_jars_ivy: /opt/ivy-cache
     volumes:
-      - ./data-transfer:/data-transfer:z
+      - ${PLATYS_DATA_TRANSFER_LOCAL_FOLDER:-./data-transfer}:/data-transfer:z
       # the 3 conf files are mapped to conf.default folder, they are copied with env variable interpolation into conf upon start of container
       - ./conf/spark/hive-site.xml:/opt/spark/conf.default/hive-site.xml:z
       - ./conf/spark/spark-defaults.conf:/opt/spark/conf.default/spark-defaults.conf:z
@@ -557,7 +557,7 @@ services:
       SPARK_DEFAULTS_CONF_spark_jars_ivySettings: /opt/spark/conf/ivy-settings.xml
       SPARK_DEFAULTS_CONF_spark_jars_ivy: /opt/ivy-cache
     volumes:
-      - ./data-transfer:/data-transfer:z
+      - ${PLATYS_DATA_TRANSFER_LOCAL_FOLDER:-./data-transfer}:/data-transfer:z
       # the 3 conf files are mapped to conf.default folder, they are copied with env variable interpolation into conf upon start of container
       - ./conf/spark/hive-site.xml:/opt/spark/conf.default/hive-site.xml:z
       - ./conf/spark/spark-defaults.conf:/opt/spark/conf.default/spark-defaults.conf:z
@@ -615,7 +615,7 @@ services:
       SERVICE_NAME: metastore
       SERVICE_OPTS: -Xmx1G -Djavax.jdo.option.ConnectionDriverName=org.postgresql.Driver -Djavax.jdo.option.ConnectionURL=jdbc:postgresql://hive-metastore-db/metastore_db -Djavax.jdo.option.ConnectionUserName=hive -Djavax.jdo.option.ConnectionPassword=${PLATYS_HMS_POSTGRESQL_PASSWORD:-abc123!}
     volumes:
-      - ./data-transfer:/data-transfer:z
+      - ${PLATYS_DATA_TRANSFER_LOCAL_FOLDER:-./data-transfer}:/data-transfer:z
     restart: unless-stopped
     healthcheck:
       test: [CMD, nc, -z, hive-metastore, '9083']
@@ -637,7 +637,7 @@ services:
       POSTGRES_USER: hive
       POSTGRES_PASSWORD: ${PLATYS_HMS_POSTGRESQL_PASSWORD:-abc123!}
     volumes:
-      - ./data-transfer:/data-transfer:z
+      - ${PLATYS_DATA_TRANSFER_LOCAL_FOLDER:-./data-transfer}:/data-transfer:z
     restart: unless-stopped
     healthcheck:
       test: [CMD, psql, -U, hive, metastore_db]
@@ -711,7 +711,7 @@ services:
       _PIP_INDEX_URL: http://${PUBLIC_IP}:28426/repository/pypi-proxy/simple/
       _PIP_TRUSTED_HOST: ${PUBLIC_IP}
     volumes:
-      - ./data-transfer:/data-transfer:z
+      - ${PLATYS_DATA_TRANSFER_LOCAL_FOLDER:-./data-transfer}:/data-transfer:z
       - ./scripts/airflow/dags:/opt/airflow/dags:Z
       - ./plugins/airflow/:/opt/airflow/plugins:Z
       - ./scripts/docker/wait-for-it.sh:/usr/src/app/wait-for-it.sh:z
@@ -790,7 +790,7 @@ services:
       _PIP_INDEX_URL: http://${PUBLIC_IP}:28426/repository/pypi-proxy/simple/
       _PIP_TRUSTED_HOST: ${PUBLIC_IP}
     volumes:
-      - ./data-transfer:/data-transfer:z
+      - ${PLATYS_DATA_TRANSFER_LOCAL_FOLDER:-./data-transfer}:/data-transfer:z
       - ./scripts/airflow/dags:/opt/airflow/dags:Z
       - ./plugins/airflow/:/opt/airflow/plugins:Z
       - ./scripts/docker/wait-for-it.sh:/usr/src/app/wait-for-it.sh:z
@@ -869,7 +869,7 @@ services:
       _PIP_INDEX_URL: http://${PUBLIC_IP}:28426/repository/pypi-proxy/simple/
       _PIP_TRUSTED_HOST: ${PUBLIC_IP}
     volumes:
-      - ./data-transfer:/data-transfer:z
+      - ${PLATYS_DATA_TRANSFER_LOCAL_FOLDER:-./data-transfer}:/data-transfer:z
       - ./scripts/airflow/dags:/opt/airflow/dags:Z
       - ./plugins/airflow/:/opt/airflow/plugins:Z
       - ./scripts/docker/wait-for-it.sh:/usr/src/app/wait-for-it.sh:z
@@ -898,7 +898,7 @@ services:
       - POSTGRES_USER=airflow
       - POSTGRES_PASSWORD=${PLATYS_AIRFLOW_POSTGRESQL_PASSWORD:-abc123!}
     volumes:
-      - ./data-transfer:/data-transfer:z
+      - ${PLATYS_DATA_TRANSFER_LOCAL_FOLDER:-./data-transfer}:/data-transfer:z
     restart: unless-stopped
     healthcheck:
       test: [CMD-SHELL, pg_isready -U airflow -h localhost -d airflowdb && psql -U airflow -h localhost -d airflowdb -c 'SELECT 1' -q --no-align -t > /dev/null]
@@ -1063,7 +1063,7 @@ services:
       PIP_INDEX_URL: http://${PUBLIC_IP}:28426/repository/pypi-proxy/simple/
       PIP_TRUSTED_HOST: ${PUBLIC_IP}
     volumes:
-      - ./data-transfer:/data-transfer:z
+      - ${PLATYS_DATA_TRANSFER_LOCAL_FOLDER:-./data-transfer}:/data-transfer:z
     user: 0:0
     init: true
   #  ================================== Jupyter ========================================== #
@@ -1106,7 +1106,7 @@ services:
       #PYSPARK_PYTHON: /opt/bitnami/python/bin/python3.12
       #PYSPARK_DRIVER_PYTHON: /usr/bin/python3.12   
     volumes:
-      - ./data-transfer:/data-transfer:z
+      - ${PLATYS_DATA_TRANSFER_LOCAL_FOLDER:-./data-transfer}:/data-transfer:z
       - ./init/jupyter/on-startup-jupyter/:/usr/local/bin/start-notebook.d/:z
       - ./init/jupyter/on-startup-jupyter-finished/:/usr/local/bin/before-notebook.d/:z
       - ./init/jupyter/on-startup-notebook-kernel:/home/jovyan/.ipython/profile_default/startup/:z
@@ -1190,7 +1190,7 @@ services:
       - UV_INDEX_URL=http://${PUBLIC_IP}:28426/repository/pypi-proxy/simple/
       - UV_NATIVE_TLS=true
     volumes:
-      - ./data-transfer:/data-transfer:z
+      - ${PLATYS_DATA_TRANSFER_LOCAL_FOLDER:-./data-transfer}:/data-transfer:z
       - ./conf/superset:/app/docker:z
     command:
       - /bin/bash
@@ -1260,7 +1260,7 @@ services:
       - UV_INDEX_URL=http://${PUBLIC_IP}:28426/repository/pypi-proxy/simple/
       - UV_NATIVE_TLS=true
     volumes:
-      - ./data-transfer:/data-transfer:z
+      - ${PLATYS_DATA_TRANSFER_LOCAL_FOLDER:-./data-transfer}:/data-transfer:z
       - ./conf/superset:/app/docker:z
     command: [/app/docker/docker-init.sh]
     init: true
@@ -1317,7 +1317,7 @@ services:
       - UV_INDEX_URL=http://${PUBLIC_IP}:28426/repository/pypi-proxy/simple/
       - UV_NATIVE_TLS=true
     volumes:
-      - ./data-transfer:/data-transfer:z
+      - ${PLATYS_DATA_TRANSFER_LOCAL_FOLDER:-./data-transfer}:/data-transfer:z
       - ./conf/superset:/app/docker:z
     command:
       - /bin/bash
@@ -1382,7 +1382,7 @@ services:
       - UV_INDEX_URL=http://${PUBLIC_IP}:28426/repository/pypi-proxy/simple/
       - UV_NATIVE_TLS=true
     volumes:
-      - ./data-transfer:/data-transfer:z
+      - ${PLATYS_DATA_TRANSFER_LOCAL_FOLDER:-./data-transfer}:/data-transfer:z
       - ./conf/superset:/app/docker:z
     command:
       - /bin/bash
@@ -1442,7 +1442,7 @@ services:
       - PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
       - BUILD_SUPERSET_FRONTEND_IN_DOCKER=true
     volumes:
-      - ./data-transfer:/data-transfer:z
+      - ${PLATYS_DATA_TRANSFER_LOCAL_FOLDER:-./data-transfer}:/data-transfer:z
       - ./init/superset/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d:z
     restart: unless-stopped
     healthcheck:
@@ -1459,7 +1459,7 @@ services:
       com.platys.name: superset
       com.platys.description: Key-value store
     volumes:
-      - ./data-transfer:/data-transfer:z
+      - ${PLATYS_DATA_TRANSFER_LOCAL_FOLDER:-./data-transfer}:/data-transfer:z
     restart: unless-stopped
     healthcheck:
       test: [CMD, redis-cli, ping]
@@ -1511,7 +1511,7 @@ services:
       #CUBEJS_DB_EXPORT_BUCKET_AWS_REGION:     
       CUBEJS_CUBESTORE_HOST: cubestore
     volumes:
-      - ./data-transfer:/data-transfer:z
+      - ${PLATYS_DATA_TRANSFER_LOCAL_FOLDER:-./data-transfer}:/data-transfer:z
       - ./conf/cube:/cube/conf:z
     restart: unless-stopped
   #  ================================== Cube Store ========================================== #
@@ -1526,7 +1526,7 @@ services:
     environment:
       CUBESTORE_REMOTE_DIR: /cube/data
     volumes:
-      - ./data-transfer:/data-transfer:z
+      - ${PLATYS_DATA_TRANSFER_LOCAL_FOLDER:-./data-transfer}:/data-transfer:z
       - ./container-volume/cubestore:/cube/data:z
     restart: unless-stopped
   #  ================================== PostgreSQL ========================================== #
@@ -1553,7 +1553,7 @@ services:
       - PGDATA=/var/lib/postgresql/data/pgdata
       - DB_SCHEMA=demo
     volumes:
-      - ./data-transfer:/data-transfer:z
+      - ${PLATYS_DATA_TRANSFER_LOCAL_FOLDER:-./data-transfer}:/data-transfer:z
       - ./init/postgresql:/docker-entrypoint-initdb.d/:z
     restart: unless-stopped
     healthcheck:
@@ -1612,7 +1612,7 @@ services:
       POSTGRESQL_PASSWORD: abc123!
       EVENT_LISTENER_CONFIG_FILES: ''
     volumes:
-      - ./data-transfer:/data-transfer:z
+      - ${PLATYS_DATA_TRANSFER_LOCAL_FOLDER:-./data-transfer}:/data-transfer:z
       - ./conf/trino/single/config.properties:/etc/trino/config.properties:z
       - ./conf/trino/single/node.properties:/etc/trino/node.properties:z
       - ./conf/trino/single/log-debug.properties:/etc/trino/log.properties:z
@@ -1659,7 +1659,7 @@ services:
       - RUSTFS_UNSAFE_BYPASS_DISK_CHECK=true
 #      - RUSTFS_TLS_PATH=/opt/tls
     volumes:
-      - ./data-transfer:/data-transfer:z
+      - ${PLATYS_DATA_TRANSFER_LOCAL_FOLDER:-./data-transfer}:/data-transfer:z
     restart: unless-stopped
     healthcheck:
       test: [CMD, sh, -c, curl --noproxy '*' -f http://127.0.0.1:9000/health && curl -f http://127.0.0.1:9010/rustfs/console/health]
@@ -1681,7 +1681,7 @@ services:
       AWS_SECRET_ACCESS_KEY: ${PLATYS_AWS_SECRET_ACCESS_KEY:-abc123abc123!}
       MC_HOST_rustfs-1: http://${PLATYS_AWS_ACCESS_KEY:-admin}:${PLATYS_AWS_SECRET_ACCESS_KEY:-abc123abc123!}@rustfs-1:9000
     volumes:
-      - ./data-transfer:/data-transfer:z
+      - ${PLATYS_DATA_TRANSFER_LOCAL_FOLDER:-./data-transfer}:/data-transfer:z
       - ./scripts/docker/wait-for-it.sh:/usr/src/app/wait-for-it.sh:z
     entrypoint:
       - /bin/sh
@@ -1710,7 +1710,7 @@ services:
       AWS_ENDPOINT: rustfs-1:9000
       AWS_DEFAULT_REGION: us-east-1
     volumes:
-      - ./data-transfer:/data-transfer:z
+      - ${PLATYS_DATA_TRANSFER_LOCAL_FOLDER:-./data-transfer}:/data-transfer:z
       - ./conf/awscli/s3cfg.template:/root/.s3cfg.template:z
     command: tail -f /dev/null
     restart: unless-stopped
@@ -1761,7 +1761,7 @@ services:
       QUARKUS_HTTP_CORS_ACCESS_CONTROL_ALLOW_CREDENTIALS: true
       QUARKUS_HTTP_CORS_ACCESS_CONTROL_MAX_AGE: PT10M
     volumes:
-      - ./data-transfer:/data-transfer:z
+      - ${PLATYS_DATA_TRANSFER_LOCAL_FOLDER:-./data-transfer}:/data-transfer:z
     restart: unless-stopped
     healthcheck:
       test: [CMD, curl, -f, http://localhost:8182/q/health]
@@ -1784,7 +1784,7 @@ services:
       QUARKUS_DATASOURCE_USERNAME: postgres
       QUARKUS_DATASOURCE_PASSWORD: ${PLATYS_POLARIS_DB_PASSWORD:-abc123!}
     volumes:
-      - ./data-transfer:/data-transfer:z
+      - ${PLATYS_DATA_TRANSFER_LOCAL_FOLDER:-./data-transfer}:/data-transfer:z
     command:
       - bootstrap
       - --realm=POLARIS
@@ -1928,7 +1928,7 @@ services:
       VITE_POLARIS_REALM: POLARIS
       VITE_POLARIS_PRINCIPAL_SCOPE: PRINCIPAL_ROLE:ALL
     volumes:
-      - ./data-transfer:/data-transfer:z
+      - ${PLATYS_DATA_TRANSFER_LOCAL_FOLDER:-./data-transfer}:/data-transfer:z
     restart: unless-stopped
   #  ================================== Code-Server IDE (VS Code in Browser) ================= #
   code-server:
@@ -1962,8 +1962,8 @@ services:
       NPM_CONFIG_REGISTRY: http://${PUBLIC_IP}:28426/repository/npm-group/
       GOPROXY: http://${PUBLIC_IP}:28426/repository/go-group
     volumes:
-      - ./data-transfer:/data-transfer:z
-      - ./data-transfer:/home/coder/data-transfer:z
+      - ${PLATYS_DATA_TRANSFER_LOCAL_FOLDER:-./data-transfer}:/data-transfer:z
+      - ${PLATYS_DATA_TRANSFER_LOCAL_FOLDER:-./data-transfer}:/home/coder/data-transfer:z
       - ./security/code-server/certs:/certs:ro
       - ./plugins/code-server/:/modcache:Z
     restart: unless-stopped
@@ -1989,7 +1989,7 @@ services:
       DISABLE_WHATS_NEW: true
       EXPORT_METRICS: false
     volumes:
-      - ./data-transfer:/data-transfer:z
+      - ${PLATYS_DATA_TRANSFER_LOCAL_FOLDER:-./data-transfer}:/data-transfer:z
       - ${PLATYS_DOCKER_SOCKET:-/var/run/docker.sock}:/var/run/docker.sock:z
     restart: unless-stopped
   #  ================================== markdown-viewer ========================================== #
@@ -2007,7 +2007,7 @@ services:
     volumes:
       - ./artefacts:/docs
       - ./conf/markdown-viewer/markdown-madness.yml:/docs/.madness.yml:z
-      - ./data-transfer:/data-transfer:z
+      - ${PLATYS_DATA_TRANSFER_LOCAL_FOLDER:-./data-transfer}:/data-transfer:z
     command: server
     restart: unless-stopped
     healthcheck:
@@ -2039,7 +2039,7 @@ services:
       - ./artefacts/templates:/scripts:z
       - .:/variables:z
       - ./artefacts:/output:z
-      - ./data-transfer:/data-transfer:z
+      - ${PLATYS_DATA_TRANSFER_LOCAL_FOLDER:-./data-transfer}:/data-transfer:z
     init: true
   #  ================================== data-provisioning ========================================== #
   data-provisioning:
@@ -2052,7 +2052,7 @@ services:
     environment:
       DUMMY: make-it-valid
     volumes:
-      - ./data-transfer:/data-transfer:z
+      - ${PLATYS_DATA_TRANSFER_LOCAL_FOLDER:-./data-transfer}:/data-transfer:z
     init: true
 volumes:
   data-transfer-vol:
